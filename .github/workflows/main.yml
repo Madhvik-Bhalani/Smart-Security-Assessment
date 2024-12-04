@@ -19,13 +19,13 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history to ensure full sync
 
-    - name: Push to GitLab (codefinity-website) Branch
+    - name: Push to GitLab (main) Branch
       env:
         GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
       run: |
         # Add GitLab as a remote
         git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
 
-        # Push to the `codefinity-website` branch in GitLab
+        # Push to the `main` branch in GitLab
         git push gitlab HEAD:main
 
