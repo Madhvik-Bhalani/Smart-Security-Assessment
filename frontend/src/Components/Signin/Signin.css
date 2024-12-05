@@ -1,0 +1,255 @@
+/* General Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #58539b;
+  }
+  
+  .login-page {
+    display: flex;
+    height: 100vh;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  /* Left Section Styling */
+  .left-section {
+    flex: 1;
+    background: #553c8f;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .branding h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+  }
+  
+  .branding p {
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+  
+  .testimonial {
+    margin-top: 20px;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Right Section Styling */
+  .right-section {
+    flex: 1;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
+  
+  .form-container {
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .form-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 10px; /* Consistent gap between buttons */
+  }
+  
+  .toggle {
+    flex: 1; /* Equal width for buttons */
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .toggle.active {
+    background-color: #8d2536;
+    color: white;
+  }
+  
+  .toggle:hover {
+    background-color: #005bb5;
+    color: white;
+  }
+  
+  form input,
+  form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .checkbox label {
+    
+  
+    font-size: 0.9rem;
+    text-align: left;
+    margin: 0;
+  }
+  
+  .submit-btn {
+    background-color: #bdbdf7
+    ;
+    color: black;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .submit-btn:hover {
+    background-color: #553c8f;
+    color: white;
+  }
+  
+  form a  {
+    color: #553c8f;
+   
+    text-decoration: underline;
+  }
+  
+  form a:hover {
+    text-decoration: underline;
+  }
+  
+  p {
+    font-size: 0.9rem;
+    text-align: center;
+    word-wrap: break-word;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .login-page {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .left-section {
+      padding: 15px;
+    }
+  
+    .branding h1 {
+      font-size: 2rem;
+    }
+  
+    .branding p,
+    .testimonial {
+      font-size: 1rem;
+    }
+  
+    .form-container {
+      max-width: 90%;
+      margin: 0 auto;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .login-page {
+      flex-direction: column;
+    }
+  
+    .left-section,
+    .right-section {
+      width: 100%;
+      padding: 20px;
+    }
+  
+    .branding h1 {
+      font-size: 1.8rem;
+    }
+  
+    .branding p {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+  
+    .form-container {
+      max-width: 95%;
+    }
+  
+    .toggle {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  
+    form input,
+    form select {
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+  
+    .submit-btn {
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .branding h1 {
+      font-size: 1.5rem;
+    }
+  
+    .branding p {
+      font-size: 0.9rem;
+    }
+  
+    .form-container {
+      max-width: 100%;
+      padding: 10px;
+    }
+  
+    .toggle {
+      font-size: 0.8rem;
+      padding: 6px;
+    }
+  
+    form input,
+    form select {
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+  
+    .submit-btn {
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+  }
