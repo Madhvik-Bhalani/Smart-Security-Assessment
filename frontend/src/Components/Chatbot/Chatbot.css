@@ -1,0 +1,258 @@
+/* General styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.app-container {
+    position: relative;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    padding: 15px 20px;
+    color: white;
+}
+
+.navbar h1 {
+    font-size: 1.5em;
+    color: #ffffff;
+}
+
+.navbar-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.navbar-links li {
+    cursor: pointer;
+    font-size: 1em;
+    color: #ffffff;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-links li:hover {
+    color: #d1c4e9;
+}
+
+/* Chatbot Overlay */
+.chatbot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+            135deg,
+            rgba(91, 55, 101, 0.8),
+            rgba(0, 0, 0, 0.8)
+        ),
+        radial-gradient(
+            circle at center,
+            rgba(91, 55, 101, 0.4),
+            rgba(255, 255, 255, 0.1),
+            rgba(0, 0, 0, 0.8)
+        );
+    background-blend-mode: overlay, normal;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Chatbot Container */
+.chatbot-container {
+    width: 60%;
+    height: 70%;
+    max-width: 900px;
+    max-height: 700px;
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+/* Chat Window */
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    background: #1c1c2a;
+    color: white;
+}
+
+.chat-header {
+    background: #5B3765;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 1.2em;
+}
+
+.chat-header button {
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: white;
+}
+
+/* Chat Messages */
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background: #f7f7f7;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Bot message */
+.message.bot {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    background: #5b3765; /* Purple background */
+    color: white;
+    align-self: flex-start;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+/* User message */
+.message.user {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    background: #00c6ff; /* Blue background */
+    color: black;
+    align-self: flex-end;
+    text-align: left;
+    word-wrap: break-word;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat Input */
+.chat-input {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #5B3765;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* File Upload Button */
+.icon-upload {
+    font-size: 1.5em;
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: color 0.3s ease-in-out;
+}
+
+.icon-upload:hover {
+    color: #e0e0e0;
+}
+
+/* Emoji Picker Button */
+.icon-emoji {
+    font-size: 1.5em;
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: color 0.3s ease-in-out;
+}
+
+.icon-emoji:hover {
+    color: #e0e0e0;
+}
+
+/* Send Button */
+.chat-input button {
+    background: #5b3765;
+    border: none;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.chat-input button:hover {
+    background: #0096d1;
+}
+
+/* Emoji Picker */
+.emoji-picker {
+    position: absolute;
+    bottom: 70px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 1000;
+}
+
+.emoji-picker span {
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.emoji-picker span:hover {
+    background-color: #f5f5f5;
+}
+
+/* Chatbot Avatar */
+.chatbot-avatar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+.chatbot-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.chatbot-avatar img:hover {
+    transform: scale(1.1);
+}

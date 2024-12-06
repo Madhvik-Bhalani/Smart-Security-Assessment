@@ -9,6 +9,7 @@ import {
 import { ToastContainer } from 'react-toastify';
 import Signup from "./Components/Signup/Signup";
 import Signin from "./Components/Signin/Signin";
+import Chatbot from "./Components/Chatbot/Chatbot";
 import Home from "./Components/Home/Home";
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="/chatbot" element={<Chatbot />}/>
         </Routes>
         
         <ToastContainer limit={3} />
