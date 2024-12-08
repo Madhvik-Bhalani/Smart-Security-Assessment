@@ -5,7 +5,7 @@ import { signup } from "./Services/SignupServices.jsx"; // Your API service
 import Notification from "../Common/Notification/Notification.jsx"; // Notification handler
 import "./Signup.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { LuEyeClosed } from "react-icons/lu";
 
 function Signup() {
   const alert = new Notification(); // Instance for Notification class
@@ -48,7 +48,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confir
         <div className="signup-branding">
           <TextRevealCard
             text="Hover to unlock the future of security!"
-            revealText="Ready to secure your world? Sign up and let us protect you."
+            revealText="Ready to secure your website? Sign up and let us protect you."
           />
           <div className="branding-cta">
             <button className="get-started-btn">Know More</button>
@@ -99,7 +99,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confir
     className="eye-icon"
     onClick={() => setShowPassword(!showPassword)} // Toggle visibility
   >
-    {showPassword ? <FaEyeSlash /> : <FaEye />}
+    {showPassword ? <LuEyeClosed /> : <FaEye />}
   </span>
 </div>
 
@@ -116,7 +116,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confir
     className="eye-icon"
     onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle visibility
   >
-    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+    {showConfirmPassword ? <LuEyeClosed /> : <FaEye />}
   </span>
 </div>
 
@@ -125,7 +125,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confir
               Create an Account
             </button>
           </form>
-          <br />
+          
           <p>
             Already have an account?{" "}
             <Link
