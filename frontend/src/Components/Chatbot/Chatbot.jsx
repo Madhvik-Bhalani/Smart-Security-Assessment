@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaSmile, FaMicrophone, FaPaperclip, FaTimes } from "react-icons/fa"; // Import icons
 import "./Chatbot.css";
+import axios from "axios"
 
 const Chatbot = ({ onClose }) => {
   const [messages, setMessages] = useState([
@@ -9,31 +10,54 @@ const Chatbot = ({ onClose }) => {
   const [input, setInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const handleSend = () => {
+  // Handles message sending to the server
+  const handleSend = async () => {
+
     if (input.trim()) {
-      setMessages((prev) => [...prev, { sender: "user", text: input }]);
-      const botResponse = handleBotResponse(input.trim().toLowerCase());
-      setTimeout(() => {
-        setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
-      }, 500);
-      setInput(""); // Clear input
+      // Add user's message to the chat
+      setMessages((prev) => [...prev, { sender: 'user', text: input }]);
+
+      // Send POST request to the server
+      try {
+        const response = await axios.post('http://localhost:8000/chat', {
+          prompt: input.trim(),
+        });
+        // Clear the input field
+        setInput('');
+        // Add bot's response to the chat
+        setMessages((prev) => [
+          ...prev,
+          { sender: 'bot', text: response.data.response },
+        ]);
+      } catch (error) {
+        console.error('Error fetching bot response:', error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: "I'm sorry, something went wrong while fetching the response.",
+          },
+        ]);
+      }
+
+
     }
   };
 
-  const handleBotResponse = (command) => {
-    switch (command) {
-      case "hello":
-        return "Hi there! How can I help you today?";
-      case "help":
-        return "Here are some commands you can try: 'hello', 'help', 'pricing', 'contact'.";
-      case "pricing":
-        return "Our pricing starts at $10/month. For details, visit our Pricing page!";
-      case "contact":
-        return "You can contact us at support@codefinity.com.";
-      default:
-        return "I'm sorry, I didn't understand that. Try typing 'help' for available commands.";
-    }
-  };
+  // const handleBotResponse = (command) => {
+  //   switch (command) {
+  //     case "hello":
+  //       return "Hi there! How can I help you today?";
+  //     case "help":
+  //       return "Here are some commands you can try: 'hello', 'help', 'pricing', 'contact'.";
+  //     case "pricing":
+  //       return "Our pricing starts at $10/month. For details, visit our Pricing page!";
+  //     case "contact":
+  //       return "You can contact us at support@codefinity.com.";
+  //     default:
+  //       return "I'm sorry, I didn't understand that. Try typing 'help' for available commands.";
+  //   }
+  // };
 
   const handleFileUpload = (event) => {
     const fileName = event.target.files[0]?.name;
@@ -54,7 +78,7 @@ const Chatbot = ({ onClose }) => {
     <div className="chatbot-overlay">
       <div className="chatbot-container">
         <div className="chat-header">
-        <h1>Just a normal chatbot!</h1>
+          <h1>Smart Security Chatbot</h1>
 
           <FaTimes className="close-button" onClick={onClose} />
         </div>

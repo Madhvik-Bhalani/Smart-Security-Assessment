@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain_groq.chat_models import ChatGroq
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 load_dotenv()
@@ -25,6 +27,16 @@ app = FastAPI(
         "email": "info.codefinity@gmail.com",
     },
 )
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow requests from the frontend
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 
 # Load API keys and model details
 groq_api_key = os.getenv("GROQ_API_KEY")

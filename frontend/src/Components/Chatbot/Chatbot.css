@@ -220,18 +220,16 @@ body {
 
 /* Send Button */
 .chat-input button {
-    background: #9D4EDD;
+    background: none;
     border: none;
     color: white;
     padding: 15px;
-    border-radius: 60%;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    font-size:  25px;
+    padding-left: 0;
+
 }
 
-.chat-input button:hover {
-    background: #0096d1;
-}
 
 /* Emoji Picker */
 .emoji-picker {

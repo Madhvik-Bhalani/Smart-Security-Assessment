@@ -4,6 +4,8 @@ import Signup from "./Components/Signup/Signup";
 import Signin from "./Components/Signin/Signin";
 import Chatbot from "./Components/Chatbot/Chatbot";
 import Home from "./Components/Home/Home";
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false); // Chatbot state
@@ -19,6 +21,7 @@ function App() {
   };
 
   return (
+
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,6 +34,7 @@ function App() {
 
       {/* Render the Chatbot directly if open */}
       {isChatbotOpen && <Chatbot onClose={closeChatbot} />}
+      <ToastContainer limit={3} />
     </BrowserRouter>
   );
 }
