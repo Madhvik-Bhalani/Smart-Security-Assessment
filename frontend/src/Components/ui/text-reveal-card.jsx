@@ -89,7 +89,7 @@ export const TextRevealCard = ({
           <p
             style={{
               textShadow: "4px 4px 15px rgba(0,0,0,0.5)",
-              fontSize: "3rem",
+              fontSize: "2rem",
               lineHeight: "1.2",
             }}
             className="font-bold text-white bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-300"
@@ -112,7 +112,7 @@ export const TextRevealCard = ({
             style={{
               opacity: isMouseOver && widthPercentage > 0 ? 0 : 1,
               transition: "opacity 0.4s ease",
-              fontSize: "3rem",
+              fontSize: "2rem",
               lineHeight: "1.2",
             }}
             className="font-bold bg-clip-text text-transparent bg-[#323238]"

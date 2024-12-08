@@ -2,198 +2,163 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #58539b;
-}
-
-.signin-login-page {
-  display: flex;
-  height: 100vh;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-/* Left Section Styling */
-.signin-left-section {
-  flex: 1;
-  background: #553c8f;
+  background: url('../../assets/pexels-kaplanart-13004149.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: white;
+}
+
+.signin-page {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  text-align: center;
+  height: 100vh;
+  padding: 0 10%;
+}
+
+/* Left Section */
+.left-section {
+  flex: 1;
+  text-align: left;
+  max-width: 500px;
 }
 
 .signin-branding h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1.2;
   margin-bottom: 1rem;
-  word-wrap: break-word;
 }
 
 .signin-branding p {
   font-size: 1.2rem;
-  text-align: center;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 0.5rem;
 }
 
-.signin-testimonial {
-  margin-top: 20px;
-  font-style: italic;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-/* Right Section Styling */
-.signin-right-section {
+/* Right Section */
+.right-section {
   flex: 1;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
+  background: rgba(59, 35, 73, 0.1);
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.signin-form-container {
-  max-width: 400px;
-  width: 100%;
-}
-
-.signin-form-container h2 {
+.form-container h2 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
-  text-align: center;
 }
 
-.signin-form-container input,
-.signin-form-container select {
+/* Input Fields */
+form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 5px;
   font-size: 1rem;
-  box-sizing: border-box;
+  color: white;
 }
 
-.signin-submit-btn {
-  background-color: #bdbdf7;
-  color: black;
+form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+form input:focus {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  outline: none;
+}
+
+/* Password Toggle */
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  padding-right: 40px;
+}
+
+.password-container .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Button Styling */
+.shimmer-btn {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(90deg, #9D4EDD, #5A189A);
+  color: white;
   border: none;
   padding: 12px;
   width: 100%;
   cursor: pointer;
   border-radius: 5px;
   font-size: 1rem;
-  box-sizing: border-box;
-}
-
-.signin-submit-btn:hover {
-  background-color: #553c8f;
-  color: white;
-}
-
-.signin-form-container a {
-  color: #553c8f;
-  text-decoration: underline;
-}
-
-.signin-form-container a:hover {
-  text-decoration: none;
-}
-
-.signin-p {
-  font-size: 0.9rem;
   text-align: center;
-  word-wrap: break-word;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .signin-login-page {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .signin-left-section {
-    padding: 15px;
-  }
-
-  .signin-branding h1 {
-    font-size: 2rem;
-  }
-
-  .signin-branding p,
-  .signin-testimonial {
-    font-size: 1rem;
-  }
-
-  .signin-form-container {
-    max-width: 90%;
-    margin: 0 auto;
-  }
+.shimmer-btn:hover {
+  background: linear-gradient(90deg, #5b3765, #472e55);
 }
 
-@media (max-width: 768px) {
-  .signin-login-page {
-    flex-direction: column;
-  }
+.shimmer-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+  animation: shimmer 4s infinite;
+}
 
-  .signin-left-section,
-  .signin-right-section {
-    width: 100%;
-    padding: 20px;
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
   }
-
-  .signin-branding h1 {
-    font-size: 1.8rem;
-  }
-
-  .signin-branding p {
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-
-  .signin-form-container {
-    max-width: 95%;
-  }
-
-  .signin-form-container input,
-  .signin-form-container select {
-    font-size: 0.9rem;
-    padding: 10px;
-  }
-
-  .signin-submit-btn {
-    font-size: 0.9rem;
-    padding: 10px;
+  100% {
+    transform: translateX(100%);
   }
 }
 
-@media (max-width: 480px) {
-  .signin-branding h1 {
-    font-size: 1.5rem;
-  }
+/* Sign Up Link */
+.form-container p {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
 
-  .signin-branding p {
-    font-size: 0.9rem;
-  }
+.form-container p a {
+  color: #9D4EDD;
+  text-decoration: none;
+  font-weight: bold;
+}
+form input:-webkit-autofill {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  font-size: 1rem !important;
+  -webkit-text-fill-color: white !important; /* Ensures text remains white */
+  box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.2) inset !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
-  .signin-form-container {
-    max-width: 100%;
-    padding: 10px;
-  }
-
-  .signin-form-container input,
-  .signin-form-container select {
-    font-size: 0.8rem;
-    padding: 10px;
-  }
-
-  .signin-submit-btn {
-    font-size: 0.8rem;
-    padding: 10px;
-  }
+form input:-internal-autofill-selected {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
 }
