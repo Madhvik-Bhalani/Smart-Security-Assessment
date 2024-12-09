@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import ReactMarkdown from 'react-markdown';
 import { FaSmile, FaMicrophone, FaPaperclip, FaTimes } from "react-icons/fa"; // Import icons
 import "./Chatbot.css";
 import axios from "axios"
@@ -10,6 +11,15 @@ const Chatbot = ({ onClose }) => {
   const [input, setInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+  // Ref for the messages container
+  const messagesEndRef = useRef(null);
+
+  // Scroll to the bottom whenever messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+
   // Handles message sending to the server
   const handleSend = async () => {
 
@@ -19,11 +29,13 @@ const Chatbot = ({ onClose }) => {
 
       // Send POST request to the server
       try {
+        // Clear the input field
+        setInput('');
+
         const response = await axios.post('http://localhost:8000/chat', {
           prompt: input.trim(),
         });
-        // Clear the input field
-        setInput('');
+
         // Add bot's response to the chat
         setMessages((prev) => [
           ...prev,
@@ -84,14 +96,18 @@ const Chatbot = ({ onClose }) => {
         </div>
         <div className="chat-messages">
           {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`message ${msg.sender === "bot" ? "bot" : "user"}`}
-            >
-              {msg.text}
-            </div>
+            <>
+              {/* Dummy div for scrolling */}
+              <div div ref={messagesEndRef} ></div>
+              <div
+                key={index}
+                className={`message ${msg.sender === "bot" ? "bot" : "user"}`}
+              >
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              </div>
+            </>
           ))}
-        </div>
+        </div >
         <div className="chat-input">
           {showEmojiPicker && (
             <div className="emoji-picker">
