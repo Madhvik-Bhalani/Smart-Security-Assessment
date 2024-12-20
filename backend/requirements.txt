@@ -60,3 +60,4 @@ fastapi
 motor
 passlib[bcrypt]
 pyjwt
+email-validator
