@@ -15,7 +15,7 @@
 ### Running the Application
 
 4. **Run the Application:**
-   - `python app.py`
+   - `python main.py` -> To run backend server & MongoDB
 
 ### Instructions for Updating Code
 
@@ -29,5 +29,5 @@ If you pull new code from the repository, follow these steps to ensure compatibi
    - Run `pip install -r requirements.txt` to ensure all required packages are installed.
 
 3. **Run the Application:**
-   - `python app.py`
+   - `python main.py`
 

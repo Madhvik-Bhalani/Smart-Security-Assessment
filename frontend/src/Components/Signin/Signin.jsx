@@ -10,7 +10,7 @@ import { LuEyeClosed } from "react-icons/lu";
 function SignIn({ onOpenChatbot }) {
   const alert = new Notification(); // Notification instance
 
-  const [data, setData] = useState({ email: "", pass: "" });
+  const [data, setData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   // Handle form submission
@@ -20,7 +20,7 @@ function SignIn({ onOpenChatbot }) {
     const isLoggedin = await signin(data); // Call the API
     if (isLoggedin?.status) {
       alert.notify(isLoggedin?.status, isLoggedin?.message); // Notify success
-      setData({ email: "", pass: "" }); // Reset form fields
+      setData({ email: "", password: "" }); // Reset form fields
       localStorage.setItem("token", isLoggedin?.data); // Save token in localStorage
 
       onOpenChatbot(); // Open the chatbot window
@@ -64,8 +64,8 @@ function SignIn({ onOpenChatbot }) {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 required
-                name="pass"
-                value={data.pass}
+                name="password"
+                value={data.password}
                 onChange={changeHandler}
               />
               <span
