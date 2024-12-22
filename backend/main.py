@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 import os
 import logging
 
+# Routes
 from Routes.user_routes import router as user_router
+from Routes.chat_routes import router as chat_router
 
 # Load environment variables
 load_dotenv()
@@ -70,6 +72,7 @@ app.add_middleware(
 
 # Include user routes
 app.include_router(user_router, prefix="/api/v1/users")
+app.include_router(chat_router, prefix="/api/v1")
 
 
 if __name__ == "__main__":
