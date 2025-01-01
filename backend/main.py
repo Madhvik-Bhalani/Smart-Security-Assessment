@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
 import logging
+import asyncio
 
 # Routes
 from Routes.user_routes import router as user_router
