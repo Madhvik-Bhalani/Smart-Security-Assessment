@@ -7,6 +7,8 @@ from vendors.Web_Safe_Guard import web_safe_guard
 from langchain_core.tools import Tool
 import os
 from fastapi import Request
+import asyncio
+
 
 class ChatController:
     def __init__(self):
@@ -86,57 +88,80 @@ class ChatController:
 
     def assess_url_safety(self, url):
         data = web_safe_guard.get_site_data(url)
+        
         formatted_prompt = f"""
-            You are a cybersecurity expert analyzing a website's security posture.
-            Below is the result of a security scan for a URL. Review the data and generate a *detailed, actionable security report* tailored to the findings:
+            You are a cybersecurity expert tasked with analyzing a website's security posture. Below is the raw data from a security scan for a URL. Process this data and generate a detailed, actionable security report tailored to the findings. Exclude static or generic information and focus on insights derived from the raw data provided.
 
+            Additionally, if the user requests information about a specific section (e.g., TLS details, findings, or recommendations), extract and present only that section from the report.
+
+            ### Raw Data:
             {data}
 
-            *Report Structure*: 
-            1. *URL Information*: 
-            - Include the provided URL, domain, and final resolved URL.
+            ### Report Format:
 
-            2. *TLS Certificate Details*: 
-            - Detail the issuer, expiration date, and authority.
-            - Rate the TLS security (e.g., A, B, C) and explain its meaning.
+            #### 1. Overview
+            - **URL**: Include the provided URL.  
+            - **Domain**: Mention the domain.  
+            - **Final Resolved URL**: Include if present.  
+            - **Server**: Specify the hosting provider or server software if available.
 
-            3. *Security Ratings*: 
-            - List TLS rating, overall security rating, and domain rating.
-            - Include an explanation of the ratings and implications for the user.
+            #### 2. IP and Network Information
+            - List all associated IP addresses and any relevant details about their configuration.
 
-            4. *Scan Summary*: 
-            - Provide a summary of malicious, suspicious, undetected, and harmless findings.
-            - If there are malicious findings, mention *which engines flagged them* and explain their risks.
+            #### 3. TLS Details
+            - **Certificate Issuer**: Include issuer information.  
+            - **Expiration Date**: Mention the expiration date.  
+            - **TLS Rating**: Provide the rating if available (e.g., A, B, etc.).  
+            - **Cipher Suite**: Highlight the cipher suite used.
 
-            5. *Server and IP Information*:
-            - Include server details, hosting provider, and IP addresses.
+            #### 4. Security Ratings
+            - Include the following if available:  
+                - **Overall Rating**: (e.g., B)  
+                - **TLS Security**: Provide the rating and summary of findings.  
+                - **Domain Configuration**: Mention the rating and its implications.  
+                - **General Security**: Highlight any key findings.
 
-            6. *JavaScript Links*:
-            - List both local and external JavaScript files.
-            - Identify any external JS files that may pose risks or require review.
+            #### 5. Findings (Comprehensive)
+            Include **all detected findings** from the scan. Group them logically as:  
+            - **Headers**:  
+                - List missing or misconfigured headers (e.g., X-Content-Type-Options, CSP).  
+                - Highlight uncommon headers detected and their contents.  
+            - **SSL/TLS Details**:  
+                - Include SSL/TLS-specific findings, including cipher information, uncommon configurations, etc.  
+            - **Security Flags**:  
+                - Mention flagged issues such as suspicious or malicious activity, and highlight which tools flagged them (if any).  
+            - **Other Observations**:  
+                - Summarize any miscellaneous findings, such as server-specific details, uncommon configurations, or unique elements from the scan.
+                
+            If any findings were detected and include a **"see: link"** for further details, include it below:  
+            - **Link to findings**: [See the detailed findings here](insert_the_actual_link_from_raw_data)
 
-            7. *Effective Step-by-Step Recommendations*:
-            - *Critical Recommendations* (if applicable):
-                a. *Address Critical Issues: If malicious or suspicious findings exist, provide **steps to identify, fix, and verify* the issues.
-                b. *Improve TLS Security*: Suggest specific fixes if TLS has weaknesses.
-                c. *Validate JavaScript*: Recommend actions only if untrusted or risky JS files are identified.
-                - *Optional Enhancements* (only if weaknesses exist):
-                d. *Implement Security Headers*:
-                - Suggest headers (CSP, X-Frame-Options, X-Content-Type-Options) only if missing.
-                e. *Regular Maintenance*:
-                - Propose vulnerability scans or updates *only if outdated components or threats are detected*.
+            #### 6. JavaScript Resources
+            - **External**: List external JavaScript files with any associated risks.  
+            - **Local**: Mention local JavaScript files found.
 
-            8. *Additional Advanced Insights*:
-            - Suggest further security enhancements *only if justified* based on the data, such as:
-            - Web Application Firewall (WAF) implementation.
-            - HTTPS-only enforcement.
-            - Monitoring suspicious third-party integrations or JavaScript files.
-            - Improving logging, monitoring, or threat detection.
+            #### 7. Recommendations
+            Provide specific and actionable recommendations based on the findings. Categorize them as:  
+            - **Critical Actions**: For resolving urgent issues like malicious findings, misconfigured headers, or missing essential security features.  
+            - **Optional Improvements**: Suggestions for enhancing security, such as:  
+                - Adding a Web Application Firewall (WAF).  
+                - Enforcing HTTPS.  
+                - Regular vulnerability scanning.
 
-            ### Important Instructions:
-            - *Exclude generic or unnecessary suggestions* unless explicitly required based on findings.
-            - If the scan results are clean, focus on maintenance and proactive improvements only.
+            #### 8. Advanced Insights
+            Include any additional insights if justified by the data, such as:  
+                - Enhanced threat detection mechanisms.  
+                - Monitoring third-party integrations.  
+                - Strategies for hardening overall web application security.
+
+            ### Instructions for the LLM:
+            1. Dynamically analyze the raw data provided in the template.  
+            2. Include all findings comprehensively, grouped under logical categories.  
+            3. Include sections only if applicable to the findings.  
+            4. **If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that part of the report.**
+
             """
+
         response = self.llm.invoke(input=formatted_prompt)
         return response.content
 
