@@ -25,7 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup onOpenChatbot={openChatbot}/>} />
         <Route
           path="/signin"
           element={<Signin onOpenChatbot={openChatbot} />}

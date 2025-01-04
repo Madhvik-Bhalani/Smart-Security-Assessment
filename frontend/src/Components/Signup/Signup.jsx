@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { TextRevealCard } from "../ui/text-reveal-card.jsx";
-import { signup } from "./Services/SignupServices.jsx"; // Your API service
-import Notification from "../Common/Notification/Notification.jsx"; // Notification handler
+import { signup } from "./Services/SignupServices.jsx";
+import Notification from "../Common/Notification/Notification.jsx";
 import "./Signup.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
+import usercontext from "../../Context/UserContext.js";
 
-function Signup() {
-  const alert = new Notification(); // Instance for Notification class
-  const navigate = useNavigate(); // Create a navigate function
+function Signup({ onOpenChatbot }) {
+  const alert = new Notification();
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     fname: "",
@@ -18,16 +19,16 @@ function Signup() {
     password: "",
     confirm_password: "",
   });
-  const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confirm password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const usercon = useContext(usercontext)
 
   const subHandler = async (e) => {
     e.preventDefault();
 
-    // Validate Password and Confirm Password
     if (data.password !== data.confirm_password) {
-      alert.notify(false, "Passwords do not match."); // Notify user
+      alert.notify(false, "Passwords do not match.");
       return;
     }
 
@@ -35,12 +36,20 @@ function Signup() {
     const isRegistered = await signup(data); // Call API and pass user's data
 
     if (isRegistered?.status) {
-      alert.notify(isRegistered?.status, isRegistered?.message); // Show notification
-      setData({ fname: "", lname: "", email: "", password: "", confirm_password: "" }); // Reset form fields
-      localStorage.setItem("token", isRegistered?.data); // Save token to local storage
-      navigate("/Signin"); // Redirect to Signin
+      alert.notify(isRegistered?.status, isRegistered?.message);
+      setData({ fname: "", lname: "", email: "", password: "", confirm_password: "" });
+      localStorage.setItem("token", isRegistered?.data);
+
+      const headers = {
+        authorization: localStorage.getItem("token"),
+      };
+
+      usercon.fetchUserData(headers);
+
+      onOpenChatbot()
+      // navigate("/signin")
     } else {
-      alert.notify(isRegistered?.status, isRegistered?.message); // Show error notification
+      alert.notify(isRegistered?.status, isRegistered?.message); 
     }
   };
 
@@ -150,9 +159,9 @@ function Signup() {
             <Link
               to="/Signin"
               style={{
-                color: "#9D4EDD", // Use the specified purple color
-                textDecoration: "none", // Optional: Remove underline
-                fontWeight: "bold", // Optional: Make it bold for emphasis
+                color: "#9D4EDD", 
+                textDecoration: "none", 
+                fontWeight: "bold", 
               }}
             >
               Login Here
