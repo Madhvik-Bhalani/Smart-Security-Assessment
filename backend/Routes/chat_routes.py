@@ -23,7 +23,7 @@ async def chat_with_assistant(user_message: UserPrompt, request: Request):
     - HTTP 500 if an exception occurs.
     """
     try:
-        response = await chat_controller.process_prompt(user_message.prompt, user_message.user_chat_sesion_id)        
+        response = await chat_controller.process_prompt(user_message.prompt, user_message.user_chat_session_id)        
         
         return JSONResponse(
                 status_code=200,

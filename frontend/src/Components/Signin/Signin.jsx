@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
-import { TextRevealCard } from "../ui/text-reveal-card.jsx"; 
+import { Link, useNavigate } from "react-router-dom";
+import { TextRevealCard } from "../ui/text-reveal-card.jsx";
 import "./Signin.css";
 import { signin } from "./Services/SigninServices.jsx";
 import Notification from "../Common/Notification/Notification.jsx";
@@ -8,8 +8,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
 import usercontext from "../../Context/UserContext.js";
 
-function SignIn({ onOpenChatbot }) {
-  const alert = new Notification(); 
+function SignIn() {
+  const alert = new Notification();
+
+  const navigate = useNavigate();
 
   const [data, setData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -32,9 +34,9 @@ function SignIn({ onOpenChatbot }) {
 
       usercon.fetchUserData(headers)  //call api and pass token to fetch user data
 
-      onOpenChatbot(); // Open the chatbot window
+      navigate("/chat")
     } else {
-      alert.notify(isLoggedin?.status, isLoggedin?.message); 
+      alert.notify(isLoggedin?.status, isLoggedin?.message);
     }
   };
 

@@ -8,7 +8,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
 import usercontext from "../../Context/UserContext.js";
 
-function Signup({ onOpenChatbot }) {
+function Signup() {
   const alert = new Notification();
   const navigate = useNavigate();
 
@@ -46,8 +46,7 @@ function Signup({ onOpenChatbot }) {
 
       usercon.fetchUserData(headers);
 
-      onOpenChatbot()
-      // navigate("/signin")
+      navigate("/chat")
     } else {
       alert.notify(isRegistered?.status, isRegistered?.message); 
     }
