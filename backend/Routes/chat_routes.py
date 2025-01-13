@@ -1,38 +1,97 @@
-from fastapi import APIRouter, Depends, Request, HTTPException
-from Models.chat_model import UserPrompt
+from typing import List, Optional
+from fastapi import APIRouter, HTTPException, Request, Depends
+from Models.chat_model import Message, ChatSession
+from pydantic import BaseModel
 from Controllers.chat_controller import ChatController
-from fastapi.responses import JSONResponse
+from Middleware.auth import Auth
 
 router = APIRouter()
-
 chat_controller = ChatController()
 
-@router.post("/chat", tags=["Chats"])
-async def chat_with_assistant(user_message: UserPrompt, request: Request):
-    """
-    Chat API for interacting with the cybersecurity assistant.
 
-    Parameters:
-        - `prompt` (str): User's query.
-        - `user_chat_sesion_id` (str): Unique session ID for maintaining chat history.
+class RenameRequest(BaseModel):
+    new_chat_name: str
 
-    Returns:
-    - JSON: {"response": <Chatbot's reply>}.
 
-    Errors:
-    - HTTP 500 if an exception occurs.
-    """
+@router.post("/chat/{session_id}", tags=["Chat"])
+async def save_message(
+    request: Request,
+    body: Message,
+    user_id: str = Depends(Auth.verify_token),
+    session_id: Optional[str] = None,
+):
     try:
-        response = await chat_controller.process_prompt(user_message.prompt, user_message.user_chat_session_id)        
-        
-        return JSONResponse(
-                status_code=200,
-                content={"status": True, "message": "Chatbot's reply", "data": response},
-            )
-          
+        updated_session = await chat_controller.save_message_or_create_new(
+            session_id=session_id,
+            user_id=user_id,
+            message=body.userPrompt,
+            request=request,
+        )
+        return {"status": "success", "session": updated_session}
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"status": False, "message": "Something Went Wrong!", "data": str(e)},
+        raise HTTPException(status_code=500, detail=f"Error saving message: {str(e)}")
+
+
+@router.post("/newchat", tags=["Chat"])
+async def create_new_chat(
+    request: Request,  
+    user_id: str = Depends(Auth.verify_token)
+):
+    try:
+        new_chat_data = await chat_controller.create_new_session(user_id,request)
+        return new_chat_data
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error creating chat session: {str(e)}"
         )
 
+
+@router.get("/chat/{session_id}", tags=["Chat"])
+async def fetch_chat_messages(
+    session_id: str, request: Request, user_id: str = Depends(Auth.verify_token)
+):
+    try:
+        session_data = await chat_controller.fetch_chat_messages(
+            session_id, user_id, request
+        )
+        return session_data
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error fetching chat messages: {str(e)}"
+        )
+
+
+@router.get("/chat", tags=["Chat"],response_model=[ChatSession])
+async def fetch_chats(request: Request, user_id: str = Depends(Auth.verify_token)):
+    try:
+        sessions = await chat_controller.fetch_sessions(user_id, request)
+        return sessions
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error fetching chat sessions: {str(e)}"
+        )
+
+
+@router.post("/chat/{session_id}/rename", tags=["Chat"])
+async def rename_chat(
+    session_id: str,
+    body: RenameRequest,
+    request: Request,
+    user_id: str = Depends(Auth.verify_token),
+):
+    try:
+        success = await chat_controller.rename_session(
+            session_id, user_id, body.new_chat_name, request
+        )
+        return {
+            "status": "success" if success else "failure",
+            "message": (
+                f"Chat name has been renamed to {body.new_chat_name}"
+                if success
+                else "Failed to rename chat name"
+            ),
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error renaming chat session: {str(e)}"
+        )
