@@ -17,5 +17,5 @@ jobs:
         
         target-url: ${{ secrets.TARGET_URL }}
         
-        target-token: ${{ secrets.TARGET_TOKEN }}
+      
 
