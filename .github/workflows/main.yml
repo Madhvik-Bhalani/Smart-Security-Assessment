@@ -18,7 +18,8 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history to ensure full sync
 
-    - name: Push to GitLab (codefinity-website) Branch
+    # Push all branches and tags to GitLab
+    - name: Push to GitLab
       env:
         GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
       run: |
