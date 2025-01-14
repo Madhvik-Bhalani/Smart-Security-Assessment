@@ -12,3 +12,10 @@ export const SigninUrls = {
     }
 }
 
+
+export const UserUrls = {
+    getUserData: () => {
+        return baseUrl + `/users/fetch-user`;
+    },
+
+}

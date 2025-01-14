@@ -1,6 +1,4 @@
-from fastapi import Request
-from fastapi.responses import JSONResponse
-from typing import Optional
+from fastapi import Request, HTTPException
 import jwt
 import os
 
@@ -11,27 +9,28 @@ TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "your_secret_key")
 class Auth:
     @staticmethod
     async def verify_token(request: Request):
-        token: Optional[str] = (
-            request.headers.get("authorization")
-            or request.query_params.get("token")
-            or (await request.json()).get("token")
-            if request.method in ["POST", "PUT"]
-            else None
+        # Normalize headers to lowercase
+        headers = {key.lower(): value for key, value in request.headers.items()}
+
+        # Normalize query parameters to lowercase
+        query_params = {
+            key.lower(): value for key, value in request.query_params.items()
+        }
+
+        # Look for token in headers or query parameters
+        token = (
+            headers.get("authorization")
+            or headers.get("token")
+            or query_params.get("authorization")
+            or query_params.get("token")
         )
 
         # Check if the token exists
         if not token:
-            return JSONResponse(
+            raise HTTPException(
                 status_code=403,
-                content={
-                    "status": False,
-                    "message": "A token is required for authentication!",
-                },
+                detail="A token is required for authentication!",
             )
-
-        # Remove 'Bearer ' prefix if present
-        if token.startswith("Bearer "):
-            token = token.split(" ")[1]
 
         try:
             # Decode the token
@@ -40,12 +39,12 @@ class Auth:
             request.state.user = decoded
             return decoded
         except jwt.ExpiredSignatureError:
-            return JSONResponse(
+            raise HTTPException(
                 status_code=401,
-                content={"status": False, "message": "Token has expired!"},
+                detail="Token has expired!",
             )
         except jwt.InvalidTokenError as e:
-            return JSONResponse(
+            raise HTTPException(
                 status_code=401,
-                content={"status": False, "message": "Invalid token!", "data": str(e)},
+                detail=f"Invalid token! Error: {str(e)}",
             )
