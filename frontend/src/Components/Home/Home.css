@@ -1,0 +1,420 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+  scroll-behavior: smooth;
+}
+
+.hero-section {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-section video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.upper-navbar {
+  position: fixed; 
+  top: 5;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 10px 20px;
+  z-index: 101;
+  background: transparent;
+  backdrop-filter: none;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.navbar-links.scrolled {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 40px;
+}
+
+.btn-outline-sm.scrolled {
+  background: rgba(0, 0, 0, 0.3); 
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 40px;
+}
+
+.section {
+  padding: 50px;
+  transition: all 0.3s ease;
+}
+
+.active-section {
+  background: rgba(0, 0, 0, 0.3); 
+  backdrop-filter: blur(10px); 
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.active-section h1,
+.active-section p,
+.active-section a {
+  color: #9D4EDD; 
+}
+
+.btn-nav {
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.active-link {
+  color: #9D4EDD; 
+  font-weight: bold;
+  border-bottom: 2px solid #9D4EDD; 
+}
+
+.astra-logo {
+  position: absolute; 
+  left: 20px;
+  top: -20px;
+  width: 250px; 
+  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.8));
+}
+
+.astra-logo:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 15px rgba(157, 78, 221, 1));
+  transition: transform 0.3s, filter 0.3s;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-nav {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 10px;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-nav:hover {
+  color: #9D4EDD;
+}
+
+.active-link {
+  color: #9D4EDD;
+  font-weight: bold;
+  border-bottom: 2px solid #9D4EDD; 
+}
+
+.btn-outline-sm {
+  position: absolute; 
+  right: 20px; 
+  top: 10px;
+  border: 2px solid #9D4EDD;
+  padding: 12px 36px; 
+  border-radius: 40px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  background: transparent; 
+  overflow: hidden; 
+}
+
+.btn-outline-sm:hover {
+  background-color: #9D4EDD;
+  color: white;
+  transform: scale(1.15);
+  box-shadow: 0 8px 15px rgba(157, 78, 221, 0.5);
+}
+
+.btn-outline-sm::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 300%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(157, 78, 221, 0) 20%, rgba(157, 78, 221, 0.5) 50%, rgba(157, 78, 221, 0) 80%);
+  animation: shimmer 1.8s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -150%; 
+  }
+  100% {
+    left: 150%; 
+  }
+}
+
+.text-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.sparkling-container {
+  position: relative;
+  display: inline-block;
+}
+
+.outline-text {
+  -webkit-text-stroke: 5px #9d4edd;
+  color: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10rem;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.sparkling-container .star {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #9D4EDD;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  animation: sparkle 2s infinite ease-in-out, rotate 4s linear infinite;
+  pointer-events: none;
+  opacity: 0;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.text-section h1 span:first-child {
+  font-family: 'Roboto', sans-serif; 
+  letter-spacing: 1px;
+}
+
+.text-section p {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  line-height: 1.8;
+  font-style: italic;
+}
+
+.navbar-links.show {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 100%;
+  height: auto;
+  background: rgba(0, 0, 0, 0.9);
+  text-align: center;
+  padding: 20px 0;
+  gap: 20px;
+  z-index: 100;
+}
+
+.navbar-links a {
+  color: white;
+  padding: 8px 10px;
+  transition: all 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #9D4EDD;
+}
+
+.navbar-links a.active-link {
+  color: #9D4EDD;
+  font-weight: bold;
+  border-bottom: 2px solid #9D4EDD;
+}
+
+/* For extra small screens (max-width: 576px) */
+@media (max-width: 576px) {
+  .upper-navbar {
+    flex-direction: column; /* Stack navbar items vertically */
+    padding: 10px 15px;
+    justify-content: space-between;
+  }
+
+  .navbar-links {
+    flex-direction: column; /* Stack links vertically */
+    gap: 15px;
+    margin-top: 10px; /* Add spacing below logo */
+    text-align: center;
+    display: none;
+  }
+
+
+  .btn-outline-sm {
+    margin-top: 15px; /* Add spacing for button */
+    font-size: 1rem; /* Reduce button size */
+    padding: 8px 24px;
+  }
+
+  .astra-logo {
+    width: 150px; /* Reduce logo size */
+  }
+
+  .text-section h1 {
+    font-size: 2rem; /* Smaller headings */
+  }
+
+  .outline-text {
+    font-size: 3rem; /* Reduce "Astra" size */
+  }
+
+  .text-section p {
+    font-size: 1rem; /* Smaller paragraph text */
+  }
+
+  .btn-outline-sm {
+    font-size: 1rem;
+    padding: 8px 16px;
+  }
+}
+
+/* For small screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .navbar-links {
+    gap: 15px; /* Adjust spacing between links */
+  }
+
+  .btn-outline-sm {
+    font-size: 1.1rem;
+    padding: 10px 20px; /* Slightly smaller button */
+  }
+
+  .astra-logo {
+    width: 180px; /* Adjust logo size */
+  }
+
+  .outline-text {
+    font-size: 5rem;
+  }
+
+  .text-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .text-section p {
+    font-size: 1.2rem;
+  }
+}
+
+/* For medium screens (max-width: 992px) */
+@media (max-width: 992px) {
+   .btn-outline-sm {
+    font-size: 1.2rem;
+    padding: 12px 36px;
+  }
+
+  .astra-logo {
+    width: 220px;
+  }
+
+  .outline-text {
+    font-size: 7rem;
+  }
+
+  .text-section h1 {
+    font-size: 3rem;
+  }
+
+  .text-section p {
+    font-size: 1.3rem;
+  }
+}
+
+/* For large screens (min-width: 1200px) */
+@media (min-width: 1200px) {
+  .upper-navbar {
+    padding: 15px 40px;
+  }
+
+  .navbar-links {
+    gap: 30px;
+  }
+
+  .btn-outline-sm {
+    font-size: 1.4rem;
+    padding: 14px 40px;
+  }
+
+  .astra-logo {
+    width: 250px; /* Default size */
+  }
+
+  .outline-text {
+    font-size: 10rem; /* Default size */
+  }
+
+  .text-section h1 {
+    font-size: 4rem;
+  }
+
+  .text-section p {
+    font-size: 1.5rem;
+  }
+}
+
+
+
+

@@ -1,0 +1,203 @@
+.about-section {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
+  color: white;
+  padding: 60px 20px 100px; 
+  background-color: black;
+  height: 250vh;
+}
+
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-heading {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  text-align: center;
+  position: sticky;
+  top: 0; 
+  color: white; 
+  z-index: 10; 
+  text-transform: uppercase;
+}
+
+.container {
+  display: flex;
+  width: 400vw;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.container section {
+  width: 100vw;
+  height: 80vh;
+  padding: 5vw;
+  flex-shrink: 0;
+  background: transparent; 
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 50px; 
+  margin-top: 20%;
+}
+
+.container .col {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.container section span.date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #9D4EDD; 
+}
+
+.container section h1 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: 0.05em; 
+  margin-bottom: 20px;
+  color: #9D4EDD;
+  font-style: italic;
+}
+
+.container .col p {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: justify;
+  color: white;
+}
+
+.container section p {
+  font-size: 1rem;
+  width: 50vw;
+  line-height: 1.8;
+  margin: 0;
+}
+
+section {
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Responsive Design */
+
+/* Large Screens (1025px and above) */
+@media (min-width: 1025px) {
+  .about-section {
+      padding: 80px 40px 120px; /* Generous padding for larger screens */
+  }
+
+  .about-heading {
+      font-size: 3rem; /* Large heading size for desktops */
+      margin-bottom: 60px; /* Ample space below the heading */
+  }
+
+  .container section {
+      padding: 30px; /* Larger padding for sections */
+      border-radius: 15px; /* Rounded corners for aesthetic */
+  }
+
+  .container section h1 {
+      font-size: 2.5rem; /* Larger title size */
+      margin-bottom: 20px;
+  }
+
+  .container section p {
+      font-size: 1.2rem; /* Larger paragraph font size */
+      line-height: 1.8;
+  }
+}
+
+/* Medium Screens (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .about-section {
+      padding: 60px 30px 100px; /* Adjusted padding for tablets */
+  }
+
+  .about-heading {
+      font-size: 2.5rem; /* Slightly smaller heading */
+      margin-bottom: 50px;
+  }
+
+  .container section {
+      padding: 25px; /* Reduced padding for medium screens */
+      border-radius: 12px;
+  }
+
+  .container section h1 {
+      font-size: 2.2rem; /* Adjusted title size */
+      margin-bottom: 15px;
+  }
+
+  .container section p {
+      font-size: 1rem; /* Paragraph size for tablets */
+      line-height: 1.7;
+  }
+}
+
+/* Small Screens (481px to 600px) */
+@media (max-width: 600px) {
+  .about-section {
+      padding: 50px 20px 80px; /* Compact padding for smaller screens */
+  }
+
+  .about-heading {
+      font-size: 2rem; /* Reduced heading size */
+      margin-bottom: 40px;
+  }
+
+  .container section {
+      padding: 20px; /* Smaller section padding */
+      border-radius: 10px; /* Smaller corners for sections */
+  }
+
+  .container section h1 {
+      font-size: 1.8rem; /* Smaller title size */
+      margin-bottom: 10px;
+  }
+
+  .container section p {
+      font-size: 0.9rem; /* Compact paragraph size */
+      line-height: 1.6;
+  }
+}
+
+/* Extra Small Screens (Up to 480px) */
+@media (max-width: 480px) {
+  .about-section {
+      padding: 40px 10px 70px; /* Reduced padding for mobile devices */
+  }
+
+  .about-heading {
+      font-size: 1.8rem; /* Compact heading size */
+      margin-bottom: 30px;
+  }
+
+  .container section {
+      padding: 15px; /* Minimal padding for small devices */
+      border-radius: 8px; /* Compact corners */
+  }
+
+  .container section h1 {
+      font-size: 1.5rem; /* Smaller title size */
+      margin-bottom: 10px;
+  }
+
+  .container section p {
+      font-size: 0.8rem; /* Smallest readable paragraph size */
+      line-height: 1.5;
+  }
+}
+

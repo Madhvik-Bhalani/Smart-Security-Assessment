@@ -1,0 +1,209 @@
+.usp-section {
+    background-color: #000; 
+    padding: 60px 20px 120px;
+    color: #9D4EDD;
+    text-align: center;
+  }
+  
+  .usp-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .usp-heading {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+  }
+  
+  .usp-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 45px;
+  }
+  
+  .usp-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .usp-icon {
+    font-size: 4rem;
+    color: #9D4EDD;
+    margin-bottom: 20px;
+  }
+  
+  .usp-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+  }
+  
+  .learn-more-btn-usp {
+    border: 2px solid #9D4EDD;
+    padding: 12px 40px;
+    border-radius: 30px;
+    color: white;
+    background-color: transparent;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    transition: all 0.3s ease;
+    margin-top: 70px; 
+  }
+  
+  .learn-more-btn-usp::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(157, 78, 221, 0) 20%, rgba(157, 78, 221, 0.5) 50%, rgba(157, 78, 221, 0) 80%);
+    animation: shimmer 1.8s infinite;
+  }
+  
+  .learn-more-btn-usp:hover {
+    background-color: #9D4EDD
+  }
+  
+  @keyframes shimmer {
+    0% {
+      left: -150%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  /* Responsive Design */
+
+/* Large Screens (1025px and above) */
+@media (min-width: 1025px) {
+    .usp-section {
+        padding: 80px 40px 120px; /* Adjusted padding for larger screens */
+    }
+
+    .usp-heading {
+        font-size: 3rem; /* Increased heading size */
+        margin-bottom: 60px; /* More spacing below heading */
+    }
+
+    .usp-icons-grid {
+        grid-template-columns: repeat(4, 1fr); /* Four columns for desktops */
+        gap: 50px; /* Larger gaps between items */
+    }
+
+    .usp-icon {
+        font-size: 4rem; /* Larger icon size */
+    }
+
+    .usp-title {
+        font-size: 1.4rem; /* Increased title size for readability */
+    }
+
+    .learn-more-btn-usp {
+        padding: 15px 50px; /* Larger button */
+        font-size: 1.4rem;
+    }
+}
+
+/* Medium Screens (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .usp-section {
+        padding: 60px 30px 100px; /* Adjusted padding for tablets */
+    }
+
+    .usp-heading {
+        font-size: 2.5rem; /* Slightly smaller heading */
+        margin-bottom: 50px;
+    }
+
+    .usp-icons-grid {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for tablets */
+        gap: 40px; /* Slightly smaller gaps */
+    }
+
+    .usp-icon {
+        font-size: 3.5rem; /* Smaller icon size for medium screens */
+    }
+
+    .usp-title {
+        font-size: 1.2rem; /* Adjusted title size */
+    }
+
+    .learn-more-btn-usp {
+        padding: 12px 40px; /* Slightly smaller button */
+        font-size: 1.3rem;
+    }
+}
+
+/* Small Screens (481px to 600px) */
+@media (max-width: 600px) {
+    .usp-section {
+        padding: 50px 20px 80px; /* Adjusted padding for small screens */
+    }
+
+    .usp-heading {
+        font-size: 2rem; /* Reduced heading size */
+        margin-bottom: 40px;
+    }
+
+    .usp-icons-grid {
+        grid-template-columns: 1fr; /* Single-column layout for smaller screens */
+        gap: 30px; /* Smaller gaps */
+    }
+
+    .usp-icon {
+        font-size: 3rem; /* Smaller icon size */
+    }
+
+    .usp-title {
+        font-size: 1.1rem; /* Adjusted title size */
+    }
+
+    .learn-more-btn-usp {
+        padding: 10px 30px; /* Smaller button */
+        font-size: 1.2rem;
+    }
+}
+
+/* Extra Small Screens (Up to 480px) */
+@media (max-width: 480px) {
+    .usp-section {
+        padding: 40px 10px 70px; /* Reduced padding for mobile devices */
+    }
+
+    .usp-heading {
+        font-size: 1.8rem; /* Smaller heading for extra small screens */
+        margin-bottom: 30px;
+    }
+
+    .usp-icons-grid {
+        grid-template-columns: 1fr; /* Single-column layout */
+        gap: 20px; /* Tighter gaps for smaller screens */
+    }
+
+    .usp-icon {
+        font-size: 2.8rem; /* Smaller icon size */
+    }
+
+    .usp-title {
+        font-size: 1rem; /* Reduced title size */
+    }
+
+    .learn-more-btn-usp {
+        padding: 8px 20px; /* Compact button */
+        font-size: 1rem;
+    }
+}
+
+  

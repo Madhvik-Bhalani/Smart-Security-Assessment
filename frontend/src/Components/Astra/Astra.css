@@ -1,0 +1,253 @@
+.astra-section {
+    background-color: #f7f3fc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 40px 20px; 
+    height: 80vh;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 50px; 
+    position: relative; 
+    z-index: 2; 
+  }
+  
+  .astra-heading {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #9D4EDD;
+    text-transform: uppercase;
+  }
+
+  .astra-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    gap: 30px;
+    max-width: 1200px;
+    margin-bottom: 20px;
+  }
+
+  .astra-video-wrapper {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    animation: glow 3s infinite ease-in-out;
+  }
+
+  @keyframes glow {
+    0% {
+        box-shadow: 0 0 15px rgba(157, 78, 221, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(157, 78, 221, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(157, 78, 221, 0.5);
+    }
+}
+  
+  .astra-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .astra-text {
+    font-size: 1.3rem;
+    color: black;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto;
+    font-style: italic;
+    text-align: justify;
+    margin-top: 20px;
+  }
+  
+  .talk-btn {
+    margin-top: 30px;
+    padding: 14px 40px;
+    border: 2px solid #9D4EDD;
+    border-radius: 30px;
+    color: #9D4EDD;
+    background-color: transparent;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+  
+  .astra-section h2,
+  .talk-btn {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .talk-btn:hover {
+    background-color: #9D4EDD;
+    color: white;
+    transform: scale(1.1);
+  }  
+  
+  .talk-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(157, 78, 221, 0) 20%, rgba(157, 78, 221, 0.5) 50%, rgba(157, 78, 221, 0) 80%);
+    animation: shimmer 1.8s infinite;
+  }
+  
+ /* Responsive Design */
+
+/* Extra Small Screens (Up to 480px) */
+@media (max-width: 480px) {
+  .astra-section {
+      padding: 30px 10px; /* Compact padding */
+      height: auto; /* Allow auto height for smaller devices */
+  }
+
+  .astra-heading {
+      font-size: 1.8rem; /* Smaller heading size */
+      margin-bottom: 15px; /* Adjust spacing */
+  }
+
+  .astra-content {
+      flex-direction: column; /* Stack elements */
+      gap: 10px;
+  }
+
+  .astra-video-wrapper {
+      width: 180px; /* Smaller video wrapper */
+      height: 180px;
+  }
+
+  .astra-text {
+      font-size: 0.9rem; /* Compact font size */
+      line-height: 1.5; /* Adjust line height */
+      max-width: 90%; /* Limit width for better readability */
+  }
+
+  .talk-btn {
+      padding: 8px 24px; /* Smaller button */
+      font-size: 0.9rem;
+  }
+}
+
+/* Small Screens (481px to 600px) */
+@media (max-width: 600px) and (min-width: 481px) {
+  .astra-section {
+      padding: 40px 20px; /* Slightly larger padding */
+  }
+
+  .astra-heading {
+      font-size: 2rem; /* Slightly larger heading */
+      margin-bottom: 20px;
+  }
+
+  .astra-content {
+      flex-direction: column; /* Stack elements */
+      gap: 10px;
+  }
+
+  .astra-video-wrapper {
+      width: 200px; /* Medium-sized video wrapper */
+      height: 200px;
+  }
+
+  .astra-text {
+      font-size: 1rem; /* Medium font size */
+      line-height: 1.6;
+      max-width: 90%;
+  }
+
+  .talk-btn {
+      padding: 10px 28px; /* Medium-sized button */
+      font-size: 1rem;
+  }
+}
+
+/* Medium Screens (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .astra-section {
+      padding: 60px 30px; /* Increased padding for tablets */
+  }
+
+  .astra-heading {
+      font-size: 2.3rem; /* Slightly larger heading */
+      margin-bottom: 25px;
+  }
+
+  .astra-content {
+      flex-direction: column; /* Stack elements */
+      gap: 15px;
+  }
+
+  .astra-video-wrapper {
+      width: 240px; /* Medium-sized video wrapper */
+      height: 240px;
+  }
+
+  .astra-text {
+      font-size: 1.1rem; /* Medium font size */
+      line-height: 1.7;
+      max-width: 85%;
+  }
+
+  .talk-btn {
+      padding: 12px 32px; /* Medium-sized button */
+      font-size: 1.1rem;
+  }
+}
+
+/* Large Screens (1025px and above) */
+@media (min-width: 1025px) {
+  .astra-section {
+      padding: 80px 40px; /* Generous padding for larger screens */
+      height: 80vh; /* Maintain height for desktop */
+  }
+
+  .astra-heading {
+      font-size: 2.5rem; /* Larger heading */
+      margin-bottom: 30px;
+  }
+
+  .astra-content {
+      flex-direction: row; /* Side-by-side layout */
+      gap: 20px; /* Proper spacing between elements */
+  }
+
+  .astra-video-wrapper {
+      width: 260px; /* Larger video wrapper */
+      height: 260px;
+  }
+
+  .astra-text {
+      font-size: 1.2rem; /* Larger font size */
+      line-height: 1.8; /* Proper spacing for readability */
+      max-width: 600px; /* Limit width */
+  }
+
+  .talk-btn {
+      padding: 12px 36px; /* Larger button */
+      font-size: 1.2rem;
+  }
+}
+
+  

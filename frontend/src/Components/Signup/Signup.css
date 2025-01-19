@@ -13,24 +13,24 @@ body {
   align-items: center;
   height: 100vh;
   padding: 0 10%;
-  gap: 50px; /* Added gap for spacing */
+  gap: 50px; 
 }
 /* Signup Branding Section */
 .signup-branding {
-  text-align: left; /* Align text to the left */
-  margin-bottom: 2rem; /* Add spacing below */
+  text-align: left; 
+  margin-bottom: 2rem; 
 }
 
 .signup-branding h1 {
-  font-size: 3rem; /* Increase font size */
-  font-weight: bold; /* Make it bold */
-  line-height: 1.2; /* Adjust spacing between lines */
+  font-size: 3rem; 
+  font-weight: bold; 
+  line-height: 1.2; 
 }
 
 .signup-branding p {
-  font-size: 1.2rem; /* Set smaller font for the subtitle */
-  color: rgba(255, 255, 255, 0.8); /* Slightly dimmed white */
-  margin-top: 0.5rem; /* Space below the heading */
+  font-size: 1.2rem; 
+  color: rgba(255, 255, 255, 0.8); 
+  margin-top: 0.5rem; 
 }
 
 
@@ -56,23 +56,21 @@ body {
 /* Flex container for CTA (Join us + Button) */
 .branding-cta {
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  align-items: flex-start; /* Center align */
-  gap: 2rem; /* Space between elements */
-  margin-top: 0 rem; /* Add space below TextRevealCard */
-  padding-left: 2rem; /* Move elements slightly to the right */
+  flex-direction: column; 
+  align-items: flex-start; 
+  gap: 2rem; 
+  margin-top: 0 rem; 
+  padding-left: 2rem; 
 }
 
 .branding-subtitle {
-  font-size: 1.2rem; /* Consistent text size */
+  font-size: 1.2rem; 
   color: rgba(255, 255, 255, 0.9);
-  text-align: left; /* Center align text */
+  text-align: left; 
 }
 
 .get-started-btn {
-  /*margin-top: 1rem;*/
-  padding: 12px 24px; /* Adjust button size */
-  /*padding: 10px 20px;*/
+  padding: 12px 24px; 
   background: transparent;
   border: solid rgba(255, 255, 255, 0.9);
   color: white;
@@ -80,14 +78,14 @@ body {
   cursor: pointer;
   transition: background 0.3s ease;
   font-size: 1rem;
-  
-  align-self: flex-start; /* Align button to the left */
+  align-self: flex-start; 
 }
 
 .get-started-btn:hover {
   border: solid rgba(62, 31, 87, 0.9);
   background: #9D4EDD
 }
+
 /* Larger Text in TextRevealCard */
 /*
 .text-reveal-card {
@@ -109,14 +107,14 @@ body {
 /* Right Section */
 .right-section {
   flex: 1;
-  background: rgba(59, 35, 73, 0.1); /* Adjusted transparency */
+  background: rgba(59, 35, 73, 0.1); 
   border-radius: 15px;
   padding: 30px;
   max-width: 500px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Added subtle shadow */
-  backdrop-filter: blur(5px); /* Frosted glass effect */
-  -webkit-backdrop-filter: blur(5px); /* Frosted glass for Safari */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border for transparency */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+  backdrop-filter: blur(5px); 
+  -webkit-backdrop-filter: blur(5px); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
 }
 
 /* Form Container */
@@ -132,30 +130,29 @@ form select {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.2); /* Match the transparent style */
-  backdrop-filter: blur(8px); /* Glass effect */
-  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  background: rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 5px;
   font-size: 1rem;
-  color: white; /* White text */
   cursor: pointer;
-  appearance: none; /* Remove default dropdown arrow */
+  appearance: none; 
   transition: all 0.3s ease;
 }
 form select.dropdown-style {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.2); /* Transparent style */
-  backdrop-filter: blur(8px); /* Glass effect */
-  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  background: rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 5px;
   font-size: 1rem;
-  color: white; /* White text */
+  color: white; 
   cursor: pointer;
-  appearance: none; /* Remove default dropdown arrow */
+  appearance: none; 
   transition: all 0.3s ease;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.7)'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -163,64 +160,64 @@ form select.dropdown-style {
   background-size: 1em;
 }
 form select.dropdown-style option {
-  background: rgba(59, 35, 73, 0.85); /* Match form background */
-  color: white; /* White text */
+  background: rgba(59, 35, 73, 0.85); 
+  color: white; 
   padding: 10px;
 }
 
 /* Hover and Focus Effects for Dropdown */
 form select.dropdown-style:hover,
 form select.dropdown-style:focus {
-  background: rgba(255, 255, 255, 0.3); /* Slightly more opaque */
+  background: rgba(255, 255, 255, 0.3); 
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Autofill Styling for Dropdown */
 form select.dropdown-style:-webkit-autofill {
-  background: rgba(255, 255, 255, 0.2) !important; /* Transparent background */
-  backdrop-filter: blur(8px); /* Frosted glass effect */
-  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  background: rgba(255, 255, 255, 0.2) !important; 
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white !important; /* Ensure text color stays white */
+  color: white !important; 
   transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Placeholder Styling */
 form input::placeholder,
 form select::placeholder {
-  color: rgba(255, 255, 255, 0.7); /* Semi-transparent placeholder */
+  color: rgba(255, 255, 255, 0.7); 
 }
 
 /* Hover and Focus Effects */
 form input:hover,
 form select:hover {
-  background: rgba(255, 255, 255, 0.3); /* Slightly more opaque on hover */
+  background: rgba(255, 255, 255, 0.3); 
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 form input:focus,
 form select:focus {
-  background: rgba(255, 255, 255, 0.4); /* More opaque on focus */
+  background: rgba(255, 255, 255, 0.4); 
   border: 1px solid rgba(255, 255, 255, 0.7);
   outline: none;
 }
 
 /* Dropdown Options Styling */
 form select option {
-  background: rgba(59, 35, 73, 0.85); /* Transparent background for options */
-  color: white; /* White text for options */
+  background: rgba(59, 35, 73, 0.85); 
+  color: white; 
   padding: 10px;
 }
 
 /* Autofill Styling */
 form input:-webkit-autofill,
 form select:-webkit-autofill {
-  background: rgba(255, 255, 255, 0.2) !important; /* Match the transparent style */
-  backdrop-filter: blur(8px); /* Maintain the glass effect */
-  -webkit-backdrop-filter: blur(8px); /* Frosted glass for Safari */
+  background: rgba(255, 255, 255, 0.2) !important; 
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px); 
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white !important; /* Force text color to white */
-  transition: background-color 5000s ease-in-out 0s; /* Prevent autofill flashing */
+  color: white !important; 
+  transition: background-color 5000s ease-in-out 0s; 
 }
 
 /* Autofill Hover/Focus Styling */
@@ -228,7 +225,7 @@ form input:-webkit-autofill:hover,
 form select:-webkit-autofill:hover,
 form input:-webkit-autofill:focus,
 form select:-webkit-autofill:focus {
-  background: rgba(255, 255, 255, 0.3) !important; /* Slightly more opaque */
+  background: rgba(255, 255, 255, 0.3) !important; 
   border: 1px solid rgba(255, 255, 255, 0.5);
   color: white !important;
 }
@@ -240,7 +237,7 @@ form select:-webkit-autofill:focus {
 
 .password-container input {
   width: 100%;
-  padding-right: 2.5rem; /* Space for the eye icon */
+  padding-right: 2.5rem; 
 }
 
 .eye-icon {
@@ -249,8 +246,9 @@ form select:-webkit-autofill:focus {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7); /* Match your field's color scheme */
+  color: rgba(255, 255, 255, 0.7); 
 }
+
 /* Disable browser's default "eye" icon */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear,
@@ -258,20 +256,21 @@ input[type="password"]::-webkit-clear-button,
 input[type="password"]::-webkit-reveal-button {
   display: none;
 }
+
 /* Autofill styles for Chrome, Safari, and Edge */
 input:-webkit-autofill {
-  background-color: rgba(255, 255, 255, 0.2) !important; /* Match the input field background */
-  color: white !important; /* Set text color to white */
-  -webkit-text-fill-color: white !important; /* Ensure text remains white */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional: Match border styles */
-  transition: background-color 5000s ease-in-out 0s; /* Prevent flashing */
+  background-color: rgba(255, 255, 255, 0.2) !important; 
+  color: white !important; 
+  -webkit-text-fill-color: white !important; 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  transition: background-color 5000s ease-in-out 0s; 
 }
 
 /* Autofill styles for Firefox */
 input:-moz-autofill {
-  background-color: rgba(255, 255, 255, 0.2) !important; /* Match the input field background */
-  color: white !important; /* Set text color to white */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional: Match border styles */
+  background-color: rgba(255, 255, 255, 0.2) !important; 
+  color: white !important; 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
 }
 
 
