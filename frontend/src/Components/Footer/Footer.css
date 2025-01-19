@@ -1,0 +1,80 @@
+.footer-section {
+    background-color: black;
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .footer-branding {
+    margin-bottom: 20px;
+  }
+  
+  .footer-logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #9d4edd; /* Purple color matching your theme */
+    margin-bottom: 10px;
+  }
+  
+  .footer-branding p {
+    font-size: 1rem;
+    color: #d1d1d1;
+  }
+  
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .footer-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    color: #9d4edd;
+  }
+  
+  .footer-contact {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  .footer-contact a {
+    color: #9d4edd;
+    text-decoration: none;
+  }
+  
+  .footer-contact a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .social-icon {
+    font-size: 1.5rem;
+    color: white;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    transform: scale(1.2);
+    color: #9d4edd;
+  }
+  
+  .footer-copyright {
+    font-size: 0.8rem;
+    color: #d1d1d1;
+    margin-top: 20px;
+  }
+  
