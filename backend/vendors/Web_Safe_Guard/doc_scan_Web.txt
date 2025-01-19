@@ -1,0 +1,46 @@
+------------------------- (1)
+
+url_1 = "https://sitecheck.sucuri.net/api/v3/?scan=https://team-codefinity.vercel.app/"
+r = requests.get(url = url_1)
+-----------------------------
+
+
+---------------------------- (2)
+38bbe5bf36265421d60509fe2ec2b3cb343eb4f27609fddc9e375a2f8c60fdf1
+
+doc link
+https://docs.virustotal.com/reference/scan-url
+
+import requests
+
+url = "https://www.virustotal.com/api/v3/urls"
+
+payload = { "url": "https://team-codefinity.vercel.app/" }
+headers = {
+    "accept": "application/json",
+    "x-apikey": "38bbe5bf36265421d60509fe2ec2b3cb343eb4f27609fddc9e375a2f8c60fdf1",
+    "content-type": "application/x-www-form-urlencoded"
+}
+
+response = requests.post(url, data=payload, headers=headers)
+
+print(response.text)]
+
+
+
+url = "https://www.virustotal.com/api/v3/analyses/u-cf7263de038b6994cd6faccaa06c82874d04377e31aeb5b877b631505bb3dc9e-1734349495"
+
+headers = {
+    "accept": "application/json",
+    "x-apikey": "38bbe5bf36265421d60509fe2ec2b3cb343eb4f27609fddc9e375a2f8c60fdf1"
+}
+
+response = requests.get(url, headers=headers)
+
+print(response.text)
+---------------------------
+
+
+---------------------------(3)
+https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs-v4.md
+----------------------------

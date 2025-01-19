@@ -1,21 +1,34 @@
 name: GitlabSync
 
 on:
-  - push
-  - delete
+  push:
+    branches:
+      - '*' # Trigger on all branches
 
+  delete:
+    branches:
+      - '*' # Trigger on all branches
+    
 jobs:
   sync:
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-    - uses: wangchucheng/git-repo-sync@v0.1.0
-      with:
-        
-        target-url: ${{ secrets.TARGET_URL }}
-        
-        target-token: ${{ secrets.TARGET_TOKEN }}
+        fetch-depth: 0 # Fetch all history to ensure full sync
+
+    # Push all branches and tags to GitLab
+    - name: Push to GitLab
+      env:
+        GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
+      run: |
+        # Add GitLab as a remote
+        git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
+
+        # Push all branches to GitLab
+        git push gitlab --all
+          
+        # Push all tags to GitLab
+        git push gitlab --tags
 

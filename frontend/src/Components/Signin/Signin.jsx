@@ -1,31 +1,42 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { TextRevealCard } from "../ui/text-reveal-card.jsx"; // Import your TextRevealCard component
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { TextRevealCard } from "../ui/text-reveal-card.jsx";
 import "./Signin.css";
 import { signin } from "./Services/SigninServices.jsx";
 import Notification from "../Common/Notification/Notification.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
+import usercontext from "../../Context/UserContext.js";
 
-function SignIn({ onOpenChatbot }) {
-  const alert = new Notification(); // Notification instance
+function SignIn() {
+  const alert = new Notification();
 
-  const [data, setData] = useState({ email: "", pass: "" });
+  const navigate = useNavigate();
+
+  const [data, setData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+
+  const usercon = useContext(usercontext)
 
   // Handle form submission
   const subHandler = async (e) => {
     e.preventDefault();
 
-    const isLoggedin = await signin(data); // Call the API
+    const isLoggedin = await signin(data);
     if (isLoggedin?.status) {
-      alert.notify(isLoggedin?.status, isLoggedin?.message); // Notify success
-      setData({ email: "", pass: "" }); // Reset form fields
-      localStorage.setItem("token", isLoggedin?.data); // Save token in localStorage
+      alert.notify(isLoggedin?.status, isLoggedin?.message);
+      setData({ email: "", password: "" });
+      localStorage.setItem("token", isLoggedin?.data);
 
-      onOpenChatbot(); // Open the chatbot window
+      const headers = {
+        'authorization': localStorage.getItem("token")
+      }
+
+      usercon.fetchUserData(headers)  //call api and pass token to fetch user data
+
+      navigate("/chat")
     } else {
-      alert.notify(isLoggedin?.status, isLoggedin?.message); // Notify error
+      alert.notify(isLoggedin?.status, isLoggedin?.message);
     }
   };
 
@@ -64,8 +75,8 @@ function SignIn({ onOpenChatbot }) {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 required
-                name="pass"
-                value={data.pass}
+                name="password"
+                value={data.password}
                 onChange={changeHandler}
               />
               <span
