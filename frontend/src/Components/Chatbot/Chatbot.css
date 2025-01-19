@@ -1,281 +1,291 @@
-/* General styling */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-.app-container {
-    position: relative;
-}
-
-/* Navbar Styling */
-.navbar {
+/* General Wrapper */
+.chatbot-wrapper {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: transparent;
-    padding: 15px 20px;
+    height: 100vh;
+    background: #f5f5f5;
+    color: #333;
+  }
+  
+  /* Sidebar Styling */
+  .chatbot-sidebar {
+    width: 300px;
+    background: #9d4edd;
     color: white;
-}
-
-.navbar h1 {
-    font-size: 1.5em;
-    color: #ffffff;
-}
-
-.navbar-links {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
-
-.navbar-links li {
-    cursor: pointer;
-    font-size: 1em;
-    color: #ffffff;
-    transition: color 0.3s ease-in-out;
-}
-
-.navbar-links li:hover {
-    color: #d1c4e9;
-}
-
-
-/* Chatbot Overlay */
-.chatbot-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(10px); 
-    background-color: rgba(255, 255, 255, 0.1);
-    background-image: url('../../assets/pexels-kaplanart-13004149.jpg'); 
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    background-color: rgba(0, 0, 0, 0.5); 
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Chatbot Container */
-.chatbot-container {
-    width: 88%; 
-    height: 88%; 
-    max-width: 990px; 
-    max-height: 770px; 
-    background: rgba(255, 255, 255, 0.075); 
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    z-index: 1000;
-}
-/* Chat Window */
-.chat-window {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    background: #1c1c2a;
-    color: rgb(131, 80, 80);  
-}
-
-.chat-header {
-    background: #67368f;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    font-size: 1.2em;
-    opacity: 0.8;
-}
-
-.chat-header button {
-    background: transparent;
-    border: none;
-    font-size: 1.2em;
-    cursor: pointer;
-    color: white;
-}
-
-/* Chat Messages */
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     padding: 20px;
-    background: whitesmoke; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  /* Astra Logo in Sidebar */
+  .astra-logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .astra-logo img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #9d4edd;
+    object-fit: cover; /* Ensures proper fit */
+    margin-right: 10px; /* Add spacing from the heading */
+    align-self: center; /* Vertically align with the header */
+  }
+  
+  /* Sidebar Menu Items */
+  .chatbot-sidebar h2 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+  }
+  
+  .menu-items li,
+  .chat-history li {
+    margin: 10px 0;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line */
+  }
+  
+  .menu-items li:last-child,
+  .chat-history li:last-child {
+    border-bottom: none; /* Remove line after last item */
+  }
+  
+  .menu-items li:hover,
+  .chat-history li:hover {
+    color: #d1c4e9;
+  }
+  
+  /* Subscription Label */
+  /* Subscription Label */
+.subscription-label {
+    margin-top: auto; /* Keeps it at the bottom of the sidebar */
+    margin-bottom: 5px;
+    font-size: 1rem; /* Adjust font size */
+    color: #ffffff;
+    background: #67368f; /* Slightly darker background for contrast */
+    padding: 15px; /* Adjust padding for consistent height */
+    border-radius: 20px; /* Match the chat input style */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+    text-align: center;
+    display: flex;
+    align-items: center; /* Center the text vertically */
+    justify-content: center; /* Center the text horizontally */
+    height: 70px; /* Match the height of the chat input */
+}
+  
+  /* Header Section */
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #f5f5f5; /* Match main wrapper color */
+    border-bottom: 1px solid #ddd; /* Subtle divider */
+    z-index: 10; /* Keep header above other elements */
+    height: 80px; /* Ensure consistent height */
+}
+  
+  /* Page Heading */
+  .page-heading {
+    font-size: 1.6rem;
+    color: #67368f;
+    font-weight: bold;
+    text-align: center;
     flex: 1;
+    margin: 0 20px;
+    line-height: 1;
+  }
+  
+  /* User Logo */
+  .user-logo img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #9d4edd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+    object-fit: cover;
+    margin-left: 10px; /* Add spacing from the heading */
+    align-self: center; /* Vertically align with the header */
+  }
+  
+  /* Main Content Wrapper */
+  .main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  /* Chat Content */
+  .chatbot-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: #f5f5f5;
+    overflow: hidden;
+  }
+  
+  /* Chat Messages */
+  .chat-messages {
+    flex: 1;
+    padding: 20px;
     overflow-y: auto;
-    border-radius: 10px; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
-}
-
-
-
-/* Bot message */
-.message.bot {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 70%;
-    background: #9d4edd; 
+    background: none;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Bot's Message */
+  .message.bot {
+    background: #9d4edd;
     color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    max-width: 60%;
     align-self: flex-start;
-    text-align: left;
-    word-wrap: break-word;
-}
-
-/* User message */
-.message.user {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 70%;
-    background: #67368f; 
+  }
+  
+  /* User's Message */
+  .message.user {
+    background: #67368f;
     color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    max-width: 60%;
     align-self: flex-end;
-    text-align: left;
-    word-wrap: break-word;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Chat Input */
-.chat-input {
+  }
+  
+  /* Chat Input */
+  .chat-input {
     display: flex;
     align-items: center;
     padding: 15px;
     background: #67368f;
     gap: 10px;
-    opacity: 0.9;
-}
-/* Chat Input Icons */
-.icon-emoji,
-.icon-upload,
-.icon-microphone {
-    font-size: 1.5em;
-    color: #ffffff;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: color 0.3s ease-in-out;
-}
-
-.icon-emoji:hover,
-.icon-upload:hover,
-.icon-microphone:hover {
-    color: #e0e0e0;
-}
-
-
-.chat-input input {
+    border-radius: 10px;
+  }
+  
+  .chat-input input {
     flex: 1;
-    padding: 15px;
+    padding: 10px;
+    border-radius: 20px;
     border: none;
-    border-radius: 30px; 
-    background: white;
-    outline: none; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    font-size: 1em; 
-  color: black;
-}
-
-
-/* File Upload Button */
-.icon-upload {
-    font-size: 1.5em;
-    color: #ffffff;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: color 0.3s ease-in-out;
-}
-
-.icon-upload:hover {
-    color: #e0e0e0;
-}
-
-/* Emoji Picker Button */
-.icon-emoji {
-    font-size: 1.5em;
-    color: #ffffff;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: color 0.3s ease-in-out;
-}
-
-.icon-emoji:hover {
-    color: #e0e0e0;
-}
-
-/* Send Button */
-.chat-input button {
+    outline: none;
+    font-size: 1rem;
+  }
+  
+  .chat-input button {
     background: none;
     border: none;
     color: white;
-    padding: 15px;
+    font-size: 1.5rem;
     cursor: pointer;
-    font-size:  25px;
-    padding-left: 0;
-
-}
-
-
-/* Emoji Picker */
-.emoji-picker {
+  }
+  
+  .icon-emoji,
+  .icon-upload,
+  .icon-microphone {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: white;
+    transition: color 0.3s;
+  }
+  
+  .icon-emoji:hover,
+  .icon-upload:hover,
+  .icon-microphone:hover {
+    color: #e0e0e0;
+  }
+  
+  /* Emoji Picker */
+  .emoji-picker {
     position: absolute;
     bottom: 70px;
-    background: #ffffff;
+    left: 20px;
+    background: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
     border-radius: 10px;
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
-    z-index: 1000;
-}
-
-.emoji-picker span {
-    font-size: 1.5em;
+  }
+  
+  .emoji-picker span {
+    font-size: 1.5rem;
     cursor: pointer;
     padding: 5px;
     border-radius: 5px;
     transition: background-color 0.2s;
-}
-
-.emoji-picker span:hover {
+  }
+  
+  .emoji-picker span:hover {
     background-color: #f5f5f5;
-}
-
-/* Chatbot Avatar */
-.chatbot-avatar {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: transform 0.3s ease-in-out;
-}
-
-.chatbot-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.chatbot-avatar img:hover {
-    transform: scale(1.1);
-}
+  }
+  /* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .chatbot-sidebar {
+      width: 250px;
+    }
+  
+    .page-heading {
+      font-size: 1.4rem;
+    }
+  
+    .chat-input {
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .chatbot-wrapper {
+      flex-direction: column;
+    }
+  
+    .header-section {
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+  
+    .chatbot-sidebar {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .chatbot-content {
+      flex: 1;
+      padding: 10px;
+    }
+  
+    .page-heading {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .page-heading {
+      font-size: 1rem;
+    }
+  
+    .astra-logo img,
+    .user-logo img {
+      width: 50px;
+      height: 50px;
+    }
+  
+    .subscription-label {
+      height: 50px;
+      font-size: 0.8rem;
+    }
+  }

@@ -61,7 +61,7 @@ async def fetch_chat_messages(
         )
 
 
-@router.get("/chat", tags=["Chat"],response_model=[ChatSession])
+@router.get("/chat", tags=["Chat"])
 async def fetch_chats(request: Request, user_id: str = Depends(Auth.verify_token)):
     try:
         sessions = await chat_controller.fetch_sessions(user_id, request)
