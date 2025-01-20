@@ -17,26 +17,26 @@ const pages = [cover, page2, page3, page4, page5, page6, page7, page8, page9];
 const ReportTurn = () => {
   return (
     <div className="report-turn-container">
-        <motion.h2
-              className="report-turn-heading"
-              initial={{ opacity: 0, y: 50 }} // Start hidden and below
-              whileInView={{ opacity: 1, y: 0 }} // Animate to visible
-              viewport={{ once: false, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              Report Overview
-            </motion.h2>
+      <motion.h2
+        className="report-turn-heading"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        Report Overview
+      </motion.h2>
       <div className="report-wrapper">
         {/* Left-hand text */}
         <motion.div
-              className="explore-text"
-              initial={{ opacity: 0, y: 50 }} // Start hidden and below
-              whileInView={{ opacity: 1, y: 0 }} // Animate to visible
-              viewport={{ once: false, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              "Dive into the comprehensive report to discover key insights and valuable details!"
-            </motion.div>
+          className="explore-text"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          "Dive into the comprehensive report to discover key insights and valuable details!"
+        </motion.div>
         {/* Flipbook */}
         <HTMLFlipBook
           width={500}

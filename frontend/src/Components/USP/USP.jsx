@@ -12,16 +12,16 @@ const USP = ({ refUSPs }) => {
     >
       <motion.div
         className="usp-content"
-        initial={{ opacity: 0, y: 50 }} // Start hidden and slightly below
-        whileInView={{ opacity: 1, y: 0 }} // Animate to visible position
-        viewport={{ once: false, amount: 0.3 }} // Trigger animation every time in view
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <motion.h2
           className="usp-heading"
-          initial={{ opacity: 0, y: 50 }} // Start hidden and slightly below
-          whileInView={{ opacity: 1, y: 0 }} // Animate to visible position
-          viewport={{ once: false, amount: 0.3 }} // Trigger animation every time in view
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           Our USPs

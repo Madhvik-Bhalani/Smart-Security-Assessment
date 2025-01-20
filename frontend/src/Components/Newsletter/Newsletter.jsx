@@ -35,9 +35,9 @@ const Newsletter = ({ refNewsletter }) => {
       {/* Heading Animation */}
       <motion.h2
         className="newsletter-heading"
-        initial={{ opacity: 0, y: -50 }} // Start hidden and above
-        whileInView={{ opacity: 1, y: 0 }} // Animate to visible position
-        viewport={{ once: false, amount: 0.3 }} // Animate every time it enters the viewport
+        initial={{ opacity: 0, y: -50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         Newsletter Sneak Peek
@@ -49,13 +49,13 @@ const Newsletter = ({ refNewsletter }) => {
           <motion.div
             key={index}
             className="newsletter-card"
-            initial={{ opacity: 0, y: -50 }} // Start hidden and above
-            whileInView={{ opacity: 1, y: 0 }} // Slide in from the top
-            viewport={{ once: false, amount: 0.3 }} // Animate every time in view
+            initial={{ opacity: 0, y: -50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{
               duration: 0.8,
               ease: "easeOut",
-              delay: index * 0.2, // Add stagger effect for each card
+              delay: index * 0.2,
             }}
           >
             <img

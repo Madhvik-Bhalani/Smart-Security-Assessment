@@ -1,50 +1,50 @@
 .usp-section {
-    background-color: #000; 
+    background-color: #000;
     padding: 60px 20px 120px;
     color: #9D4EDD;
     text-align: center;
-  }
-  
-  .usp-content {
+}
+
+.usp-content {
     max-width: 1200px;
     margin: 0 auto;
-  }
-  
-  .usp-heading {
+}
+
+.usp-heading {
     font-size: 2.5rem;
     font-weight: 800;
     color: white;
     margin-bottom: 50px;
     text-transform: uppercase;
-  }
-  
-  .usp-icons-grid {
+}
+
+.usp-icons-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 45px;
-  }
-  
-  .usp-icon-item {
+}
+
+.usp-icon-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-  
-  .usp-icon {
+}
+
+.usp-icon {
     font-size: 4rem;
     color: #9D4EDD;
     margin-bottom: 20px;
-  }
-  
-  .usp-title {
+}
+
+.usp-title {
     font-size: 1.2rem;
     font-weight: bold;
     color: white;
     text-align: center;
-  }
-  
-  .learn-more-btn-usp {
+}
+
+.learn-more-btn-usp {
     border: 2px solid #9D4EDD;
     padding: 12px 40px;
     border-radius: 30px;
@@ -57,10 +57,10 @@
     overflow: hidden;
     display: inline-block;
     transition: all 0.3s ease;
-    margin-top: 70px; 
-  }
-  
-  .learn-more-btn-usp::before {
+    margin-top: 70px;
+}
+
+.learn-more-btn-usp::before {
     content: "";
     position: absolute;
     top: 0;
@@ -69,49 +69,50 @@
     height: 100%;
     background: linear-gradient(90deg, rgba(157, 78, 221, 0) 20%, rgba(157, 78, 221, 0.5) 50%, rgba(157, 78, 221, 0) 80%);
     animation: shimmer 1.8s infinite;
-  }
-  
-  .learn-more-btn-usp:hover {
-    background-color: #9D4EDD
-  }
-  
-  @keyframes shimmer {
-    0% {
-      left: -150%;
-    }
-    100% {
-      left: 150%;
-    }
-  }
+}
 
-  /* Responsive Design */
+.learn-more-btn-usp:hover {
+    background-color: #9D4EDD
+}
+
+@keyframes shimmer {
+    0% {
+        left: -150%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+/* Responsive Design */
 
 /* Large Screens (1025px and above) */
 @media (min-width: 1025px) {
     .usp-section {
-        padding: 80px 40px 120px; /* Adjusted padding for larger screens */
+        padding: 80px 40px 120px;
     }
 
     .usp-heading {
-        font-size: 3rem; /* Increased heading size */
-        margin-bottom: 60px; /* More spacing below heading */
+        font-size: 3rem;
+        margin-bottom: 60px;
     }
 
     .usp-icons-grid {
-        grid-template-columns: repeat(4, 1fr); /* Four columns for desktops */
-        gap: 50px; /* Larger gaps between items */
+        grid-template-columns: repeat(4, 1fr);
+        gap: 50px;
     }
 
     .usp-icon {
-        font-size: 4rem; /* Larger icon size */
+        font-size: 4rem;
     }
 
     .usp-title {
-        font-size: 1.4rem; /* Increased title size for readability */
+        font-size: 1.4rem;
     }
 
     .learn-more-btn-usp {
-        padding: 15px 50px; /* Larger button */
+        padding: 15px 50px;
         font-size: 1.4rem;
     }
 }
@@ -119,29 +120,29 @@
 /* Medium Screens (601px to 1024px) */
 @media (min-width: 601px) and (max-width: 1024px) {
     .usp-section {
-        padding: 60px 30px 100px; /* Adjusted padding for tablets */
+        padding: 60px 30px 100px;
     }
 
     .usp-heading {
-        font-size: 2.5rem; /* Slightly smaller heading */
+        font-size: 2.5rem;
         margin-bottom: 50px;
     }
 
     .usp-icons-grid {
-        grid-template-columns: repeat(2, 1fr); /* Two columns for tablets */
-        gap: 40px; /* Slightly smaller gaps */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
     }
 
     .usp-icon {
-        font-size: 3.5rem; /* Smaller icon size for medium screens */
+        font-size: 3.5rem;
     }
 
     .usp-title {
-        font-size: 1.2rem; /* Adjusted title size */
+        font-size: 1.2rem;
     }
 
     .learn-more-btn-usp {
-        padding: 12px 40px; /* Slightly smaller button */
+        padding: 12px 40px;
         font-size: 1.3rem;
     }
 }
@@ -149,29 +150,29 @@
 /* Small Screens (481px to 600px) */
 @media (max-width: 600px) {
     .usp-section {
-        padding: 50px 20px 80px; /* Adjusted padding for small screens */
+        padding: 50px 20px 80px;
     }
 
     .usp-heading {
-        font-size: 2rem; /* Reduced heading size */
+        font-size: 2rem;
         margin-bottom: 40px;
     }
 
     .usp-icons-grid {
-        grid-template-columns: 1fr; /* Single-column layout for smaller screens */
-        gap: 30px; /* Smaller gaps */
+        grid-template-columns: 1fr;
+        gap: 30px;
     }
 
     .usp-icon {
-        font-size: 3rem; /* Smaller icon size */
+        font-size: 3rem;
     }
 
     .usp-title {
-        font-size: 1.1rem; /* Adjusted title size */
+        font-size: 1.1rem;
     }
 
     .learn-more-btn-usp {
-        padding: 10px 30px; /* Smaller button */
+        padding: 10px 30px;
         font-size: 1.2rem;
     }
 }
@@ -179,31 +180,29 @@
 /* Extra Small Screens (Up to 480px) */
 @media (max-width: 480px) {
     .usp-section {
-        padding: 40px 10px 70px; /* Reduced padding for mobile devices */
+        padding: 40px 10px 70px;
     }
 
     .usp-heading {
-        font-size: 1.8rem; /* Smaller heading for extra small screens */
+        font-size: 1.8rem;
         margin-bottom: 30px;
     }
 
     .usp-icons-grid {
-        grid-template-columns: 1fr; /* Single-column layout */
-        gap: 20px; /* Tighter gaps for smaller screens */
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     .usp-icon {
-        font-size: 2.8rem; /* Smaller icon size */
+        font-size: 2.8rem;
     }
 
     .usp-title {
-        font-size: 1rem; /* Reduced title size */
+        font-size: 1rem;
     }
 
     .learn-more-btn-usp {
-        padding: 8px 20px; /* Compact button */
+        padding: 8px 20px;
         font-size: 1rem;
     }
 }
-
-  

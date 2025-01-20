@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import { motion } from 'framer-motion';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./AboutUs.css";
-import videoFile from '../../assets/berth.mp4';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -88,10 +87,10 @@ const AboutUs = () => {
 
   return (
     <div className="about-section">
-       <div className="black-background"></div>
+      <div className="black-background"></div>
       <motion.h1 className="about-heading text-purple-400"
-        initial={{ opacity: 0, y: 50 }} 
-        whileInView={{ opacity: 1, y: 0 }} 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}>
         About Us
