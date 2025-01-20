@@ -8,17 +8,17 @@ const Astra = ({ refAstra, videoRef, astraVideo, typedText, handleTalkToAstra })
       className="astra-section"
       id="astra"
       ref={refAstra}
-      initial={{ opacity: 0, y: 50 }} // Start hidden and slightly below
-      whileInView={{ opacity: 1, y: 0 }} // Animate to visible position
-      viewport={{ once: true, amount: 0.5 }} // Trigger animation every time in view
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.5 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
 
       {/* Heading */}
       <motion.h2
         className="astra-heading text-purple-400"
-        initial={{ opacity: 0, y: 50 }} // Start hidden and below
-        whileInView={{ opacity: 1, y: 0 }} // Animate to visible
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
@@ -30,8 +30,8 @@ const Astra = ({ refAstra, videoRef, astraVideo, typedText, handleTalkToAstra })
         {/* Video Wrapper */}
         <motion.div
           className="astra-video-wrapper"
-          initial={{ opacity: 0, y: 50 }} // Slide in from bottom
-          whileInView={{ opacity: 1, y: 0 }} // Animate to position
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
@@ -50,8 +50,8 @@ const Astra = ({ refAstra, videoRef, astraVideo, typedText, handleTalkToAstra })
         {/* Text */}
         <motion.div
           className="astra-text"
-          initial={{ opacity: 0, y: 50 }} // Slide in from bottom
-          whileInView={{ opacity: 1, y: 0 }} // Animate to position
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         >
@@ -63,12 +63,12 @@ const Astra = ({ refAstra, videoRef, astraVideo, typedText, handleTalkToAstra })
       <motion.button
         className="talk-btn"
         onClick={handleTalkToAstra}
-        initial={{ opacity: 0, y: 50 }} // Start hidden and below
-        whileInView={{ opacity: 1, y: 0 }} // Animate to visible
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-        whileHover={{ scale: 1.1 }} // Slightly enlarge on hover
-        whileTap={{ scale: 0.9 }} // Shrink slightly on tap
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         Talk to Astra
       </motion.button>

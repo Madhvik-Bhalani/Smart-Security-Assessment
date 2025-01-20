@@ -32,7 +32,7 @@ function SignIn() {
         'authorization': localStorage.getItem("token")
       }
 
-      usercon.fetchUserData(headers)  //call api and pass token to fetch user data
+      usercon.fetchUserData(headers)
 
       navigate("/chat")
     } else {
@@ -51,8 +51,8 @@ function SignIn() {
       <div className="left-section">
         <div className="signin-branding">
           <TextRevealCard
-            text="Welcome back!" // Text for the animation
-            revealText="Sign in to continue your secure journey." // Subtitle
+            text="Welcome back!"
+            revealText="Sign in to continue your secure journey."
           />
         </div>
       </div>

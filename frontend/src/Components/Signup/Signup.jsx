@@ -48,7 +48,7 @@ function Signup() {
 
       navigate("/chat")
     } else {
-      alert.notify(isRegistered?.status, isRegistered?.message); 
+      alert.notify(isRegistered?.status, isRegistered?.message);
     }
   };
 
@@ -158,9 +158,9 @@ function Signup() {
             <Link
               to="/Signin"
               style={{
-                color: "#9D4EDD", 
-                textDecoration: "none", 
-                fontWeight: "bold", 
+                color: "#9D4EDD",
+                textDecoration: "none",
+                fontWeight: "bold",
               }}
             >
               Login Here
