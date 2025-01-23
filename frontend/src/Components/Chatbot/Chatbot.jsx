@@ -11,6 +11,7 @@ const Chatbot = ({ onClose }) => {
   const [input, setInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [chatHistory, setChatHistory] = useState(["Chat 1", "Chat 2", "Chat 3"]);
+  const [sessionId, setSessionId] = useState(null);
 
   const messagesEndRef = useRef(null);
 
@@ -18,17 +19,41 @@ const Chatbot = ({ onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // useEffect(() => {
+  //   handleHistory()
+  // }, [chatHistory])
   const handleSend = async () => {
     if (input.trim()) {
       setMessages((prev) => [...prev, { sender: "user", text: input }]);
       try {
         setInput("");
-        const response = await axios.post("http://localhost:8000/chat", {
-          prompt: input.trim(),
-        });
+        const token = localStorage.getItem("token");
+        const endpoint = sessionId
+          ? `http://localhost:5000/api/v1/chat/${sessionId}`
+          : `http://localhost:5000/api/v1/chat/first-message`;
+
+        const response = await axios.post(
+          endpoint,
+          {
+            userPrompt: input.trim(),
+          },
+          {
+            headers: {
+              token: `${token}`,
+            },
+          }
+        );
+
+        if (response) {
+          handleHistory()
+        }
+        if (!sessionId) {
+          setSessionId(response.data.session.session_id);
+        }
+
         setMessages((prev) => [
           ...prev,
-          { sender: "bot", text: response.data.response },
+          { sender: "bot", text: response.data.session.response },
         ]);
       } catch (error) {
         console.error("Error fetching bot response:", error);
@@ -58,13 +83,75 @@ const Chatbot = ({ onClose }) => {
     setShowEmojiPicker(false);
   };
 
+  const handleChatHistoryClick = async (session_id) => {
+    try {
+      const token = localStorage.getItem("token");
+      // console.log(session_id)
+
+      const response = await axios.get(
+        `http://localhost:5000/api/v1/chat/${session_id}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      // console.log("response", response.data.message)
+
+      if (response && response.data) {
+        setMessages(
+          response.data.map((msg) => ({
+            sender: msg.sender,
+            text: msg.text,
+          }))
+        );
+      } else {
+        throw new Error("Invalid response format.");
+      }
+    } catch (error) {
+      console.error("Error fetching chat history:", error.message);
+      setMessages([
+        {
+          sender: "bot",
+          text: "Unable to fetch the chat history. Please try again later.",
+        },
+      ]);
+    }
+  };
+
+  const handleHistory = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get("http://localhost:5000/api/v1/chat", {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      if (response && response.data) {
+        setChatHistory(response.data.sessions);
+        // console.log("Chat history", chatHistory)
+        // console.log("Sessions:", response.data.sessions);
+      } else {
+        throw new Error("Invalid response format.");
+      }
+    } catch (error) {
+      console.error("Error fetching history:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    handleHistory();
+  }, []);
+
   return (
     <div className="chatbot-wrapper">
       {/* Sidebar */}
       <div className="chatbot-sidebar">
         <div className="astra-logo">
           <img
-            src="https://via.placeholder.com/60" // Replace with Astra logo URL
+            src="https://via.placeholder.com/60"
             alt="Astra Logo"
           />
         </div>
@@ -78,7 +165,14 @@ const Chatbot = ({ onClose }) => {
         <h2>Chat History</h2>
         <ul className="chat-history">
           {chatHistory.map((chat, index) => (
-            <li key={index}>{chat}</li>
+            // console.log(chat.session_id)
+            <li
+              key={index}
+              onClick={() => handleChatHistoryClick(chat.session_id)}
+              className="chat-history-item"
+            >
+              {chat.chat_name}
+            </li>
           ))}
         </ul>
         <div className="subscription-label">
@@ -93,7 +187,7 @@ const Chatbot = ({ onClose }) => {
           <h1 className="page-heading">Welcome to Astra</h1>
           <div className="user-logo">
             <img
-              src="https://via.placeholder.com/60" // Replace with User logo URL
+              src="https://via.placeholder.com/60"
               alt="User Logo"
             />
           </div>
@@ -115,7 +209,9 @@ const Chatbot = ({ onClose }) => {
           <div className="chat-input">
             {showEmojiPicker && (
               <div className="emoji-picker">
-                {["😀", "😂", "❤️", "👍", "😭", "🎉", "😎", "🙌"].map((emoji) => (
+                {[
+                  "😀", "😂", "❤️", "👍", "😭", "🎉", "😎", "🙌",
+                ].map((emoji) => (
                   <span
                     key={emoji}
                     onClick={() => handleEmojiClick(emoji)}
