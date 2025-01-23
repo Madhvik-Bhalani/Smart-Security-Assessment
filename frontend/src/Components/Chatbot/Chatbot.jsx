@@ -3,6 +3,8 @@ import ReactMarkdown from "react-markdown";
 import { FaSmile, FaMicrophone, FaPaperclip } from "react-icons/fa";
 import "./Chatbot.css";
 import axios from "axios";
+import { Link } from 'react-router-dom'
+
 
 const Chatbot = ({ onClose }) => {
   const [messages, setMessages] = useState([
@@ -185,12 +187,8 @@ const Chatbot = ({ onClose }) => {
         {/* Header */}
         <div className="header-section">
           <h1 className="page-heading">Welcome to Astra</h1>
-          <div className="user-logo">
-            <img
-              src="https://via.placeholder.com/60"
-              alt="User Logo"
-            />
-          </div>
+          <Link to="/profile">{localStorage.getItem("fname")}</Link>
+          
         </div>
 
         {/* Chat Interface */}

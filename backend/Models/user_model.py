@@ -60,3 +60,24 @@ class UserSignin(BaseModel):
     password: str = Field(
         ..., min_length=6, description="Password is required for signing in"
     )
+
+
+class UserChangePassword(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
+    old_password: str = Field(..., min_length=6, description="Your current password")
+    new_password: str = Field(..., min_length=6, description="Your new password")
+
+
+
+class UserEditAccount(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
+    fname: Optional[str] = Field(None, description="Updated first name")
+    lname: Optional[str] = Field(None, description="Updated last name")
+
+
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
+        
+class UserDeleteAccount(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")

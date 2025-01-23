@@ -7,6 +7,9 @@ import Home from "./Components/Home/Home";
 import { ToastContainer } from 'react-toastify';
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import InvalidRoute from "./Components/InvalidRoute/InvalidRoute";
+import User from "./Components/User/User"
+import UserUpdate from "./Components/UserUpdate/UserUpdate"
+import ChangePassword from "./Components/ChangePassword/ChangePassword"
 
 function App() {
 
@@ -16,6 +19,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<User />} />
+        <Route path="/profile/update" element={<UserUpdate />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+
         <Route
           path="/signin"
           element={<Signin />}
