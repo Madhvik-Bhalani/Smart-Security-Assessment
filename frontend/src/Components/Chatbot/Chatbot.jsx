@@ -4,6 +4,7 @@ import { FaSmile, FaMicrophone, FaPaperclip } from "react-icons/fa";
 import "./Chatbot.css";
 import axios from "axios";
 import { Link } from 'react-router-dom'
+import Avatar from "react-avatar";
 
 
 const Chatbot = ({ onClose }) => {
@@ -187,8 +188,10 @@ const Chatbot = ({ onClose }) => {
         {/* Header */}
         <div className="header-section">
           <h1 className="page-heading">Welcome to Astra</h1>
-          <Link to="/profile">{localStorage.getItem("fname")}</Link>
-          
+          <Link to="/profile">
+            <Avatar name={`${localStorage.getItem("fname")} ${localStorage.getItem("lname")}`} size="50" round = {true}/>
+          </Link>
+
         </div>
 
         {/* Chat Interface */}
