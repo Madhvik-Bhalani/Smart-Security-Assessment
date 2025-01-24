@@ -10,6 +10,9 @@ import logo from '../../assets/Astrap_nobg.png';
 import astraAvatar from '../../assets/Astra_nobg.png';
 import userAvatar from '../../assets/woman.png';
 
+import { Link } from 'react-router-dom'
+import Avatar from "react-avatar";
+
 
 const Chatbot = ({ onClose }) => {
   const [messages, setMessages] = useState([
@@ -326,6 +329,14 @@ const Chatbot = ({ onClose }) => {
 
       {/* Main Content */}
       <div className="main-content-wrapper">
+        {/* Header */}
+        <div className="header-section">
+          <h1 className="page-heading">Welcome to Astra</h1>
+          <Link to="/profile">
+            <Avatar name={`${localStorage.getItem("fname")} ${localStorage.getItem("lname")}`} size="50" round = {true}/>
+          </Link>
+
+        </div>
 
         {/* Chat Interface */}
         <div className="chatbot-content">
