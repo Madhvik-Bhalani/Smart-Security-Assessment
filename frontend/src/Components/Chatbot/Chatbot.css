@@ -29,12 +29,12 @@
 }
 
 .chatbot-content .chat-messages::-webkit-scrollbar-thumb {
-  background: #9D4EDD; 
+  /* background: #9D4EDD;  */
   border-radius: 10px;
 }
 
 .chatbot-content .chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #bf77ff; 
+  /* background: #bf77ff;  */
 }
 
 
@@ -149,6 +149,152 @@
   border-radius: 50%; 
   object-fit: cover; 
 }
+
+
+
+/* markdown */
+/* General container for markdown content */
+.markdown-content {
+  background: #ffffff; /* White background for markdown content */
+  border-radius: 10px; /* Rounded corners */
+  padding: 10px;
+  /* margin: 16px 0; */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); Subtle shadow */
+  font-family: 'Arial', sans-serif; /* Clean and modern font */
+  line-height: 1.8; /* Comfortable line spacing */
+  color: #333333; /* Dark gray text for readability */
+}
+
+/* Headings */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: #3b5998; /* Blue color for headings */
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: bold;
+  border-bottom: 2px solid #eeeeee; /* Light underline for separation */
+  padding-bottom: 6px;
+}
+
+.markdown-content h1 {
+  font-size: 24px; /* Larger font for h1 */
+}
+
+.markdown-content h2 {
+  font-size: 20px; /* Medium font for h2 */
+}
+
+.markdown-content h3 {
+  font-size: 18px; /* Smaller font for h3 */
+}
+
+/* Paragraphs */
+.markdown-content p {
+  margin: 12px 0;
+  line-height: 1.6;
+  color: #555555; /* Slightly lighter gray for paragraphs */
+}
+
+/* Lists */
+.markdown-content ul {
+  margin: 12px 0;
+  padding-left: 20px;
+  list-style-type: disc; /* Bullets for unordered lists */
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+/* Code Blocks */
+.markdown-content pre {
+  background: #f4f6f8; /* Light gray for code background */
+  border: 1px solid #dcdcdc; /* Subtle border */
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto; /* Horizontal scrolling for long code */
+  font-family: 'Courier New', monospace; /* Monospace font for code */
+  color: #2c3e50; /* Darker text for code */
+  font-size: 14px;
+}
+
+.markdown-content code {
+  background: #eef3f8; /* Slightly blue-gray for inline code */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace; /* Monospace font for inline code */
+  color: #c0392b; /* Red for inline code text */
+  font-size: 14px;
+}
+
+/* Highlight Boxes */
+.markdown-content blockquote {
+  background: #eaf4ff; /* Light blue background for highlights */
+  border-left: 5px solid #3498db; /* Blue highlight bar */
+  padding: 12px 16px;
+  margin: 16px 0;
+  color: #2c3e50; /* Darker gray for text */
+  font-style: italic;
+}
+
+/* Horizontal Rule */
+.markdown-content hr {
+  border: 0;
+  height: 1px;
+  background: #dddddd; /* Subtle line separator */
+  margin: 20px 0;
+}
+
+/* Links */
+.markdown-content a {
+  color: #2980b9; /* Bright blue links */
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline; /* Underline on hover for accessibility */
+}
+
+/* Section Separators */
+.section-header {
+  color: #2c3e50; /* Darker blue for section headers */
+  font-size: 20px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+/* Tables (if markdown contains tables) */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #dddddd; /* Light border for table cells */
+  padding: 8px;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: #f9f9f9; /* Slightly gray background for header row */
+  font-weight: bold;
+}
+
+/* Emphasis for important text */
+.markdown-content strong {
+  color: black; /* Red for emphasis */
+}
+
+.markdown-content em {
+  color: #2ecc71; /* Green for italic emphasis */
+}
+
+/* markdown ends */
  
 @media (max-width: 480px) {
   .subscription-label {
@@ -172,7 +318,7 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background: black;
+    /* background: black; */
     overflow: hidden;
   }
   
@@ -201,7 +347,8 @@
   
   /* User's Message */
   .message.user {
-    background: #9D4EDD;
+    /* background: #9D4EDD; */
+    background: linear-gradient(180deg, #1e1e1e, #2b2b2b);
     color: white;
     padding: 10px;
     margin-bottom: 10px;
@@ -217,8 +364,10 @@
     display: flex;
     align-items: center;
     padding: 15px;
-    background: #9D4EDD;
+    /* background: #9D4EDD; */
+    background: linear-gradient(180deg, #1e1e1e, #2b2b2b);
     gap: 10px;
+    
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
@@ -242,7 +391,9 @@
   
   .icon-emoji,
   .icon-upload,
-  .icon-microphone {
+  .icon-microphone,
+  .fa-solid {
+    
     font-size: 1.2rem;
     cursor: pointer;
     color: white;
@@ -251,7 +402,9 @@
   
   .icon-emoji:hover,
   .icon-upload:hover,
+  .icon-microphone:hover,
   .icon-microphone:hover {
+    
     color: #e0e0e0;
   }
   

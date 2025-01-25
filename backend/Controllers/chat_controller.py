@@ -32,22 +32,6 @@ class ChatController:
             stop_sequences=None,
         )
 
-        # Define tools
-        # self.tools = [
-        #     Tool(
-        #         name="web_safe_guard",
-        #         func=self.assess_url_safety,
-        #         description="Use this tool ONLY to analyze URLs for security vulnerabilities, TLS certificate details, JavaScript links, and provide security recommendations.",
-        #         return_direct=True,
-        #     ),
-        #     Tool(
-        #         name="cybersecurity_query_handler",
-        #         func=self.handle_cybersecurity_query,
-        #         description="Use this tool ONLY to answer general cybersecurity-related questions.",
-        #         return_direct=True,
-        #     ),
-        # ]
-
         self.tools = [
             Tool(
                 name="web_safe_guard",
@@ -86,7 +70,6 @@ class ChatController:
         2. *cybersecurity_query_handler*: Use this tool to answer general cybersecurity-related questions, provide clarifications about previous analyses, or expand on findings from the *web_safe_guard* tool.
 
         **Guidelines:**
-        - If a user asks for a URL analysis and does not provide a URL, politely ask for the website URL first before proceeding.
         - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
         - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
         - Always provide clear, actionable insights and recommendations based on the data or context provided by the user.
@@ -253,188 +236,91 @@ class ChatController:
         try:
             data = web_safe_guard.get_site_data(url)
 
-        # formatted_prompt = f"""
-        #     You are a cybersecurity expert tasked with analyzing a website's security posture. Below is the raw data from a security scan for a URL. Process this data and generate a detailed, actionable security report tailored to the findings. Exclude static or generic information and focus on insights derived from the raw data provided.
-
-        #     Additionally, if the user requests information about a specific section (e.g., TLS details, findings, or recommendations), extract and present only that section from the report.
-
-        #     ### Raw Data:
-        #     {data}
-
-        #     ### Report Format:
-
-        #     #### 1. Overview
-        #     - **URL**: Include the provided URL.
-        #     - **Domain**: Mention the domain.
-        #     - **Final Resolved URL**: Include if present.
-        #     - **Server**: Specify the hosting provider or server software if available.
-
-        #     #### 2. IP and Network Information
-        #     - List all associated IP addresses and any relevant details about their configuration.
-
-        #     #### 3. TLS Details
-        #     - **Certificate Issuer**: Include issuer information.
-        #     - **Expiration Date**: Mention the expiration date.
-        #     - **TLS Rating**: Provide the rating if available (e.g., A, B, etc.).
-        #     - **Cipher Suite**: Highlight the cipher suite used.
-
-        #     #### 4. Security Ratings
-        #     - Include the following if available:
-        #         - **Overall Rating**: (e.g., B)
-        #         - **TLS Security**: Provide the rating and summary of findings.
-        #         - **Domain Configuration**: Mention the rating and its implications.
-        #         - **General Security**: Highlight any key findings.
-
-        #     #### 5. Findings (Comprehensive)
-        #     Include **all detected findings** from the scan. Group them logically as:
-        #     - **Headers**:
-        #         - List missing or misconfigured headers (e.g., X-Content-Type-Options, CSP).
-        #         - Highlight uncommon headers detected and their contents.
-        #     - **SSL/TLS Details**:
-        #         - Include SSL/TLS-specific findings, including cipher information, uncommon configurations, etc.
-        #     - **Security Flags**:
-        #         - Mention flagged issues such as suspicious or malicious activity, and highlight which tools flagged them (if any).
-        #     - **Other Observations**:
-        #         - Summarize any miscellaneous findings, such as server-specific details, uncommon configurations, or unique elements from the scan.
-
-        #     If any findings were detected and include a **"see: link"** for further details, include it below:
-        #     - **Link to findings**: [See the detailed findings here](insert_the_actual_link_from_raw_data)
-
-        #     #### 6. JavaScript Resources
-        #     - **External**: List external JavaScript files with any associated risks.
-        #     - **Local**: Mention local JavaScript files found.
-
-        #     #### 7. Recommendations
-        #     Provide specific and actionable recommendations based on the findings. Categorize them as:
-        #     - **Critical Actions**: For resolving urgent issues like malicious findings, misconfigured headers, or missing essential security features.
-        #     - **Optional Improvements**: Suggestions for enhancing security, such as:
-        #         - Adding a Web Application Firewall (WAF).
-        #         - Enforcing HTTPS.
-        #         - Regular vulnerability scanning.
-
-        #     #### 8. Advanced Insights
-        #     Include any additional insights if justified by the data, such as:
-        #         - Enhanced threat detection mechanisms.
-        #         - Monitoring third-party integrations.
-        #         - Strategies for hardening overall web application security.
-
-        #     ### Instructions for the LLM:
-        #     1. Dynamically analyze the raw data provided in the template.
-        #     2. Include all findings comprehensively, grouped under logical categories.
-        #     3. Include sections only if applicable to the findings.
-        #     4. **If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that part of the report.**
-
-        #     """
-
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
-            If necessary information (like the URL) is not provided, **ask the user for the missing details** before proceeding with the analysis.
+      
+        
+        ### **Guidelines for Report Generation:**
+        1. Analyze the raw data comprehensively and derive insights specific to the findings.
+        2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
+        3. If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that section of the report.
+        4. Present detailed context for each issue, including potential risks and the impact on the website's security posture.
+        5. Ensure the report is **logical, well-structured, and fully explained**, catering to both technical and non-technical audiences.
+        6. Include GDPR compliance checks and note any violations or risks detected.
+        7. Identify the technology stack (e.g., frameworks, servers, libraries) and include relevant CVE references in hyperlinks.
+        
+        ### **Report Format** (Include sections dynamically based on the findings):
+        
+        #### 1. Overview
+        - **URL**: Include the provided URL or ask the user for it if not included.
+        - **Domain**: Mention the domain associated with the target.
+        - **Server/Hosting Info**: Provide details about the server or hosting platform.
+        
+        #### 2. IP and Network Information
+        - List all IP addresses associated with the target.
+        - Provide relevant details about their configuration, such as geolocation or any notable configurations.
+        
+        #### 3. SSL/TLS Details (If Detected)
+        - **Certificate Issuer**: Include details about the issuer.
+        - **Expiration Date**: Mention when the certificate expires.
+        - **Cipher Suite**: Highlight the cipher suite in use and its implications.
+        - **Potential Weaknesses**: Explain if there are vulnerabilities or misconfigurations in the SSL/TLS setup.
+        
+        #### 4. Security Headers and Configuration
+        - Identify missing or misconfigured security headers (e.g., Content-Security-Policy, X-Content-Type-Options, etc.).
+        - Explain the purpose of each missing header and the risks associated with its absence.
+        - Highlight uncommon or suspicious headers detected during the scan.
+        
+        #### 5. Findings and Vulnerabilities (Comprehensive)
+        Group and explain all findings logically:
+        - **Critical Vulnerabilities**: High-risk issues that require immediate attention (e.g., exposed credentials, malicious scripts, or serious misconfigurations).
+        - **Warnings**: Medium-risk issues that need to be addressed but are not urgent.
+        - **Informational Findings**: Observations that could help improve security posture but are not considered vulnerabilities.
+        
+        Include relevant links for further reference (e.g., "see: link") if the scan data provides them.
+        
+        #### 6. JavaScript and External Resources
+        - **External JavaScript Files**: Highlight external JavaScript files and assess their risk (e.g., outdated libraries, suspicious external sources).
+        - **Local JavaScript Files**: List local JavaScript files and flag any unusual behavior or configuration.
+        
+        #### 7. Recommendations
+        Provide **specific, actionable recommendations** for each finding:
+        - **Critical Actions**: Steps to resolve urgent vulnerabilities or address high-risk issues.
+        - **Best Practices**: Suggestions for improving the website's overall security posture, such as implementing modern security headers, regular vulnerability scanning, or adding a Web Application Firewall (WAF).
+        
+        #### 8. Advanced Insights and Recommendations
+        Include advanced analysis or suggestions, such as:
+        - Potential threats from third-party integrations or dependencies.
+        - Recommendations for monitoring and incident response.
+        - Strategies for implementing proactive defenses (e.g., threat intelligence, enhanced logging).
+        
+        ---
+        
+        
+       ### **Instructions for the Assistant**:
+       1. Process the raw data dynamically and include sections based on the findings.
+       2. Highlight GDPR compliance details and any technology stack vulnerabilities with CVE references.
+       3. Deliver a clear, actionable, and professional report tailored to the findings.
+               
+        ### **Raw Data Provided**:
+        {data}
 
-            ### **Guidelines for Report Generation:**
-            1. Analyze the raw data comprehensively and derive insights specific to the findings.
-            2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
-            3. If GDPR compliance is relevant, determine whether the website meets GDPR standards and include detailed findings.
-            4. Provide details of the technology stack used by the website (e.g., frameworks, servers, libraries) and reference relevant CVEs where vulnerabilities are detected. Include hyperlinks to the CVE details.
-            5. If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that section of the report.
-            6. Present detailed context for each issue, including potential risks and the impact on the website's security posture.
-            7. Ensure the report is **logical, well-structured, and fully explained**, catering to both technical and non-technical audiences.
+        """
 
-            ### **Report Format** (Include sections dynamically based on the findings):
-
-            #### 1. Overview
-            - **URL**: Include the provided URL or ask the user for it if not included.
-            - **Domain**: Mention the domain associated with the target.
-            - **Server/Hosting Info**: Provide details about the server or hosting platform.
-            - **Scanned Components**: Clearly list what was scanned (e.g., JavaScript files, SSL/TLS configurations, headers, etc.).
-
-            #### 2. IP and Network Information
-            - List all IP addresses associated with the target.
-            - Provide relevant details about their configuration, such as geolocation, service providers, or any notable configurations.
-            - Include any additional insights related to DNS, routing, or network exposure.
-
-            #### 3. SSL/TLS Details (If Detected)
-            - **Certificate Issuer**: Include details about the issuer.
-            - **Expiration Date**: Mention when the certificate expires.
-            - **Cipher Suite**: Highlight the cipher suite in use and its implications.
-            - **Scanned Details**: Mention specific aspects of the SSL/TLS configuration that were analyzed (e.g., protocol versions, supported ciphers, key exchange mechanisms).
-            - **Potential Weaknesses**: Explain if there are vulnerabilities or misconfigurations in the SSL/TLS setup, along with their impact.
-
-            #### 4. GDPR Compliance
-            - Check whether the website aligns with GDPR standards, focusing on areas such as:
-              - Presence of a privacy policy.
-              - Proper cookie consent mechanisms.
-              - Secure handling of user data (e.g., encryption in transit and at rest).
-              - Compliance with data retention and user rights (e.g., right to access, right to delete).
-            - Highlight any non-compliance issues and their potential legal or operational risks.
-
-            #### 5. Security Headers and Configuration
-            - Identify missing or misconfigured security headers (e.g., Content-Security-Policy, X-Content-Type-Options, etc.).
-            - Explain the purpose of each missing header and the risks associated with its absence.
-            - Highlight any uncommon or suspicious headers detected during the scan.
-            - **Scanned Headers**: Explicitly list all headers that were analyzed and their configuration details.
-
-            #### 6. Technology Stack and Associated CVEs
-            - **Tech Stack Details**: List the technologies, libraries, and frameworks detected (e.g., Node.js, React, Apache, etc.).
-            - **Vulnerabilities**:
-              - For each detected technology, check for known vulnerabilities (CVE data).
-              - Include a brief description of each CVE along with a hyperlink to the CVE database (e.g., NVD or Mitre).
-              - Example: [CVE-2022-12345](https://nvd.nist.gov/vuln/detail/CVE-2022-12345)
-            - Highlight any outdated or vulnerable components and recommend updates or patches.
-
-            #### 7. Findings and Vulnerabilities (Comprehensive)
-            Group and explain all findings logically:
-            - **Critical Vulnerabilities**: High-risk issues that require immediate attention (e.g., exposed credentials, malicious scripts, or serious misconfigurations).
-            - **Warnings**: Medium-risk issues that need to be addressed but are not urgent.
-            - **Informational Findings**: Observations that could help improve security posture but are not considered vulnerabilities.
-            - **Scanned Components**: Clearly state what was analyzed and detected in this section (e.g., scripts, configurations, directories, files).
-
-            Include relevant links for further reference (e.g., "see: link") if the scan data provides them.
-
-            #### 8. JavaScript and External Resources
-            - **External JavaScript Files**: List all external JavaScript files analyzed and assess their risk (e.g., outdated libraries, suspicious external sources).
-            - **Local JavaScript Files**: Provide details of all local JavaScript files detected and flag any unusual behavior or configuration.
-            - **Scanned Files**: Explicitly mention which files were analyzed in this section and include additional details, such as their paths or contents if available.
-
-            #### 9. Recommendations
-            Provide **specific, actionable recommendations** for each finding:
-            - **Critical Actions**: Steps to resolve urgent vulnerabilities or address high-risk issues.
-            - **Best Practices**: Suggestions for improving the website's overall security posture, such as implementing modern security headers, regular vulnerability scanning, or adding a Web Application Firewall (WAF).
-
-            #### 10. Advanced Insights and Recommendations
-            Include advanced analysis or suggestions, such as:
-            - Potential threats from third-party integrations or dependencies.
-            - Recommendations for monitoring and incident response.
-            - Strategies for implementing proactive defenses (e.g., threat intelligence, enhanced logging).
-
-            ---
-
-            ### **Instructions for the Assistant:**
-            1. Process the raw data thoroughly and dynamically include sections based on the findings.
-            2. Explicitly mention all components, files, or configurations that were scanned and provide details where applicable.
-            3. Provide GDPR compliance insights and analyze whether the website adheres to regulations.
-            4. Cross-reference the detected technologies against known CVEs, including relevant hyperlinks.
-            5. Deliver a clear, professional, and actionable report that aligns with the user’s needs.
-            6. If information is missing (e.g., the URL), ask the user for it before generating the report.
-
-            ### **Raw Data Provided**:
-            {data}
-
-            """
-            
             response = self.llm.invoke(input=formatted_prompt)
             return response.content
-        
+
         except RateLimitError as e:
             error_data = e.response.json()  # Parse the error for additional details
-            wait_time = error_data.get('error', {}).get('reset_in', 420)  # Default to 7 minutes if not provided
+            wait_time = error_data.get("error", {}).get(
+                "reset_in", 420
+            )  # Default to 7 minutes if not provided
             print(f"Rate limit exceeded. Waiting for {wait_time} seconds...")
             time.sleep(wait_time)  # Wait for the cooldown period
             return self.assess_url_safety(formatted_prompt)
         except Exception as ex:
             print(f"Unexpected error: {ex}")
             raise
-
-      
 
     # Responsible for General Q&A
     def handle_cybersecurity_query(self, query):

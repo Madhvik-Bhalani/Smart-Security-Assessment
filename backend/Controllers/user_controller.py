@@ -171,32 +171,6 @@ async def change_password(user: UserChangePassword, request: Request):
 
 
 
-    # Find user by email
-    existing_user = await users_collection.find_one({"email": user.email})
-    if not existing_user or not existing_user.get("active", True):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Account does not exist."},
-        )
-
-    # Verify password
-    if not verify_password(user.password, existing_user["password"]):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Your details do not match!"},
-        )
-
-    # Soft delete account
-    await users_collection.update_one(
-        {"email": user.email},
-        {"$set": {"active": False, "updated_at": datetime.now(timezone.utc)}}
-    )
-    return JSONResponse(
-        status_code=200,
-        content={"status": True, "message": "Account deleted successfully!"},
-    )
-
-# Edit Account
 async def edit_account(user: UserEditAccount, request: Request):
     users_collection = request.app.mongodb["users"]
 
@@ -209,11 +183,17 @@ async def edit_account(user: UserEditAccount, request: Request):
         )
 
     # Update user details
-    update_fields = {"updated_at": datetime.now(timezone.utc)}
+    update_fields = {}
     if user.fname:
         update_fields["fname"] = user.fname
+        update_fields["updated_at"] = datetime.now(timezone.utc)
+
     if user.lname:
         update_fields["lname"] = user.lname
+        update_fields["updated_at"] = datetime.now(timezone.utc)
+
+        
+        
     await users_collection.update_one(
         {"email": user.email},
         {"$set": update_fields}
@@ -223,34 +203,7 @@ async def edit_account(user: UserEditAccount, request: Request):
         content={"status": True, "message": "Account updated successfully!"},
     )
 
-# Log Out
-async def logout(user: UserSignin, request: Request):
-    users_collection = request.app.mongodb["users"]
 
-    # Find user by email
-    existing_user = await users_collection.find_one({"email": user.email})
-    if not existing_user or not existing_user.get("active", True):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Account does not exist."},
-        )
-
-    # Verify password
-    if not verify_password(user.password, existing_user["password"]):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Your details do not match!"},
-        )
-
-    # Invalidate token
-    await users_collection.update_one(
-        {"email": user.email},
-        {"$unset": {"token": ""}, "$set": {"updated_at": datetime.now(timezone.utc)}}
-    )
-    return JSONResponse(
-        status_code=200,
-        content={"status": True, "message": "Logged out successfully!"},
-)
 
 
 async def delete_account(user: UserDeleteAccount, request: Request):

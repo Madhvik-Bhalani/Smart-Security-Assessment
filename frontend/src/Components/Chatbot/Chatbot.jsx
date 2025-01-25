@@ -4,12 +4,10 @@ import { FaSmile, FaMicrophone, FaPaperclip } from "react-icons/fa";
 import "./Chatbot.css";
 import axios from "axios";
 import jsPDF from "jspdf";
-import { chunk } from "lodash";
-import dayjs from "dayjs";
 import logo from '../../assets/Astrap_nobg.png';
 import astraAvatar from '../../assets/Astra_nobg.png';
 import userAvatar from '../../assets/woman.png';
-
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { Link } from 'react-router-dom'
 import Avatar from "react-avatar";
 
@@ -29,6 +27,56 @@ const Chatbot = ({ onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+
+  // speech to text functionality
+  const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+  const [listening, setListening] = useState(false);
+
+
+  useEffect(() => {
+    const checkMicrophonePermission = async () => {
+      if (!browserSupportsSpeechRecognition) {
+        alert("Your browser doesn't support speech recognition. Please try using a different browser.");
+      } else if (!SpeechRecognition.isMicrophoneAvailable) {
+        try {
+          // Request microphone access
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+          // alert("Microphone access granted. You can now use speech recognition.");
+        } catch (error) {
+          alert("Microphone access is required. Please enable it in your browser settings.");
+        }
+      }
+    };
+
+    checkMicrophonePermission();
+  }, []);
+
+
+
+
+
+  // Use effect to update input with the transcript
+  useEffect(() => {
+    setInput(transcript);
+    console.log(transcript);
+
+  }, [transcript]);
+
+
+  const handleToggleListening = () => {
+    if (listening) {
+      // Stop listening
+      setListening(false);
+      SpeechRecognition.stopListening();
+    } else {
+      // Start listening
+      setListening(true);
+      SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
+    }
+  };
+
+
+
   // Generate PDF with Lodash for chunking and Day.js for timestamp
   const generatePDFReport = (responseText) => {
     return new Promise((resolve, reject) => {
@@ -40,7 +88,7 @@ const Chatbot = ({ onClose }) => {
         const lineHeight = 7;
         let cursorY = 40;
         let pageNumber = 1;
-  
+
         // Convert the imported logo to a data URL
         const img = new Image();
         img.src = logo;
@@ -51,17 +99,17 @@ const Chatbot = ({ onClose }) => {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
           const logoDataUrl = canvas.toDataURL('image/png');
-  
+
           const addHeader = () => {
-            doc.setFillColor(0,0,0 );
+            doc.setFillColor(0, 0, 0);
             doc.rect(0, 0, doc.internal.pageSize.getWidth(), 25, "F");
-            
-            const logoX = -2; 
-            const logoY = -4; 
-            const logoWidth = 50; 
+
+            const logoX = -2;
+            const logoY = -4;
+            const logoWidth = 50;
             const logoHeight = 50;
             doc.addImage(logoDataUrl, 'PNG', logoX, logoY, logoWidth, logoHeight);
-  
+
             // Center aligned heading
             doc.setFont("helvetica", "bold");
             doc.setFontSize(16);
@@ -70,7 +118,7 @@ const Chatbot = ({ onClose }) => {
             const headingWidth = doc.getStringUnitWidth(headingText) * 16 / doc.internal.scaleFactor;
             const headingX = (pageWidth - headingWidth) / 2 + margin;
             doc.text(headingText, headingX, 12);
-  
+
             // Center aligned timestamp
             doc.setFontSize(10);
             const timestampText = `Generated on: ${new Date().toLocaleString()}`;
@@ -78,18 +126,18 @@ const Chatbot = ({ onClose }) => {
             const timestampX = (pageWidth - timestampWidth) / 2 + margin;
             doc.text(timestampText, timestampX, 23);
           };
-  
+
           const addPageNumber = () => {
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
             doc.text(`Page ${pageNumber}`, doc.internal.pageSize.getWidth() - 25, pageHeight - 10);
           };
-  
+
           const addContent = (text) => {
             doc.setFontSize(12);
             doc.setTextColor(0, 0, 0);
             const splitText = doc.splitTextToSize(text, pageWidth);
-  
+
             splitText.forEach((line) => {
               if (cursorY > pageHeight - 20) {
                 console.log(`Adding new page. Current page: ${pageNumber}`);
@@ -106,33 +154,33 @@ const Chatbot = ({ onClose }) => {
               cursorY += lineHeight;
             });
           };
-  
+
           // First page
           addHeader();
           addContent(responseText);
           addPageNumber();
-  
+
           // Generate PDF as base64 string
           const pdfBase64 = doc.output('datauristring');
           resolve(pdfBase64);
         };
-  
+
         img.onerror = (error) => {
           reject(new Error('Failed to load logo image'));
         };
-  
+
       } catch (error) {
         reject(error);
       }
     });
   };
-  
-  
+
+
   // Function to trigger PDF generation and download
   const generateAndDownloadPDF = async (responseText) => {
     try {
       const pdfBase64 = await generatePDFReport(responseText);
-      
+
       // Create a link element and trigger download
       const link = document.createElement('a');
       link.href = pdfBase64;
@@ -142,14 +190,14 @@ const Chatbot = ({ onClose }) => {
       console.error("Error generating PDF:", error);
     }
   };
-  
+
   // Usage
   const checkKeywordsAndGeneratePDF = (responseText) => {
     const keywords = ["URL", "Domain", "Server"];
     const matchedKeywords = keywords.filter((keyword) =>
       responseText.toLowerCase().includes(keyword.toLowerCase())
     );
-  
+
     if (matchedKeywords.length > 0) {
       console.log("Generating multi-page PDF report");
       generateAndDownloadPDF(responseText);
@@ -158,7 +206,7 @@ const Chatbot = ({ onClose }) => {
     console.log("No keywords matched, skipping PDF generation");
     return false;
   };
-  
+
 
   const handleSend = async () => {
     if (input.trim()) {
@@ -297,32 +345,31 @@ const Chatbot = ({ onClose }) => {
           <img src={logo} alt="Astra Logo" />
         </div>
         <div className="class-menu">
-        <h2>Menu</h2>
-        <ul className="menu-items">
-          <li><i className="fas fa-home"></i> Home</li>
-          <li><i className="fas fa-plus"></i> New Chat</li>
-          <li><i className="fas fa-cog"></i> Settings</li>
-          <li><i className="fas fa-question-circle"></i> Help</li>
-        </ul>
+          <h2>Menu</h2>
+          <ul className="menu-items">
+            <li><i className="fas fa-home"></i> Home</li>
+            <li><i className="fas fa-plus"></i> New Chat</li>
+            <li><i className="fas fa-cog"></i> Settings</li>
+            <li><i className="fas fa-question-circle"></i> Help</li>
+          </ul>
         </div>
-       <div className="class-chat-history">
-       <h2>Chat History</h2>
-        <ul className="chat-history">
-          {chatHistory.map((chat, index) => (
-            <li
-              key={index}
-              onClick={() => handleChatHistoryClick(chat.session_id)}
-              className={`chat-history-item ${
-                sessionId === chat.session_id ? "active" : ""
-              }`}
-            >
-              {chat.chat_name}
-            </li>
-          ))}
-        </ul>
-       </div>
+        <div className="class-chat-history">
+          <h2>Chat History</h2>
+          <ul className="chat-history">
+            {chatHistory.map((chat, index) => (
+              <li
+                key={index}
+                onClick={() => handleChatHistoryClick(chat.session_id)}
+                className={`chat-history-item ${sessionId === chat.session_id ? "active" : ""
+                  }`}
+              >
+                {chat.chat_name}
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="subscription-label">
-        <img src={userAvatar} alt="User Avatar" className="user-avatar" />
+          <img src={userAvatar} alt="User Avatar" className="user-avatar" />
           <span>Welcome, Emma</span>
         </div>
       </div>
@@ -330,35 +377,55 @@ const Chatbot = ({ onClose }) => {
       {/* Main Content */}
       <div className="main-content-wrapper">
         {/* Header */}
-        <div className="header-section">
-          <h1 className="page-heading">Welcome to Astra</h1>
+        {/* <div className="header-section float-end">
+          
           <Link to="/profile">
             <Avatar name={`${localStorage.getItem("fname")} ${localStorage.getItem("lname")}`} size="50" round = {true}/>
           </Link>
 
-        </div>
+        </div> */}
 
         {/* Chat Interface */}
         <div className="chatbot-content">
-        <div className="chat-messages">
-  {messages.map((msg, index) => (
-    <div key={index} className={`message-wrapper ${msg.sender}`}>
-      {msg.sender === "bot" ? (
-        <div className="bot-message-container">
-          <img src={astraAvatar} alt="Astra Avatar" className="astra-avatar" />
-          <div className="message bot">
-            <ReactMarkdown>{msg.text}</ReactMarkdown>
+          <div className="chat-messages">
+            {messages.map((msg, index) => (
+              <div key={index} className={`message-wrapper ${msg.sender}`}>
+                {msg.sender === "bot" ? (
+                  <div className="bot-message-container">
+                    <img src={astraAvatar} alt="Astra Avatar" className="astra-avatar" />
+                    <div className="message bot">
+                      <ReactMarkdown
+                        className="markdown-content"
+                        components={{
+                          h1: ({ node, ...props }) => <h1 {...props} className="section-header" />,
+                          h2: ({ node, ...props }) => <h2 {...props} />,
+                          p: ({ node, ...props }) => <p {...props} />,
+                          ul: ({ node, ...props }) => <ul {...props} />,
+                          li: ({ node, ...props }) => <li {...props} />,
+                          pre: ({ node, ...props }) => <pre className="code-block" {...props} />,
+                          code: ({ node, ...props }) => <code className="inline-code" {...props} />,
+                          blockquote: ({ node, ...props }) => <blockquote className="highlight-box" {...props} />,
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+
+                    </div>
+                  </div>
+                ) : (
+                  <div className="message user">
+                    <ReactMarkdown
+
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+
+                  </div>
+                )}
+              </div>
+            ))}
+            <div ref={messagesEndRef}></div>
           </div>
-        </div>
-      ) : (
-        <div className="message user">
-          <ReactMarkdown>{msg.text}</ReactMarkdown>
-        </div>
-      )}
-    </div>
-  ))}
-  <div ref={messagesEndRef}></div>
-</div>
 
           <div className="chat-input">
             {showEmojiPicker && (
@@ -394,7 +461,17 @@ const Chatbot = ({ onClose }) => {
               onChange={handleFileUpload}
               style={{ display: "none" }}
             />
-            <FaMicrophone className="icon-microphone" />
+            {/* <FaMicrophone className="icon-microphone" /> */}
+            <button
+              className="microphone-button"
+              onClick={handleToggleListening}
+            >
+              {listening ? (
+                <i class="fa-solid fa-circle-pause"></i>
+              ) : (
+                <i className="fa-solid fa-microphone"></i>
+              )}
+            </button>
             <button onClick={handleSend}>&#x27A4;</button>
           </div>
         </div>

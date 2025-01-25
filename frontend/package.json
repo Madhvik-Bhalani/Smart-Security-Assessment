@@ -28,6 +28,7 @@
     "react-pageflip": "^2.0.3",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
+    "react-speech-recognition": "^3.10.0",
     "react-toastify": "^10.0.6",
     "sass": "^1.83.4",
     "sweetalert2": "^11.14.5",
