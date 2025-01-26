@@ -1,18 +1,15 @@
 /* General Styling */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: url('../../assets/pexels-kaplanart-13004149.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: white;
-}
-
 .signin-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100vh;
   padding: 0 10%;
+  background: url('../../assets/pexels-kaplanart-13004149.jpg') no-repeat center center fixed;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-size: cover;
+  color: white;
 }
 
 /* Left Section */
