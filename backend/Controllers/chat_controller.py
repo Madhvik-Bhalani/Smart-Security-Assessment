@@ -54,6 +54,14 @@ class ChatController:
                 ),
                 return_direct=True,
             ),
+            Tool(
+                name="general_assistant",
+                func=self.handle_other_query,
+                description=(
+                    "This tool is specifically designed to address inquiries that fall outside the domain of cybersecurity. It focuses on providing assistance with topics unrelated to security best practices, vulnerabilities, or threat intelligence."
+                ),
+                return_direct=True,
+            ),
         ]
 
         # Define the memory store for in-session memory
@@ -63,21 +71,23 @@ class ChatController:
         self.prompt = hub.pull("hwchase17/structured-chat-agent")
 
         self.initial_message = """
-        You are a cybersecurity assistant with access to two tools:
+        You are a cybersecurity assistant with access to Three tools:
 
-        1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
+        1. web_safe_guard: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
 
-        2. *cybersecurity_query_handler*: Use this tool to answer general cybersecurity-related questions, provide clarifications about previous analyses, or expand on findings from the *web_safe_guard* tool.
+        2. cybersecurity_query_handler: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the web_safe_guard tool.
 
-        **Guidelines:**
+        3. general_assistant: Use this tool to address non-cybersecurity-related inquiries and provide assistance on general topics outside the scope of cybersecurity.
+
+        *Guidelines:*
         - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
         - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
-        - Always provide clear, actionable insights and recommendations based on the data or context provided by the user.
-        - Avoid including unnecessary technical jargon unless specifically requested or relevant to the findings.
 
-        Your goal is to provide helpful, user-friendly assistance, tailoring each response to the specific request and context.
-
+        Your goal is to provide helpful, user-friendly assistance, focusing on cybersecurity-related topics and maintaining professionalism. Always preserve the integrity of the tool's response.
         """
+
+    def handle_other_query(self, query):
+        return f"Thank you for your question. However, I am a cybersecurity assistant, and my expertise is focused on cybersecurity-related topics. Unfortunately, I won’t be able to assist with your query as it falls outside my domain. If you have any cybersecurity-related questions, I’ll be happy to help!"
 
     # Initialize memory for a given session, including past chat history.
     def initialize_memory(self, session_id, chat_history):
