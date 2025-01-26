@@ -218,6 +218,8 @@ const Chatbot = ({ onClose }) => {
           ? `http://localhost:5000/api/v1/chat/${sessionId}`
           : `http://localhost:5000/api/v1/chat/first-message`;
 
+        // console.log(endpoint);
+        
         const response = await axios.post(
           endpoint,
           {
@@ -244,13 +246,13 @@ const Chatbot = ({ onClose }) => {
         ]);
 
         // Check for keywords and generate PDF if matched
-        const pdfGenerated = checkKeywordsAndGeneratePDF(botResponse);
-        if (pdfGenerated) {
-          setMessages((prev) => [
-            ...prev,
-            { sender: "bot", text: "A PDF report has been generated and downloaded based on the keywords found in the response." },
-          ]);
-        }
+        // const pdfGenerated = checkKeywordsAndGeneratePDF(botResponse);
+        // if (pdfGenerated) {
+        //   setMessages((prev) => [
+        //     ...prev,
+        //     { sender: "bot", text: "A PDF report has been generated and downloaded based on the keywords found in the response." },
+        //   ]);
+        // }
       } catch (error) {
         console.error("Error fetching bot response:", error);
         setMessages((prev) => [
@@ -281,6 +283,10 @@ const Chatbot = ({ onClose }) => {
 
   const handleChatHistoryClick = async (session_id) => {
     try {
+
+
+      setSessionId(session_id) // Enabling chat in the previous session for follow-up questions.
+
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
@@ -337,6 +343,17 @@ const Chatbot = ({ onClose }) => {
     handleHistory();
   }, []);
 
+
+
+  const newchatHandler = () => {
+    setMessages([
+      { sender: "bot", text: "Hello! I am Astra. How can I assist you today?" },
+    ]);
+    setSessionId(null);
+    setInput("");
+  };
+  
+
   return (
     <div className="chatbot-wrapper">
       {/* Sidebar */}
@@ -348,7 +365,7 @@ const Chatbot = ({ onClose }) => {
           <h2>Menu</h2>
           <ul className="menu-items">
             <li><i className="fas fa-home"></i> Home</li>
-            <li><i className="fas fa-plus"></i> New Chat</li>
+            <li onClick={newchatHandler}><i className="fas fa-plus" ></i> New Chat</li>
             <li><i className="fas fa-cog"></i> Settings</li>
             <li><i className="fas fa-question-circle"></i> Help</li>
           </ul>
