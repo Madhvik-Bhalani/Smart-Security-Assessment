@@ -75,8 +75,13 @@ class UserEditAccount(BaseModel):
     lname: Optional[str] = Field(None, description="Updated last name")
 
 
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+class UserUploadPhoto(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
+    profile_photo_url: str = Field(..., description="URL of the profile photo to be uploaded")
+
+
+class UserDeletePhoto(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
 
         
 class UserDeleteAccount(BaseModel):

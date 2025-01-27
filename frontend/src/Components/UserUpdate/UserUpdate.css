@@ -1,71 +1,183 @@
-.profileUpdate {
+.user-profileUpdate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    height: calc(100vh - 100px);
-}
-
-.profileUpdate .formContainer {
-    flex: 3;
-    display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.profileUpdate .formContainer form {
-    width: 400px;
+.button-container {
+    justify-self: end;
+    justify-items: end;
+    justify-content: end;
+}
+
+.button-container .button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.button-container .button:hover {
+    background-color: rgb(255, 0, 0);
+}
+
+.user-formContainer {
+    width: 500px;
+    height: 500px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+    padding: 25px;
+    z-index: 1000;
 }
 
-.profileUpdate .formContainer form h1 {
-    margin-bottom: 10px;
-    font-size: 24px;
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    gap: 15px;
 }
 
-.profileUpdate .formContainer form .item {
+.user-h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0px;
+    color: #333;
+}
+
+.user-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.user-label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.user-input {
+    color: #333 !important;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    margin-bottom: 5px !important;
+}
+
+.user-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #9D4EDD ;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-button:hover {
+    background-color: #6a3497;
+}
+
+.user-span {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    display: block;
+}
+
+
+
+.file-input-label {
+    display: inline-block;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #9D4EDD;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.file-input-label:hover {
+    background-color: #6a3497;
+}
+
+.delete-photo-button {
+    width: 40%;
+    padding: 8px;
+    font-size: 0.8rem;
+    background-color: #9D4EDD;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 0px;
+}
+
+.delete-photo-button:hover {
+    background-color: #6a3497;
+    
+}
+
+/* File input container */
+.upload-photo-container {
+    height: 40px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    gap: 0px;
+    margin-top: 0px;
 }
 
-.profileUpdate .formContainer form .item input {
-    height: 40px;
-    width: 80%;
-    padding: 10px 20px;
-    border: grey 1px solid;
-    border-radius: 5px;
-}
-
-.profileUpdate .formContainer form .item input:focus {
-    outline: none;
-}
-
-.profileUpdate .formContainer form button {
-    width: 100%;
-    height: 40px;
-    background-color: #027276;
-    color: white;
-    border-radius: 5px;
-    border: none;
+/* File input styling */
+.file-input {
     cursor: pointer;
-    font-weight: bold;
+    width: 60%;
+    height: 50px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: 1px solid #9D4EDD;
+    border-radius: 5px;
+    background-color: white;
+    color: #9D4EDD;
+    transition: all 0.3s ease;
 }
 
-.profileUpdate .sideContainer {
-    flex: 2;
-    background-color: #fcf5f3;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
+.file-input:hover {
+    background-color: #f5e6ff;
+    border-color: #6a3497;
 }
 
-.profileUpdate .sideContainer img {
-    width: 50%;
-    object-fit: cover;
+/* Upload text styling */
+.upload-photo-text {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}
+
+
+
+@media (max-width: 480px) {
+    .user-formContainer {
+        width: 90%;
+    }
 }

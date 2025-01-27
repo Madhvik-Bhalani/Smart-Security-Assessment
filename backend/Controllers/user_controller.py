@@ -1,4 +1,4 @@
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto
 from Services.auth_service import hash_password, verify_password, create_access_token
 from datetime import datetime, timezone
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -225,3 +225,46 @@ async def delete_account(user: UserDeleteAccount, request: Request):
 
     # Redirect to the homepage after successful deletion
     return RedirectResponse(url="/", status_code=302)
+
+async def upload_profile_photo(user: UserUploadPhoto, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Find user by email
+    existing_user = await users_collection.find_one({"email": user.email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    # Update profile photo URL
+    await users_collection.update_one(
+        {"email": user.email},
+        {"$set": {"profile_photo_url": user.profile_photo_url, "updated_at": datetime.now(timezone.utc)}}
+    )
+    return JSONResponse(
+        status_code=200,
+        content={"status": True, "message": "Profile photo uploaded successfully!"},
+    )
+
+
+async def delete_profile_photo(user: UserDeletePhoto, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Find user by email
+    existing_user = await users_collection.find_one({"email": user.email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    # Remove profile photo URL
+    await users_collection.update_one(
+        {"email": user.email},
+        {"$unset": {"profile_photo_url": ""}, "$set": {"updated_at": datetime.now(timezone.utc)}}
+    )
+    return JSONResponse(
+        status_code=200,
+        content={"status": True, "message": "Profile photo deleted successfully!"},
+    )

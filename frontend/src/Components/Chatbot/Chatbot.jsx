@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from "react-markdown";
 import { FaSmile, FaMicrophone, FaPaperclip } from "react-icons/fa";
 import "./Chatbot.css";
@@ -10,6 +11,9 @@ import userAvatar from '../../assets/woman.png';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { Link } from 'react-router-dom'
 import Avatar from "react-avatar";
+import UserUpdate from "../UserUpdate/UserUpdate";
+import ChangePassword from "../ChangePassword/ChangePassword"
+import DeleteAccount from "../DeleteAccount/DeleteAccount";
 
 
 const Chatbot = ({ onClose }) => {
@@ -17,11 +21,21 @@ const Chatbot = ({ onClose }) => {
     { sender: "bot", text: "Hello! I am Astra. How can I assist you today?" },
   ]);
   const [input, setInput] = useState("");
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [chatHistory, setChatHistory] = useState(["Chat 1", "Chat 2", "Chat 3"]);
   const [sessionId, setSessionId] = useState(null);
+  const [openUserUpdate, setOpenUserUpdate] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
+  const [openChangePassword, setOpenChangePassword] = useState(false)
+  const navigate = useNavigate();
+  const profileUrl = localStorage.getItem("url");
 
   const messagesEndRef = useRef(null);
+
+  const user_fname = localStorage.getItem("fname");
+  const user_lname = localStorage.getItem("lname");
+  const user_email = localStorage.getItem("email");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -61,6 +75,23 @@ const Chatbot = ({ onClose }) => {
     console.log(transcript);
 
   }, [transcript]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/")
+  };
+
+  const handleClickPasswordChange = () => {
+    setOpenChangePassword(!openChangePassword)
+  }
+
+  const handleClickUpdate = () => {
+    setOpenUserUpdate(!openUserUpdate)
+  }
+
+  const handleClickDelete = () => {
+    setOpenDelete(!openDelete)
+  }
 
 
   const handleToggleListening = () => {
@@ -345,6 +376,7 @@ const Chatbot = ({ onClose }) => {
           <img src={logo} alt="Astra Logo" />
         </div>
         <div className="class-menu">
+
           <h2>Menu</h2>
           <ul className="menu-items">
             <li><i className="fas fa-home"></i> Home</li>
@@ -376,14 +408,78 @@ const Chatbot = ({ onClose }) => {
 
       {/* Main Content */}
       <div className="main-content-wrapper">
-        {/* Header */}
-        {/* <div className="header-section float-end">
-          
-          <Link to="/profile">
-            <Avatar name={`${localStorage.getItem("fname")} ${localStorage.getItem("lname")}`} size="50" round = {true}/>
-          </Link>
+        <div className="header-section">
+          <h1 className="page-heading"></h1>
+          <div className="profile-section">
+            {profileUrl ? (
+              <img
+                className="actual-user-avatar"
+                src={profileUrl}
+                alt="Profile"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  objectFit: "cover"
+                }}
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              />
+            ) : (
+              <Avatar
+                className="actual-user-avatar"
+                name={`${localStorage.getItem("fname") || "User"} ${localStorage.getItem("lname") || "Name"
+                  }`}
+                size="50"
+                round={true}
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            {showProfileDropdown && (
+              <div className="profile-dropdown">
+                {/* <UserProfile /> */}
+                <div className="user-profile">
+                  <div className="user-profile-content">
+                    <div className="user-profile-details">
+                      <div className="user-profile-field">
+                        <span className="user-field-value">{user_fname}  {user_lname}</span>
+                      </div>
+                      <div className="profile-field">
+                        <span className="user-field-value">{user_email}</span>
+                      </div>
+                    </div>
+                    <div className="user-profile-actions">
+                      <button
+                        className="user-action-button update-button"
+                        onClick={handleClickUpdate}
+                      >
+                        Update Profile
+                      </button>
+                      {/* {openUserUpdate && <UserUpdate />} */}
+                      <button
+                        className="user-action-button change-password-button"
+                        onClick={handleClickPasswordChange}
+                      >
+                        Change Password
+                      </button>
+                      <button className="user-action-button logout-button" onClick={handleLogout}>
+                        Logout
+                      </button>
+                      <button className="user-action-button delete-button" onClick={handleClickDelete}>
+                        Delete Account
+                      </button>
 
-        </div> */}
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            )}
+          </div>
+        </div>
+
 
         {/* Chat Interface */}
         <div className="chatbot-content">
@@ -476,6 +572,9 @@ const Chatbot = ({ onClose }) => {
           </div>
         </div>
       </div>
+      {openUserUpdate && <UserUpdate closeModal={setOpenUserUpdate} />}
+      {openChangePassword && <ChangePassword closeModal={(setOpenChangePassword)} />}
+      {openDelete && <DeleteAccount onCancel={(setOpenDelete)} />}
     </div>
   );
 };

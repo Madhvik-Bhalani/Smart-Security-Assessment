@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
-from Controllers.user_controller import signup, signin, fetch_user, change_password, delete_account, edit_account
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount
+from Controllers.user_controller import signup, signin, fetch_user, change_password, delete_account, edit_account, delete_profile_photo, upload_profile_photo
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserUploadPhoto, UserDeletePhoto
 from Middleware.auth import Auth
 
 
@@ -33,6 +33,16 @@ async def edit_account_route(user: UserEditAccount, request: Request):
 @router.post("/delete-account", tags=["User Delete Account"])
 async def delete_account_route(user: UserDeleteAccount, request: Request):
     return await delete_account(user, request)
+
+
+@router.post("/upload-profile-photo", tags=["User Profile Photo"])
+async def upload_profile_photo_route(user: UserUploadPhoto, request: Request):
+    return await upload_profile_photo(user, request)
+
+
+@router.post("/delete-profile-photo", tags=["User Profile Photo"])
+async def delete_profile_photo_route(user: UserDeletePhoto, request: Request):
+    return await delete_profile_photo(user, request)
 
 
 
