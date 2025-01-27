@@ -1,0 +1,74 @@
+/* Overlay for background dimming */
+.delete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Container for the modal */
+  .delete-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Title styling */
+  .delete-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Message styling */
+  .delete-message {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #666;
+  }
+  
+  /* Buttons container */
+  .delete-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* General button styling */
+  .delete-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  /* Confirm button styling */
+  .delete-confirm {
+    background-color: #d9534f;
+    color: #fff;
+  }
+  
+  .delete-confirm:hover {
+    background-color: #c9302c;
+  }
+  
+  /* Cancel button styling */
+  .delete-cancel {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .delete-cancel:hover {
+    background-color: #e0e0e0;
+  }
+  

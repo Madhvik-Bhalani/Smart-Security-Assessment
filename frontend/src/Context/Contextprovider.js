@@ -15,6 +15,7 @@ function Contextprovider(props) {
             localStorage.setItem("fname", user?.data.fname.toString())
             localStorage.setItem("lname", user?.data.lname.toString())
             localStorage.setItem("email", user?.data.email.toString())
+            localStorage.setItem("url", user?.data.url?.toString())
         }
 
     }
