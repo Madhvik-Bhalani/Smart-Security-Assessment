@@ -22,15 +22,15 @@ async def fetch_user_route(request: Request, user=Depends(Auth.verify_token)):
     return await fetch_user(user, request)
 
 
-@router.post("/change-password", tags=["User Change Password"])
+@router.post("/change-password", tags=["User"])
 async def change_password_route(user: UserChangePassword, request: Request):
     return await change_password(user, request)
 
-@router.post("/edit-account", tags=["User Edit Account"])
+@router.post("/edit-account", tags=["User"])
 async def edit_account_route(user: UserEditAccount, request: Request):
     return await edit_account(user, request)
 
-@router.post("/delete-account", tags=["User Delete Account"])
+@router.post("/delete-account", tags=["User"])
 async def delete_account_route(user: UserDeleteAccount, request: Request):
     return await delete_account(user, request)
 

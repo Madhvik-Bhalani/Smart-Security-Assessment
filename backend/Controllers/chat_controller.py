@@ -11,6 +11,11 @@ from Utility.utils import generate_session_id, to_serializable
 from datetime import datetime, timezone
 import time
 from groq import RateLimitError
+from Utility.cve_utils import (
+    extract_technologies_from_query,
+    format_cve_response,
+    fetch_cves_for_last_120_days,
+)
 
 
 class ChatController:
@@ -55,10 +60,13 @@ class ChatController:
                 return_direct=True,
             ),
             Tool(
-                name="general_assistant",
-                func=self.handle_other_query,
+                name="cve_query_tool",
+                func=self.fetch_cves_from_query,
                 description=(
-                    "This tool is specifically designed to address inquiries that fall outside the domain of cybersecurity. It focuses on providing assistance with topics unrelated to security best practices, vulnerabilities, or threat intelligence."
+                    "Use this tool to identify technologies or technical terms from a query, fetch relevant CVEs, and generate detailed vulnerability reports. "
+                    "This tool is ideal for queries that reference specific technologies (e.g., Apache, Python, React) or technical vulnerabilities (e.g., authentication, filesystem, XSS). "
+                    "If no recent CVEs are detected, use the LLM to provide a fallback response with older CVE data, broader risks, or relevant insights. "
+                    "Always aim to deliver clear, actionable, and professional reports tailored to the query."
                 ),
                 return_direct=True,
             ),
@@ -71,23 +79,29 @@ class ChatController:
         self.prompt = hub.pull("hwchase17/structured-chat-agent")
 
         self.initial_message = """
-        You are a cybersecurity assistant with access to Three tools:
+        You are a cybersecurity assistant with access to three tools:
 
-        1. web_safe_guard: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
+        1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
 
-        2. cybersecurity_query_handler: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the web_safe_guard tool.
+        2. *cybersecurity_query_handler*: Use this tool to answer general cybersecurity-related questions, provide clarifications about previous analyses, or expand on findings from the *web_safe_guard* tool.
+        
+        3. *cve_query_tool*:
+        - Use this tool to extract technologies or technical terms from the query, fetch the latest CVEs, and generate detailed reports.
+        - Prioritize this tool for queries that mention specific software, libraries, or vulnerabilities (e.g., Apache, Python, XSS).
+        - If no recent CVEs are found, use your knowledge base or fetch older data to provide relevant insights without explicitly mentioning the absence of recent CVEs.
 
-        3. general_assistant: Use this tool to address non-cybersecurity-related inquiries and provide assistance on general topics outside the scope of cybersecurity.
-
-        *Guidelines:*
+        **Guidelines:**
         - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
         - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
+        - Always provide clear, actionable insights and recommendations based on the data or context provided by the user.
+        - Avoid including unnecessary technical jargon unless specifically requested or relevant to the findings.
+        - *CVE Queries*:
+            - Use the `cve_query_tool` for queries mentioning technologies, software, or vulnerabilities.
+            - If the tool finds no CVEs, generate fallback insights using older CVE data or relevant knowledge without explicitly acknowledging the tool's limitations.
 
-        Your goal is to provide helpful, user-friendly assistance, focusing on cybersecurity-related topics and maintaining professionalism. Always preserve the integrity of the tool's response.
+        Your goal is to provide helpful, user-friendly assistance, tailoring each response to the specific request and context.
+
         """
-
-    def handle_other_query(self, query):
-        return f"Thank you for your question. However, I am a cybersecurity assistant, and my expertise is focused on cybersecurity-related topics. Unfortunately, I won’t be able to assist with your query as it falls outside my domain. If you have any cybersecurity-related questions, I’ll be happy to help!"
 
     # Initialize memory for a given session, including past chat history.
     def initialize_memory(self, session_id, chat_history):
@@ -336,6 +350,84 @@ class ChatController:
     def handle_cybersecurity_query(self, query):
         response = self.llm.invoke(input=query)
         return response.content
+
+    def query_to_list(self,query):
+        """
+        Convert the query string into a list of technologies/terms.
+        - Cleans the query by removing extra spaces.
+        - Handles inconsistent delimiters like commas, spaces, and "and".
+        - Returns a list of normalized terms.
+        """
+        # Step 1: Replace "and" with a comma for consistent splitting
+        query = query.lower().replace(" and ", ",")
+
+        # Step 2: Remove extra spaces and split into a list
+        tech_list = [term.strip() for term in query.split(",") if term.strip()]
+
+        return tech_list
+
+    def fetch_cves_from_query(self, query):
+        print("query-->")
+        print(query)
+        print("q end--->")
+        """Extract technologies, fetch CVEs, and seamlessly fall back to the LLM or web for older data."""
+        try:
+            # Step 1: Extract technologies using custom logic
+            # tech_list = extract_technologies_from_query(query, self.llm)
+            # print(f"Extracted technologies: {tech_list}")
+
+             # Step 1: Convert query into a list of technologies
+            tech_list = self.query_to_list(query)
+            print(f"Extracted technologies: {tech_list}")
+            
+            if not tech_list:
+                # If no technologies detected, fall back directly to LLM for response generation
+                return self.llm.invoke(
+                    input=f"Generate a detailed response for this query: {query}"
+                ).content
+
+            # # Step 2: Fetch CVEs for detected technologies
+            # cve_data = {}
+            # for tech in tech_list:
+            #     cve_data[tech] = fetch_cves_for_last_120_days(tech, max_result=50)
+
+            # # Step 3: Check if any CVEs were found
+            # print("cve data-->")
+            # print(cve_data)
+            # if any(cve_data.values()):
+            #     # If CVEs are found, format the response
+            #     formatted_response = format_cve_response(cve_data, self.llm)
+            #     return formatted_response
+
+            # Step 2: Fetch CVEs for detected technologies (if any)
+            cve_data = {}
+            if tech_list:
+                for tech in tech_list:
+                    cve_results = fetch_cves_for_last_120_days(tech, max_result=100)
+                    if isinstance(cve_results, list):  # Only add valid     results
+                        cve_data[tech] = cve_results
+
+            # Step 3: Check if any CVEs were found
+            if tech_list and any(cve_data.values()):  # At least one technology has CVEs
+                print("Formatting CVE response...")
+                return format_cve_response(cve_data, self.llm)
+
+                # Step 4: Fallback to LLM for older data or context
+            fallback_prompt = f"""
+                The following technologies or technical terms were  identified: {', '.join(tech_list)}.
+            No recent CVEs were found for these items in the last 120 days. However, generate a response based on:
+            1. Older CVE data or relevant insights from your knowledge base.
+            2. Broader security vulnerabilities or risks associated with these technologies.
+            """
+            fallback_response = self.llm.invoke(input=fallback_prompt).content
+            return fallback_response
+
+        except Exception as e:
+            # Gracefully handle errors by falling back to LLM
+            print(f"Error in fetch_cves_from_query: {str(e)}")
+            return self.llm.invoke(
+                input=f"Generate a fallback response for this query: {query}"
+            ).content
 
     # Generate a response using LLM with chat history.
     async def process_prompt(self, prompt, session_id: str, chat_history):
