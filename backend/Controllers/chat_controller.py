@@ -131,6 +131,7 @@ class ChatController:
             handle_parsing_errors=True,
         )
 
+
     # Create a new chat session.
     async def create_new_session(self, user_id, request):
         chat_collection = request.app.mongodb["chat_sessions"]
@@ -229,6 +230,15 @@ class ChatController:
             },
         )
         return {"success": result.modified_count > 0}
+
+
+    async def delete_session(self, session_id, user_id, request):
+        chat_collection = request.app.mongodb["chat_sessions"]
+        result = await chat_collection.delete_one(
+            {"session_id": session_id, "user_id": user_id.get("_id")},
+            
+        )
+        return {"success": result.deleted_count > 0}
 
     # Responsible for Analysing Website
 

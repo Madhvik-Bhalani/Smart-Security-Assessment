@@ -51,7 +51,7 @@ export default function UserUpdate({ closeModal }) {
 
             // Redirect to profile page after successful update
             window.dispatchEvent(new Event("closeModals"));
-            navigate("/profile")
+           
         } catch (err) {
             console.log(err)
             // Handle error (display message from backend)
