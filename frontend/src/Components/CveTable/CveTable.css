@@ -1,0 +1,138 @@
+/* General Styling */
+.cve-table-container {
+    padding: 20px !important;
+    margin-top: 20px !important;
+    background-color: #f9f9f9 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.container {
+    margin-bottom: 20px !important;
+}
+
+/* Main Heading Styling */
+.heading {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    color: #4A4A4A !important;
+    margin-bottom: 10px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+  
+/* Subheading Styling */
+.subheading {
+    font-size: 1.2rem !important;
+    font-weight: 400 !important;
+    color: #777 !important;
+    margin-bottom: 30px !important;
+    text-align: center !important;
+    font-style: italic !important;
+}
+  
+.loading-text {
+    font-size: 1.5rem !important;
+    color: #888 !important;
+    text-align: center !important;
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto !important;
+    max-height: 500px !important;
+}
+
+.display {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 20px !important;
+    background-color: #fff !important;
+}
+
+.display th,
+.display td {
+    border: 1px solid #ddd !important;
+    padding: 10px !important;
+    text-align: left !important;
+}
+
+.display th {
+    background-color: #f4f4f4 !important;
+    font-weight: bold !important;
+}
+
+.display tr:hover {
+    background-color: #f9f9f9 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2 !important;
+}
+
+/* Severity Coloring */
+.severity {
+    font-weight: bold !important;
+}
+
+
+.severity-high,.score-high {
+    color: #d9534f !important;
+    font-weight: 600 !important;
+    
+}
+
+
+.severity-medium,.score-medium {
+    color: #f0ad4e !important;
+    font-weight: 600 !important;
+    
+}
+
+
+.severity-low,.score-low {
+    font-weight: 600 !important;
+    color: #5cb85c !important;
+
+}
+
+.severity-na {
+    color: gray !important;
+    font-style: italic !important;
+}
+
+/* Links */
+.cve-link {
+    color: #007bff !important;
+    text-decoration: none !important;
+}
+
+.cve-link:hover {
+    text-decoration: underline !important;
+}
+
+/* Button Styling */
+.btn {
+    padding: 5px 10px !important;
+    color: white !important;
+    background-color: #007bff !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+
+.btn:hover {
+    background-color: #0056b3 !important;
+}
+
+.cve-link {
+    color: #007bff !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+.cve-link:hover {
+    text-decoration: underline !important;
+    color: #0056b3 !important;
+}

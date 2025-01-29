@@ -350,6 +350,10 @@ const loadChatHistory = () => {
 
   const handleChatHistoryClick = async (sessionId) => {
     try {
+
+
+      setSessionId(session_id) // Enabling chat in the previous session for follow-up questions.
+
       const token = localStorage.getItem("token");
   
       const response = await axios.get(
@@ -555,6 +559,28 @@ const loadChatHistory = () => {
     handleHistory();
   }, []);
 
+  
+
+
+
+  const newchatHandler = () => {
+    setMessages([
+      { sender: "bot", text: "Hello! I am Astra. How can I assist you today?" },
+    ]);
+    setSessionId(null);
+    setInput("");
+  };
+  
+
+
+
+  const newchatHandler = () => {
+    setMessages([
+      { sender: "bot", text: "Hello! I am Astra. How can I assist you today?" },
+    ]);
+    setSessionId(null);
+    setInput("");
+  };
   
 
   return (
