@@ -8,8 +8,8 @@
   
   /* Sidebar Styling */
   .chatbot-sidebar {
-    width: 300px;
-    background: #9d4edd;
+    width: 270px;
+    background: linear-gradient(180deg, #1e1e1e, #2b2b2b);
     color: white;
     display: flex;
     flex-direction: column;
@@ -17,21 +17,82 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     position: relative;
   }
+
+  /* Custom Scrollbar Styling */
+.chatbot-content .chat-messages::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.chatbot-content .chat-messages::-webkit-scrollbar-track {
+  background: #2b2b2b; 
+  border-radius: 10px;
+}
+
+.chatbot-content .chat-messages::-webkit-scrollbar-thumb {
+  background: #9D4EDD; 
+  border-radius: 10px;
+}
+
+.chatbot-content .chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #bf77ff; 
+}
+
+
+  /*Active Chat*/
+  .chat-history-item {
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px; 
+    transition: background-color 0.3s, color 0.3s;
+    background-color: transparent; 
+    color: white; 
+}
+
+.chat-history-item:hover {
+    background-color: rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.chat-history-item.active {
+  background: transparent;
+    font-weight: bold;
+    color: white; 
+    border: 2px 2px solid #9D4EDD;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
   
   /* Astra Logo in Sidebar */
   .astra-logo {
-    text-align: center;
-    margin-bottom: 20px;
+    display: flex; 
+  justify-content: flex-start; 
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+  margin-left: -20px;
   }
   
   .astra-logo img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid #9d4edd;
-    object-fit: cover; /* Ensures proper fit */
-    margin-right: 10px; /* Add spacing from the heading */
-    align-self: center; /* Vertically align with the header */
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+   display: block;
+   border: none;
+  }
+
+  /* Menu Section */
+.class-menu {
+  margin-bottom: 10px; 
+  margin-top: 80px;
+}
+
+  .sidebar-content {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 40px;
   }
   
   /* Sidebar Menu Items */
@@ -44,75 +105,58 @@
   
   .menu-items li,
   .chat-history li {
-    margin: 10px 0;
+    margin: 5px 0;
     cursor: pointer;
-    transition: color 0.3s;
-    padding-bottom: 5px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line */
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.3s, box-shadow 0.3s;
   }
   
   .menu-items li:last-child,
   .chat-history li:last-child {
-    border-bottom: none; /* Remove line after last item */
+    border-bottom: none; 
   }
   
   .menu-items li:hover,
   .chat-history li:hover {
-    color: #d1c4e9;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
   }
   
   /* Subscription Label */
-  /* Subscription Label */
+
 .subscription-label {
-    margin-top: auto; /* Keeps it at the bottom of the sidebar */
+    margin-top: auto; 
     margin-bottom: 5px;
-    font-size: 1rem; /* Adjust font size */
+    font-size: 1rem; 
     color: #ffffff;
-    background: #67368f; /* Slightly darker background for contrast */
-    padding: 15px; /* Adjust padding for consistent height */
-    border-radius: 20px; /* Match the chat input style */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+    background: #9D4EDD; 
+    padding: 15px; 
+    border-radius: 20px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
     text-align: center;
     display: flex;
-    align-items: center; /* Center the text vertically */
-    justify-content: center; /* Center the text horizontally */
-    height: 70px; /* Match the height of the chat input */
+    align-items: center; 
+    justify-content: center; 
+    height: 70px;
+    gap: 10px;
 }
   
-  /* Header Section */
-  .header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: #f5f5f5; /* Match main wrapper color */
-    border-bottom: 1px solid #ddd; /* Subtle divider */
-    z-index: 10; /* Keep header above other elements */
-    height: 80px; /* Ensure consistent height */
+/* User Avatar */
+.user-avatar {
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%; 
+  object-fit: cover; 
 }
-  
-  /* Page Heading */
-  .page-heading {
-    font-size: 1.6rem;
-    color: #67368f;
-    font-weight: bold;
-    text-align: center;
-    flex: 1;
-    margin: 0 20px;
-    line-height: 1;
+ 
+@media (max-width: 480px) {
+  .subscription-label {
+    flex-direction: column; 
+    gap: 5px; 
   }
-  
-  /* User Logo */
-  .user-logo img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid #9d4edd;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
-    object-fit: cover;
-    margin-left: 10px; /* Add spacing from the heading */
-    align-self: center; /* Vertically align with the header */
-  }
+}
+
   
   /* Main Content Wrapper */
   .main-content-wrapper {
@@ -128,7 +172,7 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background: #f5f5f5;
+    background: black;
     overflow: hidden;
   }
   
@@ -140,12 +184,14 @@
     background: none;
     display: flex;
     flex-direction: column;
+    scrollbar-width: thin;
+  scrollbar-color: #9D4EDD #2b2b2b; 
   }
   
   /* Bot's Message */
   .message.bot {
-    background: #9d4edd;
-    color: white;
+    background: white;
+    color: black;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 10px;
@@ -155,13 +201,15 @@
   
   /* User's Message */
   .message.user {
-    background: #67368f;
+    background: #9D4EDD;
     color: white;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 10px;
     max-width: 60%;
     align-self: flex-end;
+    margin-left: auto;
+    margin-right: 0;
   }
   
   /* Chat Input */
@@ -169,9 +217,10 @@
     display: flex;
     align-items: center;
     padding: 15px;
-    background: #67368f;
+    background: #9D4EDD;
     gap: 10px;
     border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
   
   .chat-input input {
@@ -289,3 +338,38 @@
       font-size: 0.8rem;
     }
   }
+
+
+  /* Message Wrapper */
+.message-wrapper {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+/* Bot Message Container */
+.bot-message-container {
+  display: flex;
+  align-items:end;
+}
+
+/* Bot Avatar */
+.astra-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px; 
+
+}
+
+/* Bot Message */
+.message.bot {
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 60%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  align-self: flex-start;
+}
+
+

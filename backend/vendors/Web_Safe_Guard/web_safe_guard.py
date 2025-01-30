@@ -67,7 +67,7 @@ def parse_nikto_output(url, raw_output):
     return formatted_output
   
   
-def call_nikto_command_with_timeout(scan_url, timeout=60):
+def call_nikto_command_with_timeout(scan_url, timeout=20):
     command = ["perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
     #command = ["perl", "nikto/program/nikto.pl", "-h", scan_url]
     output = None
@@ -84,10 +84,12 @@ def call_nikto_command_with_timeout(scan_url, timeout=60):
      
     except subprocess.TimeoutExpired as e:
         output = e.stdout or "Timeout expired; partial output not available."
+       
         
     except subprocess.CalledProcessError as e:
         output = e.output or f"Error occurred: {e.stderr}"
         
+    
     return output
     
    

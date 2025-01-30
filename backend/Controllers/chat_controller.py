@@ -7,7 +7,7 @@ from vendors.Web_Safe_Guard import web_safe_guard
 from langchain_core.tools import Tool
 import os
 from pydantic import SecretStr
-from Utility.utils import generate_session_id, to_serializable
+from utility.utils import generate_session_id, to_serializable
 from datetime import datetime, timezone
 import time
 from groq import RateLimitError
@@ -22,8 +22,8 @@ class ChatController:
             raise Exception("Missing GROQ_API_KEY or MODEL_NAME in .env file.")
 
         # Convert API key to SecretStr
-        self.groq_api_key = SecretStr(self.groq_api_key)
-
+        #self.groq_api_key = SecretStr(self.groq_api_key)
+        
         # Initialize the ChatGroq model
         self.llm = ChatGroq(
             model=self.model_name,
@@ -60,16 +60,26 @@ class ChatController:
                 ),
                 return_direct=True,
             ),
-            Tool(
+           Tool(
                 name="cybersecurity_query_handler",
                 func=self.handle_cybersecurity_query,
                 description=(
-                    "Use this tool to handle any cybersecurity-related questions, "
-                    "provide clarifications about prior analysis, or expand on findings from the 'web_safe_guard' tool. "
-                    "Always aim to provide detailed, easy-to-understand explanations and actionable advice."
-                ),
+                   "This tool handles only cybersecurity-related inquiries. "
+            "Use it to answer questions about security best practices, vulnerabilities, "
+            "threat intelligence, or to clarify any details related to previous security analyses. "
+            "The tool will not address non-cybersecurity queries and will politely inform the user of its focus on cybersecurity expertise."
+            ),
                 return_direct=True,
             ),
+            Tool(
+                name="general_assistant",
+                func=self.handle_other_query,
+                description=(
+                   "This tool is specifically designed to address inquiries that fall outside the domain of cybersecurity. It focuses on providing assistance with topics unrelated to security best practices, vulnerabilities, or threat intelligence."
+            ),
+                return_direct=True,
+            ),
+          
         ]
 
         # Define the memory store for in-session memory
@@ -78,23 +88,47 @@ class ChatController:
         # Load the structured chat prompt
         self.prompt = hub.pull("hwchase17/structured-chat-agent")
 
-        self.initial_message = """
-        You are a cybersecurity assistant with access to two tools:
-
-        1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
-
-        2. *cybersecurity_query_handler*: Use this tool to answer general cybersecurity-related questions, provide clarifications about previous analyses, or expand on findings from the *web_safe_guard* tool.
-
-        **Guidelines:**
-        - If a user asks for a URL analysis and does not provide a URL, politely ask for the website URL first before proceeding.
-        - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
-        - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
-        - Always provide clear, actionable insights and recommendations based on the data or context provided by the user.
-        - Avoid including unnecessary technical jargon unless specifically requested or relevant to the findings.
-
-        Your goal is to provide helpful, user-friendly assistance, tailoring each response to the specific request and context.
+        """
+       Tool(
+                name="cybersecurity_query_handler",
+                func=self.handle_cybersecurity_query,
+                description=(
+                   "This tool handles only cybersecurity-related inquiries. "
+            "Use it to answer questions about security best practices, vulnerabilities, "
+            "threat intelligence, or to clarify any details related to previous security analyses. "
+            "The tool will not address non-cybersecurity queries and will politely inform the user of its focus on cybersecurity expertise."
+    ),
+                return_direct=True,
+            ),
+            
+      2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool. 
+      
+      **Important:**
+    - If the question is outside the scope of cybersecurity, kindly inform the user that you are unable to provide an answer. 
+    - Your expertise is focused solely on cybersecurity, and you are not equipped to answer questions unrelated to this domain.
+    
+    2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool. 
 
         """
+        self.initial_message = """
+    You are a cybersecurity assistant with access to Three tools:
+
+    1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
+    
+    2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool.
+    
+    3. *general_assistant*: Use this tool to address non-cybersecurity-related inquiries and provide assistance on general topics outside the scope of cybersecurity.
+
+    
+    **Guidelines:**
+    - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
+    - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
+    
+    
+    
+    Your goal is to provide helpful, user-friendly assistance, focusing on cybersecurity-related topics and maintaining professionalism. Always preserve the integrity of the tool's response.
+        """
+
 
     # Initialize memory for a given session, including past chat history.
     def initialize_memory(self, session_id, chat_history):
@@ -328,98 +362,73 @@ class ChatController:
 
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
-            If necessary information (like the URL) is not provided, **ask the user for the missing details** before proceeding with the analysis.
+              
+        ### **Guidelines for Report Generation:**
+        1. Analyze the raw data comprehensively and derive insights specific to the findings.
+        2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
+        3. If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that section of the report.
+        4. Present detailed context for each issue, including potential risks and the impact on the website's security posture.
+        5. Ensure the report is **logical, well-structured, and fully explained**, catering to both technical and non-technical audiences.
+        6. Include GDPR compliance checks and note any violations or risks detected.
+        7. Identify the technology stack (e.g., frameworks, servers, libraries) and include relevant CVE references in hyperlinks.
+        
+        ### **Report Format** (Include sections dynamically based on the findings):
+        
+        #### 1. Overview
+        - **URL**: Include the provided URL or ask the user for it if not included.
+        - **Domain**: Mention the domain associated with the target.
+        - **Server/Hosting Info**: Provide details about the server or hosting platform.
+        
+        #### 2. IP and Network Information
+        - List all IP addresses associated with the target.
+        - Provide relevant details about their configuration, such as geolocation or any notable configurations.
+        
+        #### 3. SSL/TLS Details (If Detected)
+        - **Certificate Issuer**: Include details about the issuer.
+        - **Expiration Date**: Mention when the certificate expires.
+        - **Cipher Suite**: Highlight the cipher suite in use and its implications.
+        - **Potential Weaknesses**: Explain if there are vulnerabilities or misconfigurations in the SSL/TLS setup.
+        
+        #### 4. Security Headers and Configuration
+        - Identify missing or misconfigured security headers (e.g., Content-Security-Policy, X-Content-Type-Options, etc.).
+        - Explain the purpose of each missing header and the risks associated with its absence.
+        - Highlight uncommon or suspicious headers detected during the scan.
+        
+        #### 5. Findings and Vulnerabilities (Comprehensive)
+        Group and explain all findings logically:
+        - **Critical Vulnerabilities**: High-risk issues that require immediate attention (e.g., exposed credentials, malicious scripts, or serious misconfigurations).
+        - **Warnings**: Medium-risk issues that need to be addressed but are not urgent.
+        - **Informational Findings**: Observations that could help improve security posture but are not considered vulnerabilities.
+        
+        Include relevant links for further reference (e.g., "see: link") if the scan data provides them.
+        
+        #### 6. JavaScript and External Resources
+        - **External JavaScript Files**: Highlight external JavaScript files and assess their risk (e.g., outdated libraries, suspicious external sources).
+        - **Local JavaScript Files**: List local JavaScript files and flag any unusual behavior or configuration.
+        
+        #### 7. Recommendations
+        Provide **specific, actionable recommendations** for each finding:
+        - **Critical Actions**: Steps to resolve urgent vulnerabilities or address high-risk issues.
+        - **Best Practices**: Suggestions for improving the website's overall security posture, such as implementing modern security headers, regular vulnerability scanning, or adding a Web Application Firewall (WAF).
+        
+        #### 8. Advanced Insights and Recommendations
+        Include advanced analysis or suggestions, such as:
+        - Potential threats from third-party integrations or dependencies.
+        - Recommendations for monitoring and incident response.
+        - Strategies for implementing proactive defenses (e.g., threat intelligence, enhanced logging).
+        
+        ---
+        
+        
+       ### **Instructions for the Assistant**:
+       1. Process the raw data dynamically and include sections based on the findings.
+       2. Highlight GDPR compliance details and any technology stack vulnerabilities with CVE references.
+       3. Deliver a clear, actionable, and professional report tailored to the findings.
+               
+        ### **Raw Data Provided**:
+        {data}
 
-            ### **Guidelines for Report Generation:**
-            1. Analyze the raw data comprehensively and derive insights specific to the findings.
-            2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
-            3. If GDPR compliance is relevant, determine whether the website meets GDPR standards and include detailed findings.
-            4. Provide details of the technology stack used by the website (e.g., frameworks, servers, libraries) and reference relevant CVEs where vulnerabilities are detected. Include hyperlinks to the CVE details.
-            5. If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that section of the report.
-            6. Present detailed context for each issue, including potential risks and the impact on the website's security posture.
-            7. Ensure the report is **logical, well-structured, and fully explained**, catering to both technical and non-technical audiences.
-
-            ### **Report Format** (Include sections dynamically based on the findings):
-
-            #### 1. Overview
-            - **URL**: Include the provided URL or ask the user for it if not included.
-            - **Domain**: Mention the domain associated with the target.
-            - **Server/Hosting Info**: Provide details about the server or hosting platform.
-            - **Scanned Components**: Clearly list what was scanned (e.g., JavaScript files, SSL/TLS configurations, headers, etc.).
-
-            #### 2. IP and Network Information
-            - List all IP addresses associated with the target.
-            - Provide relevant details about their configuration, such as geolocation, service providers, or any notable configurations.
-            - Include any additional insights related to DNS, routing, or network exposure.
-
-            #### 3. SSL/TLS Details (If Detected)
-            - **Certificate Issuer**: Include details about the issuer.
-            - **Expiration Date**: Mention when the certificate expires.
-            - **Cipher Suite**: Highlight the cipher suite in use and its implications.
-            - **Scanned Details**: Mention specific aspects of the SSL/TLS configuration that were analyzed (e.g., protocol versions, supported ciphers, key exchange mechanisms).
-            - **Potential Weaknesses**: Explain if there are vulnerabilities or misconfigurations in the SSL/TLS setup, along with their impact.
-
-            #### 4. GDPR Compliance
-            - Check whether the website aligns with GDPR standards, focusing on areas such as:
-              - Presence of a privacy policy.
-              - Proper cookie consent mechanisms.
-              - Secure handling of user data (e.g., encryption in transit and at rest).
-              - Compliance with data retention and user rights (e.g., right to access, right to delete).
-            - Highlight any non-compliance issues and their potential legal or operational risks.
-
-            #### 5. Security Headers and Configuration
-            - Identify missing or misconfigured security headers (e.g., Content-Security-Policy, X-Content-Type-Options, etc.).
-            - Explain the purpose of each missing header and the risks associated with its absence.
-            - Highlight any uncommon or suspicious headers detected during the scan.
-            - **Scanned Headers**: Explicitly list all headers that were analyzed and their configuration details.
-
-            #### 6. Technology Stack and Associated CVEs
-            - **Tech Stack Details**: List the technologies, libraries, and frameworks detected (e.g., Node.js, React, Apache, etc.).
-            - **Vulnerabilities**:
-              - For each detected technology, check for known vulnerabilities (CVE data).
-              - Include a brief description of each CVE along with a hyperlink to the CVE database (e.g., NVD or Mitre).
-              - Example: [CVE-2022-12345](https://nvd.nist.gov/vuln/detail/CVE-2022-12345)
-            - Highlight any outdated or vulnerable components and recommend updates or patches.
-
-            #### 7. Findings and Vulnerabilities (Comprehensive)
-            Group and explain all findings logically:
-            - **Critical Vulnerabilities**: High-risk issues that require immediate attention (e.g., exposed credentials, malicious scripts, or serious misconfigurations).
-            - **Warnings**: Medium-risk issues that need to be addressed but are not urgent.
-            - **Informational Findings**: Observations that could help improve security posture but are not considered vulnerabilities.
-            - **Scanned Components**: Clearly state what was analyzed and detected in this section (e.g., scripts, configurations, directories, files).
-
-            Include relevant links for further reference (e.g., "see: link") if the scan data provides them.
-
-            #### 8. JavaScript and External Resources
-            - **External JavaScript Files**: List all external JavaScript files analyzed and assess their risk (e.g., outdated libraries, suspicious external sources).
-            - **Local JavaScript Files**: Provide details of all local JavaScript files detected and flag any unusual behavior or configuration.
-            - **Scanned Files**: Explicitly mention which files were analyzed in this section and include additional details, such as their paths or contents if available.
-
-            #### 9. Recommendations
-            Provide **specific, actionable recommendations** for each finding:
-            - **Critical Actions**: Steps to resolve urgent vulnerabilities or address high-risk issues.
-            - **Best Practices**: Suggestions for improving the website's overall security posture, such as implementing modern security headers, regular vulnerability scanning, or adding a Web Application Firewall (WAF).
-
-            #### 10. Advanced Insights and Recommendations
-            Include advanced analysis or suggestions, such as:
-            - Potential threats from third-party integrations or dependencies.
-            - Recommendations for monitoring and incident response.
-            - Strategies for implementing proactive defenses (e.g., threat intelligence, enhanced logging).
-
-            ---
-
-            ### **Instructions for the Assistant:**
-            1. Process the raw data thoroughly and dynamically include sections based on the findings.
-            2. Explicitly mention all components, files, or configurations that were scanned and provide details where applicable.
-            3. Provide GDPR compliance insights and analyze whether the website adheres to regulations.
-            4. Cross-reference the detected technologies against known CVEs, including relevant hyperlinks.
-            5. Deliver a clear, professional, and actionable report that aligns with the user’s needs.
-            6. If information is missing (e.g., the URL), ask the user for it before generating the report.
-
-            ### **Raw Data Provided**:
-            {data}
-
-            """
+        """
             
             response = self.llm.invoke(input=formatted_prompt)
             return response.content
@@ -438,8 +447,15 @@ class ChatController:
 
     # Responsible for General Q&A
     def handle_cybersecurity_query(self, query):
+        #return query
         response = self.llm.invoke(input=query)
         return response.content
+        
+    
+     # Responsible for General Q&A
+    def handle_other_query(self, query):
+        return f"Thank you for your question. However, I am a cybersecurity assistant, and my expertise is focused on cybersecurity-related topics. Unfortunately, I won’t be able to assist with your query as it falls outside my domain. If you have any cybersecurity-related questions, I’ll be happy to help!"
+        
 
     # Generate a response using LLM with chat history.
     async def process_prompt(self, prompt, session_id: str, chat_history):
