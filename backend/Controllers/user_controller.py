@@ -1,9 +1,9 @@
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto
 from Services.auth_service import hash_password, verify_password, create_access_token
 from datetime import datetime, timezone
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi import Request
-from utility.utils import to_serializable
+from Utility.utils import to_serializable
 from bson import ObjectId
 
 
@@ -171,32 +171,6 @@ async def change_password(user: UserChangePassword, request: Request):
 
 
 
-    # Find user by email
-    existing_user = await users_collection.find_one({"email": user.email})
-    if not existing_user or not existing_user.get("active", True):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Account does not exist."},
-        )
-
-    # Verify password
-    if not verify_password(user.password, existing_user["password"]):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Your details do not match!"},
-        )
-
-    # Soft delete account
-    await users_collection.update_one(
-        {"email": user.email},
-        {"$set": {"active": False, "updated_at": datetime.now(timezone.utc)}}
-    )
-    return JSONResponse(
-        status_code=200,
-        content={"status": True, "message": "Account deleted successfully!"},
-    )
-
-# Edit Account
 async def edit_account(user: UserEditAccount, request: Request):
     users_collection = request.app.mongodb["users"]
 
@@ -209,11 +183,17 @@ async def edit_account(user: UserEditAccount, request: Request):
         )
 
     # Update user details
-    update_fields = {"updated_at": datetime.now(timezone.utc)}
+    update_fields = {}
     if user.fname:
         update_fields["fname"] = user.fname
+        update_fields["updated_at"] = datetime.now(timezone.utc)
+
     if user.lname:
         update_fields["lname"] = user.lname
+        update_fields["updated_at"] = datetime.now(timezone.utc)
+
+        
+        
     await users_collection.update_one(
         {"email": user.email},
         {"$set": update_fields}
@@ -223,34 +203,7 @@ async def edit_account(user: UserEditAccount, request: Request):
         content={"status": True, "message": "Account updated successfully!"},
     )
 
-# Log Out
-async def logout(user: UserSignin, request: Request):
-    users_collection = request.app.mongodb["users"]
 
-    # Find user by email
-    existing_user = await users_collection.find_one({"email": user.email})
-    if not existing_user or not existing_user.get("active", True):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Account does not exist."},
-        )
-
-    # Verify password
-    if not verify_password(user.password, existing_user["password"]):
-        return JSONResponse(
-            status_code=400,
-            content={"status": False, "message": "Your details do not match!"},
-        )
-
-    # Invalidate token
-    await users_collection.update_one(
-        {"email": user.email},
-        {"$unset": {"token": ""}, "$set": {"updated_at": datetime.now(timezone.utc)}}
-    )
-    return JSONResponse(
-        status_code=200,
-        content={"status": True, "message": "Logged out successfully!"},
-)
 
 
 async def delete_account(user: UserDeleteAccount, request: Request):
@@ -272,4 +225,46 @@ async def delete_account(user: UserDeleteAccount, request: Request):
 
     # Redirect to the homepage after successful deletion
     return RedirectResponse(url="/", status_code=302)
-    
+
+async def upload_profile_photo(user: UserUploadPhoto, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Find user by email
+    existing_user = await users_collection.find_one({"email": user.email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    # Update profile photo URL
+    await users_collection.update_one(
+        {"email": user.email},
+        {"$set": {"profile_photo_url": user.profile_photo_url, "updated_at": datetime.now(timezone.utc)}}
+    )
+    return JSONResponse(
+        status_code=200,
+        content={"status": True, "message": "Profile photo uploaded successfully!"},
+    )
+
+
+async def delete_profile_photo(user: UserDeletePhoto, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Find user by email
+    existing_user = await users_collection.find_one({"email": user.email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    # Remove profile photo URL
+    await users_collection.update_one(
+        {"email": user.email},
+        {"$unset": {"profile_photo_url": ""}, "$set": {"updated_at": datetime.now(timezone.utc)}}
+    )
+    return JSONResponse(
+        status_code=200,
+        content={"status": True, "message": "Profile photo deleted successfully!"},
+    )

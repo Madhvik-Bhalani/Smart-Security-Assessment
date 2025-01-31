@@ -1,130 +1,114 @@
-.profilePage {
-    display: flex;
-    height: 100%;
-}
+/* .user-profile {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 280px; 
+    z-index: 100;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+  }
 
-.profilePage::-webkit-scrollbar {
-    width: 6px;
-    /* Width of the entire scrollbar */
-}
 
-.profilePage::-webkit-scrollbar-thumb {
-    background: #888;
-    /* Color of the scrollbar handle */
-    border-radius: 10px;
-    /* Roundness of the scrollbar handle */
-}
-
-.profilePage::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    /* Color of the scrollbar handle on hover */
-}
-
-.profilePage::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    /* Color of the scrollbar track */
-    border-radius: 10px;
-    /* Roundness of the scrollbar track */
-}
-
-.profilePage .details {
-    flex: 3;
-    overflow-y: scroll;
-    padding-bottom: 50px;
-}
-
-.profilePage .details .wrapper {
-    padding-right: 50px;
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
-.profilePage .details .wrapper .title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.profilePage .details .wrapper .title h1 {
-    font-weight: 300;
-}
-
-.profilePage .details .wrapper .title button {
-    width: 140px;
-    font-weight: bold;
-    padding: 10px 20px;
-    background-color: #fece51;
-    border-radius: 5px;
-    cursor: pointer;
-    border: none;
-}
-
-.profilePage .details .wrapper .info {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.profilePage .details .wrapper .info span {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.profilePage .details .wrapper .info button {
-    width: 140px;
-    font-weight: bold;
-    background-color: #fece51;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: black;
-    cursor: pointer;
-}
-
-.profilePage .details .wrapper .info .deleteDiv {
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-}
-
-.profilePage .details .wrapper .info .deleteDiv .delete {
-    font-weight: bold;
-    width: 140px;
-    background-color: red;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+  .profile-header {
+    background-color: #333;
     color: white;
+    padding: 10px 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    text-align: center;
+  }
+  
+  .profile-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .profile-content {
+    padding: 15px;
+  }
+  
+  .profile-details {
+    margin-bottom: 15px;
+  }
+  
+  .profile-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-bottom: 0px; 
+  }
+  
+  .field-value {
+    font-size: 16px; 
+    font-weight: 600; 
+    color: #333; 
+    text-align: center; 
+    margin: 5px 0; 
+  }
+  
+  .field-label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .action-button {
+    all: unset; 
+    display: block;
+    width: 100%;
+    padding: 4px 5px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+    font-weight: bold;
     cursor: pointer;
-}
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #D6D6D6;
+    border-radius: 10px;
+  }
+  
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .update-button,
+  .change-password-button,
+  .logout-button,
+  .delete-button {
+    text-align: left; 
+  }
+  
+  .update-button:hover,
+  .change-password-button:hover,
+  .logout-button:hover,
+  .delete-button:hover {
+    background-color: #f5f5f5;
+  }
 
-.profilePage .details .wrapper .info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profilePage .rightContainer {
-    flex: 2;
-    background-color: #fcf5f3;
-    height: 100%;
-}
-
-@media (max-width: 738px) {
-    .profilePage .rightContainer {
-        display: none;
+  
+  @media (max-width: 768px) {
+    .user-profile {
+      width: 90%;
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
     }
-}
-
-@media (max-width: 1024px) {
-    .profilePage .rightContainer {
-        display: none;
-    }
-}
-
-.profilePage .rightContainer .wrapper {
-    padding: 0px 20px;
-}
+  }
+   */

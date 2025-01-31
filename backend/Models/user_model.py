@@ -26,7 +26,6 @@ class UserSignup(BaseModel):
     Validate the relationship between fields before creating the model/class instance.
     """
 
-    
     @model_validator(mode="before")
     @classmethod
     def validate_password_match(cls, values):
@@ -35,7 +34,7 @@ class UserSignup(BaseModel):
         if password != confirm_password:
             raise ValueError("Password and confirm password do not match")
         return values
-    
+
     """
     Validate the complexity of the 'password' field after creating the model/class instance.
     """
@@ -76,8 +75,13 @@ class UserEditAccount(BaseModel):
     lname: Optional[str] = Field(None, description="Updated last name")
 
 
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+class UserUploadPhoto(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
+    profile_photo_url: str = Field(..., description="URL of the profile photo to be uploaded")
+
+
+class UserDeletePhoto(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
 
         
 class UserDeleteAccount(BaseModel):

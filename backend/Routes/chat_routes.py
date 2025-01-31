@@ -12,6 +12,8 @@ chat_controller = ChatController()
 class RenameRequest(BaseModel):
     new_chat_name: str
 
+class DeleteRequest(BaseModel):
+    session_id: str
 
 @router.post("/chat/{session_id}", tags=["Chat"])
 async def save_message(
@@ -95,3 +97,47 @@ async def rename_chat(
         raise HTTPException(
             status_code=500, detail=f"Error renaming chat session: {str(e)}"
         )
+
+
+@router.put("/chat/delete", tags=["Chat"])
+async def delete_chat(
+    body: DeleteRequest,
+    request: Request,
+    user_id: str = Depends(Auth.verify_token),
+):
+    try:
+        success = await chat_controller.delete_session(
+            body.session_id, user_id, request
+        )
+        return {
+            "status": "success" if success else "failure",
+            "message": (
+                f"Chat has been deleted "
+                if success
+                else "Failed to delete chat"
+            ),
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error deleting chat session: {str(e)}"
+        )
+        
+
+@router.get("/chat/suggestive-prompt/{session_id}", tags=["Chat"])
+async def get_suggestive_prompt_(
+    request: Request, 
+    user_id: str = Depends(Auth.verify_token),
+    session_id: Optional[str] = None,
+    ):
+    
+    try:
+        prompt = await chat_controller.get_suggestive_prompt(session_id, user_id, request)
+        return {
+            "status": "success",
+            "data": prompt
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error fetching suggestive prompt: {str(e)}"
+        )
+        

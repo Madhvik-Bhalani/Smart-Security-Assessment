@@ -1,87 +1,80 @@
-import React, { useContext, useEffect, useState } from 'react'
-import "./User.css"
-import axios from 'axios'
-import { useNavigate, Link } from 'react-router-dom'
-// import { AuthContext } from "../../context/AuthContext"
+import React, {useState} from "react";
+import "./User.css";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function User() {
-    const [item, setItem] = useState([])
-    const user_fname = localStorage.getItem("fname")
-    const user_lname = localStorage.getItem("lname")
-    const user_email = localStorage.getItem("email")
+    const navigate = useNavigate()
 
-    const navigate = useNavigate();
+    const [isEditProfile, setIsEditProfile] = useState(false)
 
-    // useEffect(() => {
-    //     if (!user_fname) {
-    //         navigate("/login")
-    //     }
-    // }, [currentUser, navigate])
+    const user_fname = localStorage.getItem("fname");
+    const user_lname = localStorage.getItem("lname");
+    const user_email = localStorage.getItem("email");
 
-    const handleLogout = async () => {
+    const handleLogout = () => {
         localStorage.clear();
-        navigate('/')
-    }
-
-
+        navigate("/")
+    };
 
     const handleDelete = async () => {
         try {
-            const token = localStorage.getItem("token")
-    
-            await axios.post(`http://localhost:5000/api/v1/users/delete-account`, {
-                email: user_email
-            } , {
-                withCredentials: true,
-                headers: {
-                    'token': `${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-    
-            // Clear any locally stored data
-            localStorage.clear();
-            
-            // Redirect to homepage
-            navigate("http://localhost:3000/Signup");
-        } catch (err) {
-            console.log(err);
-            // Optionally, show an error message to the user
-        }
-    }
-    
-    return (
-        user_fname && (
-            <div className='profilePage'>
-                <div className="details">
-                    <div className="wrapper">
-                        <div className="title">
-                            <h1>User Information</h1>
-                            <Link to="/profile/update">
-                                <button>Update Profile</button>
-                            </Link>
-                            <Link to="/change-password">
-                                <button>Change Password</button>
-                            </Link>
-                        </div>
-                        <div className="info">
-                            {/* <span><img src="/logo.png" alt="" /></span> */}
-                            <span>Name: <b>{user_fname}</b></span>
-                            <span>Name: <b>{user_lname}</b></span>
-                            <span>email: <b>{user_email}</b></span>
-                            <button onClick={handleLogout}>Log out</button>
-                            <div className="deleteDiv">
-                                <button className="delete" onClick={handleDelete}>Delete Account</button>
-                            </div>
-                        </div>
-                        <div className="title">
-                        </div>
+            const token = localStorage.getItem("token");
 
+            await fetch("http://localhost:5000/api/v1/users/delete-account", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ email: user_email }),
+            });
+
+            localStorage.clear();
+            window.location.href = "/signup"; // Redirect to the signup page
+        } catch (err) {
+            console.error("Error deleting account:", err);
+        }
+    };
+
+    return (
+        <div className="user-profile">
+            <div className="profile-content">
+                <div className="profile-details">
+                    <div className="profile-field">
+                        
+                        <span className="field-value">{user_fname}  {user_lname}</span>
+                    </div>
+                    <div className="profile-field">
+                        
+                        <span className="field-value">{user_email}</span>
                     </div>
                 </div>
-                <div className="rightContainer">
-                    <div className="wrapper"></div>
+                <div className="profile-actions">
+                <button
+                        className="action-button update-button"
+                        onClick={() => {
+                            setIsEditProfile(!isEditProfile); // Local state change
+                            // if (editProfile) {
+                            //     editProfile(!isEditProfile); // Call parent prop function if provided
+                            // }
+                        }}
+                    >
+                        Update Profile
+                    </button>
+                    <button className="action-button change-password-button">
+                        Change Password
+                    </button>
+                    <button className="action-button logout-button" onClick={handleLogout}>
+                        Logout
+                    </button>
+                    <button className="action-button delete-button" onClick={handleDelete}>
+                        Delete Account
+                    </button>
+
                 </div>
-            </div>)
-    )
+
+            </div>
+        </div>
+    );
 }

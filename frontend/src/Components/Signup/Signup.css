@@ -1,12 +1,4 @@
 /* General Styling */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: url('../../assets/pexels-kaplanart-13004149.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: white;
-}
-
 .signup-page {
   display: flex;
   justify-content: space-between;
@@ -14,6 +6,11 @@ body {
   height: 100vh;
   padding: 0 10%;
   gap: 50px;
+  background: url('../../assets/pexels-kaplanart-13004149.jpg') no-repeat center center fixed;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-size: cover;
+  color: white;
 }
 
 /* Signup Branding Section */

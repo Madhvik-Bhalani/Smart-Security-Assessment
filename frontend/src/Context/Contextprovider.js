@@ -12,9 +12,12 @@ function Contextprovider(props) {
         
 
         if (user?.data) {
+            console.log(user.data)
             localStorage.setItem("fname", user?.data.fname.toString())
             localStorage.setItem("lname", user?.data.lname.toString())
             localStorage.setItem("email", user?.data.email.toString())
+            localStorage.setItem("url", user?.data?.profile_photo_url || "");
+
         }
 
     }

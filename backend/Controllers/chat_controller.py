@@ -7,10 +7,17 @@ from vendors.Web_Safe_Guard import web_safe_guard
 from langchain_core.tools import Tool
 import os
 from pydantic import SecretStr
-from utility.utils import generate_session_id, to_serializable
+from Utility.utils import generate_session_id, to_serializable
 from datetime import datetime, timezone
 import time
 from groq import RateLimitError
+from Utility.cve_utils import (
+    extract_technologies_from_query,
+    format_cve_response,
+    fetch_cves_for_last_120_days,
+)
+
+from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
 
 
 class ChatController:
@@ -22,8 +29,8 @@ class ChatController:
             raise Exception("Missing GROQ_API_KEY or MODEL_NAME in .env file.")
 
         # Convert API key to SecretStr
-        #self.groq_api_key = SecretStr(self.groq_api_key)
-        
+        self.groq_api_key = SecretStr(self.groq_api_key)
+
         # Initialize the ChatGroq model
         self.llm = ChatGroq(
             model=self.model_name,
@@ -31,22 +38,6 @@ class ChatController:
             api_key=self.groq_api_key,
             stop_sequences=None,
         )
-
-        # Define tools
-        # self.tools = [
-        #     Tool(
-        #         name="web_safe_guard",
-        #         func=self.assess_url_safety,
-        #         description="Use this tool ONLY to analyze URLs for security vulnerabilities, TLS certificate details, JavaScript links, and provide security recommendations.",
-        #         return_direct=True,
-        #     ),
-        #     Tool(
-        #         name="cybersecurity_query_handler",
-        #         func=self.handle_cybersecurity_query,
-        #         description="Use this tool ONLY to answer general cybersecurity-related questions.",
-        #         return_direct=True,
-        #     ),
-        # ]
 
         self.tools = [
             Tool(
@@ -60,15 +51,25 @@ class ChatController:
                 ),
                 return_direct=True,
             ),
-           Tool(
+            Tool(
                 name="cybersecurity_query_handler",
                 func=self.handle_cybersecurity_query,
                 description=(
-                   "This tool handles only cybersecurity-related inquiries. "
-            "Use it to answer questions about security best practices, vulnerabilities, "
-            "threat intelligence, or to clarify any details related to previous security analyses. "
-            "The tool will not address non-cybersecurity queries and will politely inform the user of its focus on cybersecurity expertise."
+                    "Use this tool to handle any cybersecurity-related questions, "
+                    "provide clarifications about prior analysis, or expand on findings from the 'web_safe_guard' tool. "
+                    "Always aim to provide detailed, easy-to-understand explanations and actionable advice."
+                ),
+                return_direct=True,
             ),
+            Tool(
+                name="cve_query_tool",
+                func=self.fetch_cves_from_query,
+                description=(
+                    "Use this tool to identify technologies or technical terms from a query, fetch relevant CVEs, and generate detailed vulnerability reports. "
+                    "This tool is ideal for queries that reference specific technologies (e.g., Apache, Python, React) or technical vulnerabilities (e.g., authentication, filesystem, XSS). "
+                    "If no recent CVEs are detected, use the LLM to provide a fallback response with older CVE data, broader risks, or relevant insights. "
+                    "Always aim to deliver clear, actionable, and professional reports tailored to the query."
+                ),
                 return_direct=True,
             ),
             Tool(
@@ -77,9 +78,8 @@ class ChatController:
                 description=(
                    "This tool is specifically designed to address inquiries that fall outside the domain of cybersecurity. It focuses on providing assistance with topics unrelated to security best practices, vulnerabilities, or threat intelligence."
             ),
-                return_direct=True,
+               #return_direct=True,
             ),
-          
         ]
 
         # Define the memory store for in-session memory
@@ -88,57 +88,47 @@ class ChatController:
         # Load the structured chat prompt
         self.prompt = hub.pull("hwchase17/structured-chat-agent")
 
-        """
-       Tool(
-                name="cybersecurity_query_handler",
-                func=self.handle_cybersecurity_query,
-                description=(
-                   "This tool handles only cybersecurity-related inquiries. "
-            "Use it to answer questions about security best practices, vulnerabilities, "
-            "threat intelligence, or to clarify any details related to previous security analyses. "
-            "The tool will not address non-cybersecurity queries and will politely inform the user of its focus on cybersecurity expertise."
-    ),
-                return_direct=True,
-            ),
-            
-      2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool. 
-      
-      **Important:**
-    - If the question is outside the scope of cybersecurity, kindly inform the user that you are unable to provide an answer. 
-    - Your expertise is focused solely on cybersecurity, and you are not equipped to answer questions unrelated to this domain.
-    
-    2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool. 
-
-        """
         self.initial_message = """
-    You are a cybersecurity assistant with access to Three tools:
+        You are a cybersecurity assistant with access to three tools:
 
-    1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
-    
-    2. *cybersecurity_query_handler*: Use this tool to answer cybersecurity-related questions, provide clarifications about prior analysis, or expand on findings from the *web_safe_guard* tool.
-    
-    3. *general_assistant*: Use this tool to address non-cybersecurity-related inquiries and provide assistance on general topics outside the scope of cybersecurity.
+        1. *web_safe_guard*: Use this tool to analyze URLs and generate detailed, actionable reports based on raw security scan data. Tailor each report to the findings and provide clear recommendations for improving security.
 
-    
-    **Guidelines:**
-    - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
-    - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
-    
-    
-    
-    Your goal is to provide helpful, user-friendly assistance, focusing on cybersecurity-related topics and maintaining professionalism. Always preserve the integrity of the tool's response.
+        2. *cybersecurity_query_handler*: Use this tool to answer general cybersecurity-related questions, provide clarifications about previous analyses, or expand on findings from the *web_safe_guard* tool.
+        
+        3. *cve_query_tool*:
+        - Use this tool to extract technologies or technical terms from the query, fetch the latest CVEs, and generate detailed reports.
+        - Prioritize this tool for queries that mention specific software, libraries, or vulnerabilities (e.g., Apache, Python, XSS).
+        - If no recent CVEs are found, use your knowledge base or fetch older data to provide relevant insights without explicitly mentioning the absence of recent CVEs.
+        
+        4. *general_assistant*: This tool is designed to handle inquiries unrelated to cybersecurity. It assists with general topics while **excluding** security best practices, vulnerability assessments, and threat intelligence.
+
+
+
+        **Guidelines:**
+        - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
+        - Re-scan a URL only if the user explicitly requests it or if the existing scan data appears outdated or incomplete.
+        - Always provide clear, actionable insights and recommendations based on the data or context provided by the user.
+        - Avoid including unnecessary technical jargon unless specifically requested or relevant to the findings.
+        - *CVE Queries*:
+            - Use the `cve_query_tool` for queries mentioning technologies, software, or vulnerabilities.
+            - If the tool finds no CVEs, generate fallback insights using older CVE data or relevant knowledge without explicitly acknowledging the tool's limitations.
+        - *Restrictions*:
+            - **Do not** use the `general_assistant` tool for **coding-related queries**.
+            - **Do not** use the `general_assistant` tool for **follow-up questions related to reports generated from website scans**.
+
+        Your goal is to provide helpful, user-friendly assistance, tailoring each response to the specific request and context.
+
         """
-
 
     # Initialize memory for a given session, including past chat history.
     def initialize_memory(self, session_id, chat_history):
-        # print("start memory====>")
-        # print(session_id)
-        # print("-----------")
-        # print(chat_history)
-        # print("-----------")
-        # print(self.memory_store)
-        # print("end memory===>")
+        #print("start memory====>")
+        #print(session_id)
+        #print("-----------")
+        #print(chat_history)
+        #print("-----------")
+        #print(self.memory_store)
+        #print("end memory===>")
 
         # Ensure all data in chat_history is serialized and flattened
         chat_history = to_serializable(chat_history)
@@ -181,6 +171,7 @@ class ChatController:
             return_intermediate_steps=False,
             handle_parsing_errors=True,
         )
+
 
     # Create a new chat session.
     async def create_new_session(self, user_id, request):
@@ -281,88 +272,25 @@ class ChatController:
         )
         return {"success": result.modified_count > 0}
 
+
+    async def delete_session(self, session_id, user_id, request):
+        chat_collection = request.app.mongodb["chat_sessions"]
+        result = await chat_collection.delete_one(
+            {"session_id": session_id, "user_id": user_id.get("_id")},
+            
+        )
+        return {"success": result.deleted_count > 0}
+
     # Responsible for Analysing Website
 
     def assess_url_safety(self, url):
         try:
             data = web_safe_guard.get_site_data(url)
 
-        # formatted_prompt = f"""
-        #     You are a cybersecurity expert tasked with analyzing a website's security posture. Below is the raw data from a security scan for a URL. Process this data and generate a detailed, actionable security report tailored to the findings. Exclude static or generic information and focus on insights derived from the raw data provided.
-
-        #     Additionally, if the user requests information about a specific section (e.g., TLS details, findings, or recommendations), extract and present only that section from the report.
-
-        #     ### Raw Data:
-        #     {data}
-
-        #     ### Report Format:
-
-        #     #### 1. Overview
-        #     - **URL**: Include the provided URL.
-        #     - **Domain**: Mention the domain.
-        #     - **Final Resolved URL**: Include if present.
-        #     - **Server**: Specify the hosting provider or server software if available.
-
-        #     #### 2. IP and Network Information
-        #     - List all associated IP addresses and any relevant details about their configuration.
-
-        #     #### 3. TLS Details
-        #     - **Certificate Issuer**: Include issuer information.
-        #     - **Expiration Date**: Mention the expiration date.
-        #     - **TLS Rating**: Provide the rating if available (e.g., A, B, etc.).
-        #     - **Cipher Suite**: Highlight the cipher suite used.
-
-        #     #### 4. Security Ratings
-        #     - Include the following if available:
-        #         - **Overall Rating**: (e.g., B)
-        #         - **TLS Security**: Provide the rating and summary of findings.
-        #         - **Domain Configuration**: Mention the rating and its implications.
-        #         - **General Security**: Highlight any key findings.
-
-        #     #### 5. Findings (Comprehensive)
-        #     Include **all detected findings** from the scan. Group them logically as:
-        #     - **Headers**:
-        #         - List missing or misconfigured headers (e.g., X-Content-Type-Options, CSP).
-        #         - Highlight uncommon headers detected and their contents.
-        #     - **SSL/TLS Details**:
-        #         - Include SSL/TLS-specific findings, including cipher information, uncommon configurations, etc.
-        #     - **Security Flags**:
-        #         - Mention flagged issues such as suspicious or malicious activity, and highlight which tools flagged them (if any).
-        #     - **Other Observations**:
-        #         - Summarize any miscellaneous findings, such as server-specific details, uncommon configurations, or unique elements from the scan.
-
-        #     If any findings were detected and include a **"see: link"** for further details, include it below:
-        #     - **Link to findings**: [See the detailed findings here](insert_the_actual_link_from_raw_data)
-
-        #     #### 6. JavaScript Resources
-        #     - **External**: List external JavaScript files with any associated risks.
-        #     - **Local**: Mention local JavaScript files found.
-
-        #     #### 7. Recommendations
-        #     Provide specific and actionable recommendations based on the findings. Categorize them as:
-        #     - **Critical Actions**: For resolving urgent issues like malicious findings, misconfigured headers, or missing essential security features.
-        #     - **Optional Improvements**: Suggestions for enhancing security, such as:
-        #         - Adding a Web Application Firewall (WAF).
-        #         - Enforcing HTTPS.
-        #         - Regular vulnerability scanning.
-
-        #     #### 8. Advanced Insights
-        #     Include any additional insights if justified by the data, such as:
-        #         - Enhanced threat detection mechanisms.
-        #         - Monitoring third-party integrations.
-        #         - Strategies for hardening overall web application security.
-
-        #     ### Instructions for the LLM:
-        #     1. Dynamically analyze the raw data provided in the template.
-        #     2. Include all findings comprehensively, grouped under logical categories.
-        #     3. Include sections only if applicable to the findings.
-        #     4. **If the user requests a specific section (e.g., Findings or Recommendations), extract and present only that part of the report.**
-
-        #     """
-
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
-              
+      
+        
         ### **Guidelines for Report Generation:**
         1. Analyze the raw data comprehensively and derive insights specific to the findings.
         2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
@@ -429,13 +357,15 @@ class ChatController:
         {data}
 
         """
-            
+
             response = self.llm.invoke(input=formatted_prompt)
             return response.content
-        
+
         except RateLimitError as e:
             error_data = e.response.json()  # Parse the error for additional details
-            wait_time = error_data.get('error', {}).get('reset_in', 420)  # Default to 7 minutes if not provided
+            wait_time = error_data.get("error", {}).get(
+                "reset_in", 420
+            )  # Default to 7 minutes if not provided
             print(f"Rate limit exceeded. Waiting for {wait_time} seconds...")
             time.sleep(wait_time)  # Wait for the cooldown period
             return self.assess_url_safety(formatted_prompt)
@@ -443,26 +373,111 @@ class ChatController:
             print(f"Unexpected error: {ex}")
             raise
 
-      
-
     # Responsible for General Q&A
     def handle_cybersecurity_query(self, query):
-        #return query
         response = self.llm.invoke(input=query)
         return response.content
-        
     
-     # Responsible for General Q&A
+    
+    # Responsible for General Q&A
     def handle_other_query(self, query):
         return f"Thank you for your question. However, I am a cybersecurity assistant, and my expertise is focused on cybersecurity-related topics. Unfortunately, I won’t be able to assist with your query as it falls outside my domain. If you have any cybersecurity-related questions, I’ll be happy to help!"
         
+
+    def query_to_list(self,query):
+        """
+        Convert the query string into a list of technologies/terms.
+        - Cleans the query by removing extra spaces.
+        - Handles inconsistent delimiters like commas, spaces, and "and".
+        - Returns a list of normalized terms.
+        """
+        # Step 1: Replace "and" with a comma for consistent splitting
+        query = query.lower().replace(" and ", ",")
+
+        # Step 2: Remove extra spaces and split into a list
+        tech_list = [term.strip() for term in query.split(",") if term.strip()]
+
+        return tech_list
+
+    def fetch_cves_from_query(self, query):
+        print("query-->")
+        print(query)
+        print("q end--->")
+        """Extract technologies, fetch CVEs, and seamlessly fall back to the LLM or web for older data."""
+        try:
+            # Step 1: Extract technologies using custom logic
+            # tech_list = extract_technologies_from_query(query, self.llm)
+            # print(f"Extracted technologies: {tech_list}")
+
+             # Step 1: Convert query into a list of technologies
+            tech_list = self.query_to_list(query)
+            print(f"Extracted technologies: {tech_list}")
+            
+            if not tech_list:
+                # If no technologies detected, fall back directly to LLM for response generation
+                return self.llm.invoke(
+                    input=f"Generate a detailed response for this query: {query}"
+                ).content
+
+            # # Step 2: Fetch CVEs for detected technologies
+            # cve_data = {}
+            # for tech in tech_list:
+            #     cve_data[tech] = fetch_cves_for_last_120_days(tech, max_result=50)
+
+            # # Step 3: Check if any CVEs were found
+            # print("cve data-->")
+            # print(cve_data)
+            # if any(cve_data.values()):
+            #     # If CVEs are found, format the response
+            #     formatted_response = format_cve_response(cve_data, self.llm)
+            #     return formatted_response
+
+            # Step 2: Fetch CVEs for detected technologies (if any)
+            cve_data = {}
+            if tech_list:
+                for tech in tech_list:
+                    cve_results = fetch_cves_for_last_120_days(tech, max_result=100)
+                    if isinstance(cve_results, list):  # Only add valid     results
+                        cve_data[tech] = cve_results
+
+            # Step 3: Check if any CVEs were found
+            if tech_list and any(cve_data.values()):  # At least one technology has CVEs
+                print("Formatting CVE response...")
+                return format_cve_response(cve_data, self.llm)
+
+                # Step 4: Fallback to LLM for older data or context
+            fallback_prompt = f"""
+                The following technologies or technical terms were  identified: {', '.join(tech_list)}.
+            No recent CVEs were found for these items in the last 120 days. However, generate a response based on:
+            1. Older CVE data or relevant insights from your knowledge base.
+            2. Broader security vulnerabilities or risks associated with these technologies.
+            """
+            fallback_response = self.llm.invoke(input=fallback_prompt).content
+            return fallback_response
+
+        except Exception as e:
+            # Gracefully handle errors by falling back to LLM
+            print(f"Error in fetch_cves_from_query: {str(e)}")
+            return self.llm.invoke(
+                input=f"Generate a fallback response for this query: {query}"
+            ).content
 
     # Generate a response using LLM with chat history.
     async def process_prompt(self, prompt, session_id: str, chat_history):
         # Get the agent executor for the session
         agent_executor = self.get_agent_executor(session_id, chat_history)
-
+        
         # Process the prompt with the agent
         response = agent_executor.invoke({"input": prompt})
-
+        
         return response["output"]
+        
+    
+    
+    async def get_suggestive_prompt(self, session_id, user_id, request):
+        
+        # fetch chat history from database
+        chat_history_with_session = await self.fetch_chat_messages(session_id, user_id, request)
+        
+        # return suggestive promt from past history
+        return generate_suggestive_prompt(self.groq_api_key, self.model_name, chat_history_with_session)
