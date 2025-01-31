@@ -157,6 +157,58 @@ const loadChatHistory = () => {
       SpeechRecognition.startListening({ continuous: false, language: 'en-US' });
     }
   };
+  const cleanMarkdownText = (text) => {
+    return text
+      .replace(/#{1,6}\s?/g, '')       // Remove headers
+      .replace(/\*\*/g, '')            // Remove bold
+      .replace(/\*/g, '')              // Remove italic
+      .replace(/`{3}[\s\S]*?`{3}/g, '') // Remove code blocks
+      .replace(/`/g, '')               // Remove inline code
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Replace links with just the text
+      .replace(/^\s*[-*+]\s/gm, '')    // Remove list markers
+      .replace(/^\s*\d+\.\s/gm, '')    // Remove numbered list markers
+      .replace(/\n{3,}/g, '\n\n')      // Replace multiple newlines with double newlines
+      .trim();
+  };
+  const extractUrlFromInput = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const matches = text.match(urlRegex);
+    if (!matches) return null; // No URL found
+
+    let url = matches[0]; // Get first matched URL
+
+    // ✅ Remove trailing symbols like `/`, `?`, `.`, etc.
+    url = url.replace(/[\/?.,]+$/, ""); 
+
+    return url;
+};
+
+const checkUrlAndGeneratePDF = (responseText, extractedUrl) => {
+  if (!extractedUrl) return false; // Exit early if no URL
+
+  // ✅ Normalize extracted URL (remove protocol and fragment)
+  const sanitizedUrl = extractedUrl
+      .replace(/https?:\/\//, "")  // Remove http/https
+      .replace(/\/$/, "")          // Remove trailing slash
+      .split("#")[0]               // Remove fragment (#q=trash)
+      .toLowerCase();              // Convert to lowercase for case-insensitive match
+
+  // ✅ Normalize response text
+  const sanitizedResponse = responseText.toLowerCase();
+
+  // ✅ Check if URL exists in response
+  if (sanitizedResponse.includes(sanitizedUrl)) {
+      generateAndDownloadPDF(responseText);
+      return true;
+  } else {
+      setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: `The URL (${extractedUrl}) was not found exactly in the response. No PDF generated.`, timestamp: new Date().toLocaleTimeString() }
+      ]);
+      return false;
+  }
+};
+
 
   const generatePDFReport = (responseText) => {
     return new Promise((resolve, reject) => {
@@ -166,8 +218,10 @@ const loadChatHistory = () => {
         const pageWidth = doc.internal.pageSize.getWidth() - 2 * margin;
         const pageHeight = doc.internal.pageSize.getHeight();
         const lineHeight = 7;
-        let cursorY = 40;
+        let cursorY = 55;
         let pageNumber = 1;
+
+        const cleanedText = cleanMarkdownText(responseText);
 
         const img = new Image();
         img.src = logo;
@@ -180,8 +234,8 @@ const loadChatHistory = () => {
           const logoDataUrl = canvas.toDataURL('image/png');
 
           const addHeader = () => {
-            doc.setFillColor(0, 0, 0);
-            doc.rect(0, 0, doc.internal.pageSize.getWidth(), 25, "F");
+           // doc.setFillColor(0, 0, 0);
+           // doc.rect(0, 0, doc.internal.pageSize.getWidth(), 25, "F");
 
             const logoX = -2;
             const logoY = -4;
@@ -191,17 +245,25 @@ const loadChatHistory = () => {
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(16);
-            doc.setTextColor(255, 255, 255);
+            doc.setTextColor(0, 0, 0);
             const headingText = "Astra's Security Analysis";
             const headingWidth = doc.getStringUnitWidth(headingText) * 16 / doc.internal.scaleFactor;
             const headingX = (pageWidth - headingWidth) / 2 + margin;
-            doc.text(headingText, headingX, 12);
+            doc.text(headingText, headingX, 25);
+
+           
 
             doc.setFontSize(10);
             const timestampText = `Generated on: ${new Date().toLocaleString()}`;
             const timestampWidth = doc.getStringUnitWidth(timestampText) * 10 / doc.internal.scaleFactor;
-            const timestampX = (pageWidth - timestampWidth) / 2 + margin;
-            doc.text(timestampText, timestampX, 23);
+           // const timestampX = (pageWidth - timestampWidth) / 2 + margin;
+           const timestampX = pageWidth + margin - timestampWidth; 
+           doc.text(timestampText, timestampX, 38);
+          
+
+           doc.setDrawColor(0);
+           doc.line(margin, 45, pageWidth + margin, 45);
+            
           };
 
           const addPageNumber = () => {
@@ -220,7 +282,7 @@ const loadChatHistory = () => {
                 addPageNumber();
                 doc.addPage();
                 pageNumber++;
-                cursorY = 40;
+                cursorY = 55;
                 addHeader();
                 doc.setTextColor(0, 0, 0);
               }
@@ -230,7 +292,7 @@ const loadChatHistory = () => {
           };
 
           addHeader();
-          addContent(responseText);
+          addContent(cleanedText);
           addPageNumber();
 
           const pdfBase64 = doc.output('datauristring');
@@ -252,7 +314,7 @@ const loadChatHistory = () => {
       const pdfBase64 = await generatePDFReport(responseText);
       const link = document.createElement('a');
       link.href = pdfBase64;
-      link.download = 'Security_Report.pdf';
+      link.download = 'Security_Analysis_Report.pdf';
       link.click();
     } catch (error) {
     }
@@ -273,6 +335,9 @@ const loadChatHistory = () => {
 
   const handleSend = async () => {
     if (input.trim()) {
+
+      const extractedUrl = extractUrlFromInput(input);
+
       setMessages((prev) => [
         ...prev,
         { sender: "user", text: input, timestamp: new Date().toLocaleTimeString() },
@@ -315,13 +380,20 @@ const loadChatHistory = () => {
           { sender: "bot", text: botResponse, timestamp: new Date().toLocaleTimeString() },
         ]);
   
-        const pdfGenerated = checkKeywordsAndGeneratePDF(botResponse);
-        if (pdfGenerated) {
-          setMessages((prev) => [
-            ...prev,
-            { sender: "bot", text: "A PDF report has been generated and downloaded based on the keywords found in the response.", timestamp: new Date().toLocaleTimeString() },
-          ]);
-        }
+        setTimeout(() => {
+          if (extractedUrl) {
+              checkUrlAndGeneratePDF(botResponse, extractedUrl);
+          }
+      }, 500); 
+      
+
+        // const pdfGenerated = checkKeywordsAndGeneratePDF(botResponse);
+        // if (pdfGenerated) {
+        //   setMessages((prev) => [
+        //     ...prev,
+        //     { sender: "bot", text: "A PDF report has been generated and downloaded based on the keywords found in the response.", timestamp: new Date().toLocaleTimeString() },
+        //   ]);
+        // }
       } catch (error) {
         setMessages((prev) => [
           ...prev.filter(msg => !msg.isLoading),
@@ -352,7 +424,7 @@ const loadChatHistory = () => {
     try {
 
 
-      setSessionId(session_id) // Enabling chat in the previous session for follow-up questions.
+      setSessionId(sessionId) // Enabling chat in the previous session for follow-up questions.
 
       const token = localStorage.getItem("token");
   
@@ -425,46 +497,7 @@ const loadChatHistory = () => {
     localStorage.clear();
     navigate("/")
   };
-  const handleNewChat = async () => {
-    try {
-      const token = localStorage.getItem("token");
-  
-      if (!token) {
-        alert("Authorization token not found. Please log in.");
-        return;
-      }
-  
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/chat/newchat",
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-  
-      if (response && response.data) {
-        const newChat = response.data;
-  
-        // Updating chat history with the new chat session
-        setChatHistory((prev) => [
-          { id: newChat.session_id, name: `Chat ${newChat.session_id}` },
-          ...prev,
-        ]);
-  
-   
-        setMessages([
-          { sender: "bot", text: "Hello! I am Astra. How can I assist you today?", timestamp: new Date().toLocaleTimeString() },
-        ]);
-  
-       
-        setSessionId(newChat.session_id);
-      }
-    } catch (error) {
-      alert("Failed to create a new chat. Please try again.");
-    }
-  };
+
   
 
   const handleClickPasswordChange = () => {
@@ -546,33 +579,9 @@ const loadChatHistory = () => {
     }
   };
 
-  const handleUserMenuClick = () => {
-    setShowUserMenu((prev) => !prev);
-  };
-
-  const handleUserAction = (action) => {
-    alert(`User action: ${action}`);
-    setShowUserMenu(false);
-  };
-
   useEffect(() => {
     handleHistory();
   }, []);
-
-  
-
-
-
-  const newchatHandler = () => {
-    setMessages([
-      { sender: "bot", text: "Hello! I am Astra. How can I assist you today?" },
-    ]);
-    setSessionId(null);
-    setInput("");
-  };
-  
-
-
 
   const newchatHandler = () => {
     setMessages([
@@ -591,12 +600,12 @@ const loadChatHistory = () => {
     <img src={astraLogo} alt="Astra Logo" className="sidebar-logo" />
   </div>
   <div className="sidebar-actions">
-    <button className="action-btn new-chat-btn" onClick={handleNewChat}>
+    <button className="action-btn new-chat-btn" onClick={newchatHandler}>
       <FaPlus /> New Chat
     </button>
-    <button className="action-btn marketplace-btn">
+    {/*<button className="action-btn marketplace-btn">
       <FaStore /> Marketplace
-    </button>
+    </button>*/}
   </div>
        
 {/* Chat History */}
@@ -741,7 +750,6 @@ const loadChatHistory = () => {
 </div>
 
       </div>
-
       <div className="chat-messages">
   {messages.map((msg, index) => (
     <div key={index} className={`message ${msg.sender}`}>
@@ -751,16 +759,27 @@ const loadChatHistory = () => {
       <div className={`message-text ${msg.isLoading ? 'loading-indicator' : ''}`}>
         {msg.isLoading ? (
           <div className="loading-text">
-          <span>Analyzing</span>
-          <span className="dot-animation">
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-          </span>
-        </div>
-        
+            <span>Analyzing</span>
+            <span className="dot-animation">
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </span>
+          </div>
         ) : (
-          <ReactMarkdown>
+          <ReactMarkdown
+            className={msg.sender === "bot" ? "markdown-content" : ""}
+            components={{
+              h1: ({ node, ...props }) => <h1 {...props} className="section-header" />,
+              h2: ({ node, ...props }) => <h2 {...props} />,
+              p: ({ node, ...props }) => <p {...props} />,
+              ul: ({ node, ...props }) => <ul {...props} />,
+              li: ({ node, ...props }) => <li {...props} />,
+              pre: ({ node, ...props }) => <pre className="code-block" {...props} />,
+              code: ({ node, ...props }) => <code className="inline-code" {...props} />,
+              blockquote: ({ node, ...props }) => <blockquote className="highlight-box" {...props} />,
+            }}
+          >
             {typeof msg.text === "string" ? msg.text : JSON.stringify(msg.text)}
           </ReactMarkdown>
         )}
@@ -776,6 +795,7 @@ const loadChatHistory = () => {
 </div>
 
 
+
         <div className="chat-input">
            <textarea
         ref={inputRef}
@@ -786,9 +806,9 @@ const loadChatHistory = () => {
         className="chat-input-textarea"
         aria-label="Type your message. Press Enter to send or Shift + Enter for a new line."
       />
-          <button htmlFor="file-upload">
+          {/*<button htmlFor="file-upload">
             <FaPaperclip  />
-          </button>
+          </button>*/}
           <input
             id="file-upload"
             type="file"

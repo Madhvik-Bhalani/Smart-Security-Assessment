@@ -260,7 +260,7 @@ body.dark .dropdown-item:hover {
   padding: 10px 15px;
   border-radius: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: 70%;
+  max-width: 60%;
   border: 1px solid var(--border-color);
   color: var(--text-color);
   position: relative;
@@ -591,6 +591,217 @@ body.dark .loading-indicator {
 }
 
 
+
+/*Markdown*/
+/* Base Markdown Styling */
+.markdown-content {
+  border-radius: 5px;
+  padding: 10px;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.8;
+}
+
+/* Light Theme Markdown */
+body.light .markdown-content {
+  background-color: #ffffff; /* White background */
+  color: #333333; /* Dark gray text */
+}
+
+/* Dark Theme Markdown */
+body.dark .markdown-content {
+  /*background-color: #1e1e1e; /* Darker background */
+  color: #dddddd; /* Light gray text */
+}
+
+/* Headings */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: bold;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
+body.light .markdown-content h1,
+body.light .markdown-content h2,
+body.light .markdown-content h3 {
+  color: #3b5998; /* Blue headings */
+  border-color: #eeeeee;
+}
+
+body.dark .markdown-content h1,
+body.dark .markdown-content h2,
+body.dark .markdown-content h3 {
+  color: #9D4EDD; /* Light purple headings */
+  border-color: #444;
+}
+
+/* Paragraphs */
+.markdown-content p {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+body.light .markdown-content p {
+  color: #555555; /* Light gray for better readability */
+}
+
+body.dark .markdown-content p {
+  color: #cccccc; /* Softer text for dark mode */
+}
+
+/* Lists */
+.markdown-content ul {
+  margin: 12px 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+/* Code Blocks */
+.markdown-content pre {
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+body.light .markdown-content pre {
+  background: #f4f6f8;
+  border: 1px solid #dcdcdc;
+  color: #2c3e50;
+}
+
+body.dark .markdown-content pre {
+  background: rgb(80, 79, 79);
+  border: 1px solid #444;
+  color: #f8fafc;
+}
+
+/* Inline Code */
+.markdown-content code {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+body.light .markdown-content code {
+  background: #eef3f8;
+  color: #1E3A8A;
+}
+
+body.dark .markdown-content code {
+  background: #2e2e2e;
+  color: #facc15; /* Light yellow for visibility */
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-style: italic;
+  border-left: 5px solid;
+}
+
+body.light .markdown-content blockquote {
+  background: #eaf4ff;
+  border-color: #3498db;
+  color: #2c3e50;
+}
+
+body.dark .markdown-content blockquote {
+  background: #2e2e2e;
+  border-color: #9D4EDD;
+  color: #bbbbbb;
+}
+
+/* Horizontal Rule */
+.markdown-content hr {
+  border: 0;
+  height: 1px;
+  margin: 20px 0;
+}
+
+body.light .markdown-content hr {
+  background: #dddddd;
+}
+
+body.dark .markdown-content hr {
+  background: #444;
+}
+
+/* Links */
+.markdown-content a {
+  text-decoration: none;
+}
+
+body.light .markdown-content a {
+  color: #2980b9;
+}
+
+body.dark .markdown-content a {
+  color: #9D4EDD;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+/* Tables */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid;
+  padding: 8px;
+  text-align: left;
+}
+
+body.light .markdown-content th,
+body.light .markdown-content td {
+  border-color: #dddddd;
+  background-color: #f9f9f9;
+}
+
+body.dark .markdown-content th,
+body.dark .markdown-content td {
+  border-color: #444;
+  background-color: #222;
+}
+
+/* Strong (Bold Text) */
+.markdown-content strong {
+  font-weight: bold;
+}
+
+body.light .markdown-content strong {
+  color: black;
+}
+
+body.dark .markdown-content strong {
+  color: white;
+}
+
+/* Italics (Emphasized Text) */
+body.light .markdown-content em {
+  color: #2ecc71; /* Green */
+}
+
+body.dark .markdown-content em {
+  color: #76c893; /* Softer green for dark mode */
+}
 
 
 /* Responsive Design */
