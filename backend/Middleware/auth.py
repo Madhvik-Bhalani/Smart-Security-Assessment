@@ -31,7 +31,7 @@ class Auth:
                 status_code=403,
                 detail="A token is required for authentication!",
             )
-
+        
         try:
             # Decode the token
             decoded = jwt.decode(token, TOKEN_SECRET_KEY, algorithms=["HS256"])
