@@ -1,10 +1,15 @@
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto, SubscriptionRequest
 from Services.auth_service import hash_password, verify_password, create_access_token
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi import Request
+from fastapi import Request, HTTPException  
 from Utility.utils import to_serializable
 from bson import ObjectId
+import stripe
+import os
+
+stripe.api_key = os.getenv("STRIPE_KEY")
+
 
 
 async def signup(user: UserSignup, request: Request):
@@ -18,6 +23,8 @@ async def signup(user: UserSignup, request: Request):
             hashed_password = hash_password(user.password)
 
             token = create_access_token({"_id": str(existing_user["_id"])})
+            hashed_password = hash_password(user.password)
+            
 
             await users_collection.update_one(
                 {"email": user.email},
@@ -47,12 +54,15 @@ async def signup(user: UserSignup, request: Request):
 
     # Create a new user
     hashed_password = hash_password(user.password)
+    subscription_duration = timedelta(days=14)
+    expiration_date = (datetime.now(timezone.utc) + subscription_duration).isoformat()
 
     new_user = {
         "fname": user.fname,
         "lname": user.lname,
         "email": user.email,
         "password": hashed_password,
+        "subscription": f"14 day free trial|expires:{expiration_date}",
         "active": user.active,
         "created_at": datetime.now(timezone.utc),
         "updated_at": datetime.now(timezone.utc),

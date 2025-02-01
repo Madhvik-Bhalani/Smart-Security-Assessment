@@ -1,3 +1,27 @@
+/* Apply styles to the scrollbar */
+::-webkit-scrollbar {
+    width: 6px; /* Thin scrollbar */
+    display: none;
+    
+  }
+  
+  /* Track (background of the scrollbar) */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light gray for a clean look */
+    border-radius: 10px;
+  }
+  
+  /* Handle (the draggable scrolling part) */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Medium gray */
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker gray for hover effect */
+  }
+
 .user-profileUpdate {
     position: fixed;
     top: 0;
@@ -9,6 +33,14 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+
+}
+
+.user-user-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .button-container {
@@ -32,6 +64,7 @@
 .user-formContainer {
     width: 500px;
     height: 500px;
+    overflow-y: scroll;
     border-radius: 12px;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.35);
@@ -80,8 +113,9 @@
 .user-button {
     width: 100%;
     padding: 10px;
+    margin-top: 20px;
     font-size: 1rem;
-    background-color: #9D4EDD ;
+    background-color: #9D4EDD;
     color: white;
     border: none;
     border-radius: 5px;
@@ -91,6 +125,20 @@
 
 .user-button:hover {
     background-color: #6a3497;
+}
+
+.cancel-button-user {
+    margin-top: 20px;
+    padding: 10px;
+    width: 25%;
+    margin-left: auto;
+    font-size: 1rem;
+    background-color: #8b197aeb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .user-span {
@@ -134,7 +182,7 @@
 
 .delete-photo-button:hover {
     background-color: #6a3497;
-    
+
 }
 
 /* File input container */
@@ -144,7 +192,7 @@
     flex-direction: row;
     align-items: center;
     gap: 0px;
-    margin-top: 0px;
+    margin-top: 15px;
 }
 
 /* File input styling */
@@ -172,6 +220,39 @@
     font-size: 0.9rem;
     color: #555;
     text-align: center;
+}
+
+.subscription-info {
+    margin-top: 0px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.subscription-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.subscription-type,
+.subscription-expiration {
+    font-size: 1rem;
+    color: #555;
+}
+
+.upgrade-button {
+    margin-top: 10px;
+    background-color: #ff5722;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upgrade-button:hover {
+    background-color: #e64a19;
 }
 
 

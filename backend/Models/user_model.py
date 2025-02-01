@@ -86,3 +86,8 @@ class UserDeletePhoto(BaseModel):
         
 class UserDeleteAccount(BaseModel):
     email: EmailStr = Field(..., description="Please provide your registered email address")
+
+class SubscriptionRequest(BaseModel):
+    plan_name: str
+    duration: str
+    email: str = Field(..., description="Please provide your registered email address")
