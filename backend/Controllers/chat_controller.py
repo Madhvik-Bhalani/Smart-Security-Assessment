@@ -17,6 +17,8 @@ from Utility.cve_utils import (
     fetch_cves_for_last_120_days,
 )
 
+from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
+
 
 class ChatController:
     def __init__(self):
@@ -70,6 +72,14 @@ class ChatController:
                 ),
                 return_direct=True,
             ),
+            Tool(
+                name="general_assistant",
+                func=self.handle_other_query,
+                description=(
+                   "This tool is specifically designed to address inquiries that fall outside the domain of cybersecurity. It focuses on providing assistance with topics unrelated to security best practices, vulnerabilities, or threat intelligence."
+            ),
+               #return_direct=True,
+            ),
         ]
 
         # Define the memory store for in-session memory
@@ -89,6 +99,10 @@ class ChatController:
         - Use this tool to extract technologies or technical terms from the query, fetch the latest CVEs, and generate detailed reports.
         - Prioritize this tool for queries that mention specific software, libraries, or vulnerabilities (e.g., Apache, Python, XSS).
         - If no recent CVEs are found, use your knowledge base or fetch older data to provide relevant insights without explicitly mentioning the absence of recent CVEs.
+        
+        4. *general_assistant*: This tool is designed to handle inquiries unrelated to cybersecurity. It assists with general topics while **excluding** security best practices, vulnerability assessments, and threat intelligence.
+
+
 
         **Guidelines:**
         - For follow-up questions about a previously scanned website, refer to the existing analysis and provide additional context or clarification without re-scanning.
@@ -98,6 +112,9 @@ class ChatController:
         - *CVE Queries*:
             - Use the `cve_query_tool` for queries mentioning technologies, software, or vulnerabilities.
             - If the tool finds no CVEs, generate fallback insights using older CVE data or relevant knowledge without explicitly acknowledging the tool's limitations.
+        - *Restrictions*:
+            - **Do not** use the `general_assistant` tool for **coding-related queries**.
+            - **Do not** use the `general_assistant` tool for **follow-up questions related to reports generated from website scans**.
 
         Your goal is to provide helpful, user-friendly assistance, tailoring each response to the specific request and context.
 
@@ -105,13 +122,13 @@ class ChatController:
 
     # Initialize memory for a given session, including past chat history.
     def initialize_memory(self, session_id, chat_history):
-        # print("start memory====>")
-        # print(session_id)
-        # print("-----------")
-        # print(chat_history)
-        # print("-----------")
-        # print(self.memory_store)
-        # print("end memory===>")
+        #print("start memory====>")
+        #print(session_id)
+        #print("-----------")
+        #print(chat_history)
+        #print("-----------")
+        #print(self.memory_store)
+        #print("end memory===>")
 
         # Ensure all data in chat_history is serialized and flattened
         chat_history = to_serializable(chat_history)
@@ -360,6 +377,12 @@ class ChatController:
     def handle_cybersecurity_query(self, query):
         response = self.llm.invoke(input=query)
         return response.content
+    
+    
+    # Responsible for General Q&A
+    def handle_other_query(self, query):
+        return f"Thank you for your question. However, I am a cybersecurity assistant, and my expertise is focused on cybersecurity-related topics. Unfortunately, I won’t be able to assist with your query as it falls outside my domain. If you have any cybersecurity-related questions, I’ll be happy to help!"
+        
 
     def query_to_list(self,query):
         """
@@ -443,8 +466,18 @@ class ChatController:
     async def process_prompt(self, prompt, session_id: str, chat_history):
         # Get the agent executor for the session
         agent_executor = self.get_agent_executor(session_id, chat_history)
-
+        
         # Process the prompt with the agent
         response = agent_executor.invoke({"input": prompt})
-
+        
         return response["output"]
+        
+    
+    
+    async def get_suggestive_prompt(self, session_id, user_id, request):
+        
+        # fetch chat history from database
+        chat_history_with_session = await self.fetch_chat_messages(session_id, user_id, request)
+        
+        # return suggestive promt from past history
+        return generate_suggestive_prompt(self.groq_api_key, self.model_name, chat_history_with_session)

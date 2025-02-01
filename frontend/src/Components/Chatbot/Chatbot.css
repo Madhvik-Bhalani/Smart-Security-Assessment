@@ -804,6 +804,106 @@ body.dark .markdown-content em {
 }
 
 
+/* Wrapper for Suggestive Prompts */
+.suggestive-prompts-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px; /* Add spacing below the bot message */
+}
+
+/* Astra Avatar During Suggesting */
+.suggestive-prompts-wrapper img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Loader Phase (Suggesting...) */
+.suggestive-prompts-wrapper.loading {
+  display: flex;
+  align-items: center;
+}
+
+.message-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #9D4EDD; /* Purple for consistency */
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.copy-button:hover {
+  color: #5A189A; /* Darker purple on hover */
+}
+
+
+/* Remove Astra Avatar When Suggestions Are Ready */
+.suggestive-prompts-wrapper:not(.loading) img {
+  display: none;
+}
+
+.copy-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: gray;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.copy-button:hover {
+  color: black;
+}
+
+/* Suggestive Prompts Styling */
+.suggestive-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 50px; /* Aligns with bot messages */
+  margin-top: 0;
+}
+
+/* Suggestion Buttons */
+.suggestion-btn {
+  background-color: #4290bd; /* Primary Blue */
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.suggestion-btn:hover {
+  background-color: #57acdc; /* Lighter Blue on Hover */
+}
+
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 600px) {
+  .suggestive-prompts {
+    flex-direction: column;
+    margin-left: 10px; /* Adjust alignment for smaller screens */
+  }
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .chatbot-sidebar {
