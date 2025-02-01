@@ -1,8 +1,37 @@
 import React from "react";
 import { motion } from "framer-motion";
 import "./Pricing.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Pricing = ({ refPricing }) => {
+const Pricing = ({ refPricing, type, duration }) => {
+
+  const navigate = useNavigate()
+
+  const email = localStorage.getItem("email")
+  const handlePayment = async (duration, pkg) => {
+    if(!email){
+      navigate("/signin")
+    }
+    const response = await axios({
+      method: "POST",
+      url: "http://localhost:5000/api/v1/users/create-subscription",
+      data: {
+        duration: duration,
+        plan_name: pkg,
+        email: email
+      },
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    if(response.data){
+      console.log(response.data)
+      window.location.href = response.data?.session.url
+    }
+  }
+
+
   const cardVariants = {
     hidden: { opacity: 0, y: 100 },
     visible: {
@@ -47,12 +76,12 @@ const Pricing = ({ refPricing }) => {
         whileInView="visible"
       >
         <motion.div className="pricing-card side" variants={cardVariants}>
-          <h3 className="pricing-title">Pay Per Use</h3>
+          <h3 className="pricing-title">Monthly Plan</h3>
           <p className="pricing-description">
             Detailed cybersecurity report for each request.
           </p>
-          <div className="pricing-price">€4</div>
-          <button className="pricing-button">Subscribe</button>
+          <div className="pricing-price">€15</div>
+          <button className="pricing-button" onClick={() => handlePayment("month", "monthly")}>Subscribe</button>
           <ul className="pricing-features">
             <li>✔ One report per request</li>
             <li>✔ AI-powered detailed analysis</li>
@@ -62,13 +91,13 @@ const Pricing = ({ refPricing }) => {
 
         <motion.div className="pricing-card center" variants={cardVariants}>
           <h3 className="pricing-title">
-            Annual Plan <span className="popular-badge">Best Value</span>
+            6 Month Plan <span className="popular-badge">Best Value</span>
           </h3>
           <p className="pricing-description">
             Comprehensive protection with unlimited reports for a year.
           </p>
-          <div className="pricing-price">€150</div>
-          <button className="pricing-button">Subscribe</button>
+          <div className="pricing-price">€80</div>
+          <button className="pricing-button" onClick={() => handlePayment("6 month", "6 month")}>Subscribe</button>
           <ul className="pricing-features">
             <li>✔ Unlimited reports</li>
             <li>✔ Priority support and troubleshooting</li>
@@ -79,12 +108,12 @@ const Pricing = ({ refPricing }) => {
         </motion.div>
 
         <motion.div className="pricing-card side" variants={cardVariants}>
-          <h3 className="pricing-title">Monthly Plan</h3>
+          <h3 className="pricing-title">One Year Plan</h3>
           <p className="pricing-description">
             Unlimited cybersecurity reports every month.
           </p>
-          <div className="pricing-price">€15</div>
-          <button className="pricing-button">Subscribe</button>
+          <div className="pricing-price">€140</div>
+          <button className="pricing-button" onClick={() => handlePayment("year", "yearly")}>Subscribe</button>
           <ul className="pricing-features">
             <li>✔ 24/7 support for queries</li>
             <li>✔ Personalized security suggestions</li>
@@ -96,4 +125,4 @@ const Pricing = ({ refPricing }) => {
   );
 };
 
-export default Pricing;
+export default Pricing;

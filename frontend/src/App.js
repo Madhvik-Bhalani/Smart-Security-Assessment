@@ -10,6 +10,10 @@ import InvalidRoute from "./Components/InvalidRoute/InvalidRoute";
 import User from "./Components/User/User"
 import UserUpdate from "./Components/UserUpdate/UserUpdate"
 import ChangePassword from "./Components/ChangePassword/ChangePassword"
+import Pricing from "./Components/Pricing/Pricing";
+import PaymentSuccessPage from "./Components/Success/Success";
+import Fail from "./Components/Fail/Fail"
+
 
 function App() {
 
@@ -21,6 +25,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile/update" element={<UserUpdate />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/success" element={<PaymentSuccessPage />} />
+        <Route path="/fail" element={<Fail />} />
+        <Route path="/subscription" element={<Pricing />} />
 
         <Route
           path="/signin"
