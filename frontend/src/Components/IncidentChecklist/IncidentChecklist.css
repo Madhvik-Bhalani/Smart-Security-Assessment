@@ -1,0 +1,137 @@
+/* Page Background */
+.incident-page {
+  background: url("../../assets/nlpbg.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  min-height: 100vh;
+  padding: 50px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header */
+.incident-header h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #9d4edd;
+  margin-bottom: 20px;
+}
+
+.incident-header p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  color: white;
+  line-height: 1.6;
+}
+
+
+/* Checklist Container */
+.checklist-container {
+  background-color: #1a1a2e;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Checklist Title */
+.checklist-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #9d4edd;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  margin-bottom: 20px;
+  background: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 20px;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #9d4edd;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-container p {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 0.9rem;
+  top: 0;
+}
+
+/* Checklist Steps */
+.checklist-steps {
+  list-style: none;
+  padding: 0;
+}
+
+.checklist-step {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #222;
+  border-radius: 10px;
+  border: 1px solid #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.checklist-step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(157, 78, 221, 0.5);
+}
+
+/* Step Header */
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+/* Step Details */
+.step-details {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+/* Buttons */
+.details-button {
+  background: transparent;
+  border: none;
+  color: #9d4edd;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.details-button:hover {
+  color: #d6a5ff;
+}
+
+.export-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background: #9d4edd;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.export-button:hover {
+  background: #6e36c3;
+}
