@@ -1,0 +1,228 @@
+/* Wrapper */
+.quiz-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url("../../assets/nlpbg.png") no-repeat center center fixed;
+    padding: 20px;
+  }
+  
+  /* Container */
+  .quiz-container {
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+  }
+
+  /*Current Score*/
+  .current-score {
+    color: white;
+    font-size: 2rem; 
+    font-weight: bold; 
+  }
+  
+  
+  /* Title */
+  .quiz-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #9d4edd;
+    margin-bottom: 20px;
+  }
+  
+  /* High Score */
+  .high-score {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #f7f3fc;
+    margin-bottom: 30px;
+  }
+  
+  /* Divider */
+  .quiz-divider {
+    width: 50%;
+    height: 2px;
+    margin: 0 auto 20px auto;
+    background: #ffffff;
+    opacity: 0.6;
+  }
+  
+  /* Quiz Box */
+  .quiz-box {
+    background: #1e1e2f;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  /* Quiz Question */
+  .quiz-question {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Quiz Options */
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .quiz-option {
+    background: #9d4edd;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+  }
+  
+  .quiz-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(157, 78, 221, 0.6);
+  }
+  
+  .correct {
+    background: #28a745 !important; /* Green */
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.7);
+  }
+  
+  .incorrect {
+    background: #dc3545 !important; /* Red */
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.7);
+  }
+  
+  /* Feedback */
+  .quiz-feedback {
+    font-size: 1rem;
+    color: white;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.5s ease-out;
+  }
+  
+  /* Next Button */
+  .next-button {
+    background: #9d4edd;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .next-button:hover {
+    transform: scale(1.1);
+    background: #7a3cb7;
+    box-shadow: 0 10px 25px rgba(122, 60, 183, 0.6);
+  }
+  
+  /* Quiz Complete */
+  .quiz-complete-box {
+    background-color: #1e1e2f; 
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: 20px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .quiz-complete-box h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #9d4edd;
+    margin-bottom: 10px;
+  }
+  
+  .quiz-complete-box p {
+    font-size: 1.8rem;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .quiz-complete-box .reset-button {
+    background-color: #9d4edd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .quiz-complete-box .reset-button:hover {
+    background-color: #b76df4;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
+  .reset-button {
+    background: #9d4edd;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .reset-button:hover {
+    transform: scale(1.1);
+    background: #7a3cb7;
+    box-shadow: 0 10px 25px rgba(122, 60, 183, 0.6);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
