@@ -62,3 +62,4 @@ passlib[bcrypt]
 pyjwt
 email-validator
 stripe
+tldextract

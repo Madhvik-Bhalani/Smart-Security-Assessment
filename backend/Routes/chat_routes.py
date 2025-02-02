@@ -160,3 +160,13 @@ async def get_chat_summarize_(
         )
         
         
+# Fetch Reports for Authenticated User
+@router.get("/fetch-reports", tags=["Report"])
+async def fetch_url_reports(request: Request, user_id: str = Depends(Auth.verify_token)):
+    try:
+        reports = await chat_controller.fetch_reports(user_id, request)
+        return reports
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error fetching Reports: {str(e)}"
+        )

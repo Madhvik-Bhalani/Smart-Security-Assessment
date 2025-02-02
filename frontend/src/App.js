@@ -36,21 +36,17 @@ function App() {
 
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        {/* Redirect / to /chat if the user is authenticated */}
+        
+        {/* Redirect from / to /chat if the user is authenticated */}
         <Route path="/" element={isAuthenticated() ? <Navigate to="/chat" replace /> : <Home />} />
+        <Route path="/signup" element={isAuthenticated() ? <Navigate to="/chat" replace /> :  <Signup />} />
+        <Route path="/signin" element={ isAuthenticated() ? <Navigate to="/chat" replace /> : <Signin />} />
 
-        <Route path="/signup" element={<Signup />} />
         <Route path="/profile/update" element={<ProtectedRoute element={<UserUpdate />} /> } />
         <Route path="/change-password" element={<ProtectedRoute element={<ChangePassword />}/> } />
         <Route path="/success" element={<ProtectedRoute element={<PaymentSuccessPage />} /> } />
         <Route path="/fail" element={<ProtectedRoute element={<Fail />}/>} />
         <Route path="/subscription" element={<ProtectedRoute element={<Pricing />} />} />
-
-        <Route
-          path="/signin"
-          element={<Signin />}
-        />
         <Route path="/chat" element={<ProtectedRoute element={<Chatpage />} />} />
 
         <Route path="*" element={<InvalidRoute />} />

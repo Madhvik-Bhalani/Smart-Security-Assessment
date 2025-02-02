@@ -192,6 +192,8 @@ class ChatController:
     # Save a message to an existing session or create a new session if none exists.
     async def save_message_or_create_new(self, session_id, user_id, message, request):
         chat_collection = request.app.mongodb["chat_sessions"]
+        self.current_user_id = user_id
+        self.request = request
 
         if session_id == "first-message":
             # Create a new session dynamically
@@ -256,6 +258,8 @@ class ChatController:
         chat_collection = request.app.mongodb["chat_sessions"]
         sessions = await chat_collection.find({"user_id": user_id.get("_id")}).sort("updated_at", -1).to_list(100)
         return {"sessions": to_serializable(sessions)}
+    
+ 
 
     # Rename a chat session.
     async def rename_session(self, session_id, user_id, new_name, request):
@@ -308,16 +312,66 @@ class ChatController:
         return cve_data
 
 
+       # Fetch all url Reports for a user.
+    async def fetch_reports(self, user_id, request):
+        url_report_collection = request.app.mongodb["url_reports"]
+        print(user_id)
+        reports = await url_report_collection.find({"user_id": user_id.get("_id")}).sort("timestamp", -1).to_list(100)
+        print(reports)
+        return {"Reports": to_serializable(reports)}
+    
+    def process_and_store_scan_results(self, url, security_scan_data, detected_tech_stack, cve_results_for_tech_stack):
+        """
+        Processes security scan results and stores them in MongoDB.
+        """
+        try:
+            # Extract scan results
+            virustotal_report = security_scan_data[0]
+            sucuri_report = security_scan_data[1]
+            nikto_report = security_scan_data[2]
+
+            # Get user ID and request object from the instance
+            userid = self.current_user_id
+            request = self.request
+
+            # Get MongoDB collection reference
+            url_report_collection = request.app.mongodb["url_reports"]
+
+            # Construct the MongoDB document
+            url_report_entry = {
+                "user_id": userid.get("_id"),
+                "url": url,
+                "virustotal_report": virustotal_report,  
+                "sucuri_report": sucuri_report,  
+                "nikto_report": nikto_report,  
+                "detected_tech_stack": detected_tech_stack,  
+                "cves_for_detected_tech": cve_results_for_tech_stack,  
+                "timestamp": datetime.now(timezone.utc),  
+            }
+
+            # Insert the document into MongoDB
+            url_report_collection.insert_one(url_report_entry)
+            print("Scan results successfully stored in MongoDB.")
+
+        except Exception as e:
+            print(f"Error while processing and storing scan results: {e}")
+
+
     def assess_url_safety(self, url):
         try:
             
             data = web_safe_guard.get_site_data(url) # fetch scan web data data 
             tech_stack = fetch_tech_stack_from_query(url) # fetch tech stack
             cve_results_on_tech_stack = self.fetch_CVEs_based_on_tech_stack(tech_stack) #  fetch CVEs based on Tech Stack
+        
             
             data.append(cve_results_on_tech_stack) # add CVEs data based on tech stack
             data.append(tech_stack) # add tech stack
-
+            
+           
+            # Process scan results and store them
+            self.process_and_store_scan_results(url, data, tech_stack, cve_results_on_tech_stack)
+           
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
         ### **Guidelines for Report Generation:**
@@ -471,19 +525,6 @@ class ChatController:
                 return self.llm.invoke(
                     input=f"Generate a detailed response for this query: {query}"
                 ).content
-
-            # # Step 2: Fetch CVEs for detected technologies
-            # cve_data = {}
-            # for tech in tech_list:
-            #     cve_data[tech] = fetch_cves_for_last_120_days(tech, max_result=50)
-
-            # # Step 3: Check if any CVEs were found
-            # print("cve data-->")
-            # print(cve_data)
-            # if any(cve_data.values()):
-            #     # If CVEs are found, format the response
-            #     formatted_response = format_cve_response(cve_data, self.llm)
-            #     return formatted_response
 
             # Step 2: Fetch CVEs for detected technologies (if any)
             cve_data = {}
