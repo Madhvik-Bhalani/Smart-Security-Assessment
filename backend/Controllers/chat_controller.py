@@ -254,9 +254,7 @@ class ChatController:
     # Fetch all chat sessions for a user.
     async def fetch_sessions(self, user_id, request):
         chat_collection = request.app.mongodb["chat_sessions"]
-        sessions = await chat_collection.find({"user_id": user_id.get("_id")}).to_list(
-            100
-        )
+        sessions = await chat_collection.find({"user_id": user_id.get("_id")}).sort("updated_at", -1).to_list(100)
         return {"sessions": to_serializable(sessions)}
 
     # Rename a chat session.

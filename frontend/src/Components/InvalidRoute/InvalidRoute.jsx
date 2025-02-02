@@ -12,7 +12,7 @@ const InvalidRoute = () => {
             "none", // icon
             "", // title
             "Oops! The page you're looking for doesn't exist.", // text message
-            "Redirecting you to the home page...", // footer message
+            "Redirecting you to the sign in page...", // footer message
             () => navigate("/signin"), // Callback for redirection
             3000, // coustom timeout
             PageNotFoundImg, // img url
