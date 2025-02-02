@@ -16,8 +16,9 @@ from Utility.cve_utils import (
     format_cve_response,
     fetch_cves_for_last_120_days,
 )
-
+from Utility.tech_stack_utils import fetch_tech_stack_from_query
 from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
+from Controllers.chat_summarize_controller import generate_chat_summarization
 
 
 class ChatController:
@@ -280,15 +281,45 @@ class ChatController:
         return {"success": result.deleted_count > 0}
 
     # Responsible for Analysing Website
+    
+    def fetch_CVEs_based_on_tech_stack(self, tech_stack):
+        
+        # To check all technologies in tech_stack:
+        all_tech_stacks = []
+
+        # Collect all technologies from the tech_stack dictionary into a single list
+        all_tech_stacks.extend(tech_stack['client_side_tech_stack'])
+        all_tech_stacks.extend(tech_stack['server_side_tech_stack'])
+        all_tech_stacks.extend(tech_stack['js_libraries_used'])
+
+            
+        cve_data = {}  # Initialize the dictionary to store CVE results
+    
+        if all_tech_stacks:
+            for tech in all_tech_stacks:
+                cve_results = fetch_cves_for_last_120_days(tech, max_result=10)
+                if isinstance(cve_results, list):  # Only add valid results
+                    for cve in cve_results:
+                        cve.pop('description', None)
+                        cve.pop('last_modified_date', None)
+                
+                    cve_data[tech] = cve_results
+    
+        return cve_data
+
 
     def assess_url_safety(self, url):
         try:
-            data = web_safe_guard.get_site_data(url)
+            
+            data = web_safe_guard.get_site_data(url) # fetch scan web data data 
+            tech_stack = fetch_tech_stack_from_query(url) # fetch tech stack
+            cve_results_on_tech_stack = self.fetch_CVEs_based_on_tech_stack(tech_stack) #  fetch CVEs based on Tech Stack
+            
+            data.append(cve_results_on_tech_stack) # add CVEs data based on tech stack
+            data.append(tech_stack) # add tech stack
 
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
-      
-        
         ### **Guidelines for Report Generation:**
         1. Analyze the raw data comprehensively and derive insights specific to the findings.
         2. Exclude static or generic information. Provide meaningful, actionable insights derived from the raw data.
@@ -332,12 +363,36 @@ class ChatController:
         - **External JavaScript Files**: Highlight external JavaScript files and assess their risk (e.g., outdated libraries, suspicious external sources).
         - **Local JavaScript Files**: List local JavaScript files and flag any unusual behavior or configuration.
         
-        #### 7. Recommendations
+        #### 7. Technology Stack
+        - **Technology Stack**: List all technologies (e.g., frameworks, libraries, servers) used by the website, such as JavaScript frameworks, server-side languages, and external resources.
+
+        #### 8. Related CVEs
+        - **Related CVEs**: For each technology identified, provide CVE references with hyperlinks to vulnerabilities associated with those technologies.
+        - Example: **JavaScript**:
+            - [CVE-2024-45153](https://www.cve.org/CVERecord?id=CVE-2024-45153)  
+                - **Published Date**: YYYY-MM-DD
+                - **Severity**: Medium  
+                - **Exploitability Score**: 2.3  
+                - **Impact Score**: 2.7  
+            - [CVE-2024-8743](https://www.cve.org/CVERecord?id=CVE-2024-8743)  
+                - **Published Date**: YYYY-MM-DD
+                - **Severity**: Medium  
+                - **Exploitability Score**: 2.1  
+                - **Impact Score**: 2.5  
+
+        - Example: **Python/Django**: 
+            - [CVE-2024-12345](https://www.cve.org/CVERecord?id=CVE-2024-12345)  
+                - **Published Date**: YYYY-MM-DD
+                - **Severity**: High  
+                - **Exploitability Score**: 3.5  
+                - **Impact Score**: 3.8
+  
+        #### 8. Recommendations
         Provide **specific, actionable recommendations** for each finding:
         - **Critical Actions**: Steps to resolve urgent vulnerabilities or address high-risk issues.
         - **Best Practices**: Suggestions for improving the website's overall security posture, such as implementing modern security headers, regular vulnerability scanning, or adding a Web Application Firewall (WAF).
         
-        #### 8. Advanced Insights and Recommendations
+        #### 9. Advanced Insights and Recommendations
         Include advanced analysis or suggestions, such as:
         - Potential threats from third-party integrations or dependencies.
         - Recommendations for monitoring and incident response.
@@ -470,8 +525,7 @@ class ChatController:
         
         return response["output"]
         
-    
-    
+        
     async def get_suggestive_prompt(self, session_id, user_id, request):
         
         # fetch chat history from database
@@ -479,3 +533,12 @@ class ChatController:
         
         # return suggestive promt from past history
         return generate_suggestive_prompt(self.groq_api_key, self.model_name, chat_history_with_session)
+        
+    
+    async def get_chat_summarize(self, session_id, user_id, request):
+        
+        # fetch chat history from database
+        chat_history_with_session = await self.fetch_chat_messages(session_id, user_id, request)
+        
+        # return suggestive promt from past history
+        return generate_chat_summarization(self.groq_api_key, self.model_name, chat_history_with_session)
