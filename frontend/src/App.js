@@ -41,11 +41,11 @@ function App() {
         <Route path="/" element={isAuthenticated() ? <Navigate to="/chat" replace /> : <Home />} />
 
         <Route path="/signup" element={<Signup />} />
-        <Route path="/profile/update" element={<UserUpdate />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/success" element={<PaymentSuccessPage />} />
-        <Route path="/fail" element={<Fail />} />
-        <Route path="/subscription" element={<Pricing />} />
+        <Route path="/profile/update" element={<ProtectedRoute element={<UserUpdate />} /> } />
+        <Route path="/change-password" element={<ProtectedRoute element={<ChangePassword />}/> } />
+        <Route path="/success" element={<ProtectedRoute element={<PaymentSuccessPage />} /> } />
+        <Route path="/fail" element={<ProtectedRoute element={<Fail />}/>} />
+        <Route path="/subscription" element={<ProtectedRoute element={<Pricing />} />} />
 
         <Route
           path="/signin"
