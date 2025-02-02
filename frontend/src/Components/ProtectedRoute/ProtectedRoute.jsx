@@ -20,12 +20,20 @@ const ProtectedRoute = ({ element }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
+    if (token) {
+      try {
+        if (isTokenExpired(token)) {
+          alert.notify(false, "Session expired! Please login again.");
+          localStorage.removeItem("token"); // Remove expired token
+          navigate("/signin");
+        }
+      } catch (error) {
+        alert.notify(false, "Invalid token! Please login again.");
+        localStorage.removeItem("token"); // Remove invalid token
+        navigate("/signin");
+      }
+    } else {
       alert.notify(false, "Access denied! Please login to continue.");
-      navigate("/signin");
-    } else if (isTokenExpired(token)) {
-      alert.notify(false, "Session expired! Please login again.");
-      localStorage.removeItem("token"); // Remove expired token
       navigate("/signin");
     }
   }, [alert, navigate]);
