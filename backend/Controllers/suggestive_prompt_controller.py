@@ -13,11 +13,23 @@ def generate_suggestive_prompt(groq_api_key, model_name, chat_history):
 
     # Construct a system prompt to generate suggestive prompts
     system_prompt = (
-        "Based on the following chat history and the user's latest query, generate 2-3 related and suggestive questions "
-        "that deepen the conversation or provide new angles for exploration. Keep the questions meaningful and engaging."
-        "Do not include any introductory text, explanations, or extra formatting—only output the questions as separate lines."
-        "If the last question is about CVEs, generate follow-up questions such as whether the user wants to scan a specific language version or check for other CVE-related details."
-    )
+            "Look at the chat history and the user's latest message, then suggest 2-3 follow-up questions that feel natural and engaging. "
+        "Make the conversation flow smoothly by offering insightful or thought-provoking questions that help the user dive deeper into the topic. "
+        "Keep the tone interactive and friendly while ensuring the user remains in control of the discussion. "
+        "Avoid any introductions or explanations—just present the questions as separate lines for easy selection. "
+        
+        "If the last question is about CVEs, generate the following types of follow-up questions: "
+        "- 'Do you have any specific version of the tech stack in question you need my help with?' "
+        "- 'Do you want the latest CVEs for [tech stack vendor]?' "
+        "- 'Are you looking for CVEs related to a particular vulnerability type or severity level?' "
+        "Replace '[tech stack vendor]' dynamically with the relevant technology or vendor mentioned in the conversation. "
+        
+        "If the user asks about a security standard like GDPR, HIPAA, PCI DSS, or similar, generate the following types of follow-up questions: "
+        "- 'How can I make my website [security standard] compliant?' "
+        "- 'What are the key requirements for [security standard] compliance?' "
+        "- 'Can you guide me on implementing [security standard] controls in my system?' "
+        "Replace '[security standard]' dynamically with the mentioned standard."
+        )
 
     query = next((msg['text'] for msg in reversed(chat_history) if msg['sender'] == 'user'), None)
 
