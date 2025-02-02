@@ -121,6 +121,49 @@ const Chatbot = ({ onClose }) => {
     }
   };
 
+
+
+  // fetch report starts
+
+  const [reportsData, setReportsData] = useState(false);
+
+  const handleFetchReports = async () => {
+    try {
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `http://localhost:5000/api/v1/fetch-reports`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      if (response && response.data) {
+        console.log("report response-->");
+        console.log(response.data);
+        
+        setReportsData(response.data)
+      } else {
+        throw new Error("Invalid response format.");
+      }
+    } catch (error) {
+      alert("Failed to fetch reports. Please try again.");
+    }
+  };
+
+
+  useEffect(() => {
+    handleFetchReports()
+  }, [])
+
+  // fetch report ends
+
+
+
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -655,27 +698,27 @@ const Chatbot = ({ onClose }) => {
     try {
       setIsLoading(true); // Start loading indicator
       setShowUserMenu(null); // Close dropdown when summarize starts
-  
+
       const token = localStorage.getItem("token");
-  
+
       const response = await axios.get(
         `http://localhost:5000/api/v1/chat/summarize/${sessionId}`,
         { headers: { Authorization: token } }
       );
-  
+
       if (response.data.status === "success") {
         const summaryText = response.data.data;
-  
+
         // Generate and download the PDF
         const pdfBase64 = await generatePDFReport(summaryText);
         const link = document.createElement("a");
         link.href = pdfBase64;
         link.download = "Chat_Summary.pdf";
         link.click();
-  
+
         // Show popup notification
         setIsPopupVisible(true);
-  
+
         // Hide popup after 3 seconds
         setTimeout(() => setIsPopupVisible(false), 3000);
       } else {
@@ -688,10 +731,10 @@ const Chatbot = ({ onClose }) => {
       setIsLoading(false); // End loading indicator
     }
   };
-  
-  
-  
-  
+
+
+
+
 
 
   const handleClickDelete = () => {
@@ -738,7 +781,7 @@ const Chatbot = ({ onClose }) => {
 
     setShowUserMenu(null);
   };
-  
+
 
   useEffect(() => {
     handleHistory();
@@ -761,18 +804,18 @@ const Chatbot = ({ onClose }) => {
   return (
     <div className="chatbot-wrapper">
 
-       {/* Add the loading overlay here */}
-    {isLoading && (
-      <div className="loading-overlay">
-        <div className="spinner"></div>
-        <p>Generating Summary...</p>
-      </div>
-    )}
-    {isPopupVisible && (
-  <div className="popup-notification">
-    <p>Your chat summary has been downloaded!</p>
-  </div>
-)}
+      {/* Add the loading overlay here */}
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>Generating Summary...</p>
+        </div>
+      )}
+      {isPopupVisible && (
+        <div className="popup-notification">
+          <p>Your chat summary has been downloaded!</p>
+        </div>
+      )}
 
       {/* Sidebar */}
       <div className="chatbot-sidebar">
@@ -783,7 +826,7 @@ const Chatbot = ({ onClose }) => {
           <button className="action-btn new-chat-btn" onClick={newchatHandler}>
             <FaPlus /> New Chat
           </button>
-          <button className="action-btn marketplace-btn">
+          <button className="action-btn marketplace-btn" >
             <FaRegFileAlt /> Reports
           </button>
           <button className="action-btn cve-fetch-btn" onClick={cveHandler}>
@@ -828,17 +871,17 @@ const Chatbot = ({ onClose }) => {
                         <span className="dropdown-text">Rename</span>
                       </button>
                       <button
-  className="dropdown-item"
-  onClick={(e) => {
-    e.stopPropagation();
-    handleChatAction("summarize", chat.id);
-  }}
->
-  <span className="dropdown-icon">
-    <FaRegFileAlt />
-  </span>
-  <span className="dropdown-text">Summarize</span>
-</button>
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChatAction("summarize", chat.id);
+                        }}
+                      >
+                        <span className="dropdown-icon">
+                          <FaRegFileAlt />
+                        </span>
+                        <span className="dropdown-text">Summarize</span>
+                      </button>
 
                       <button
                         className="dropdown-item delete-item"

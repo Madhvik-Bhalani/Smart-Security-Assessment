@@ -1,15 +1,22 @@
 import requests
 from bs4 import BeautifulSoup
+import tldextract
 
 CLIENT_SLIDE_STRING = "Client-side Programming Language"
 SERVER_SLIDE_STRINGS = ["Server-side Programming Language", "Server-side Programming Languages"]
 JAVASCRIPT_LIBRARIES_STRING = "JavaScript Libraries"
 
-
 def clean_url(query_url):
-    """Cleans the URL by removing protocol and 'www'."""
-    return query_url.replace("http://", "").replace("https://", "").replace("www.", "")
-
+    """Extracts the base domain from a URL (e.g., 'example.com' from 'https://www.example.com/page')."""
+    
+    # Remove protocol (http, https) and 'www'
+    cleaned_url = query_url.replace("http://", "").replace("https://", "").replace("www.", "")
+    
+    # Extract only the base domain using tldextract
+    extracted = tldextract.extract(cleaned_url)
+    base_domain = f"{extracted.domain}.{extracted.suffix}"  # Example: 'gchhotelgroup.com'
+    
+    return base_domain
 
 def fetch_tech_stack_from_query(query_url):
     """Fetches the technology stack (client-side, server-side, and JavaScript libraries) from the provided URL."""
@@ -17,7 +24,6 @@ def fetch_tech_stack_from_query(query_url):
         return {"client_side_tech_stack": [], "server_side": [], "js_libraries_used": []}
         
     clean_query_url = clean_url(query_url)
-    
     BASE_URL = f"https://w3techs.com/sites/info/{clean_query_url}"
     
     headers = {
@@ -65,3 +71,6 @@ def fetch_tech_stack_from_query(query_url):
 
     else:
         return {"client_side_tech_stack": [], "server_side_tech_stack": [], "js_libraries_used": []}  # Return empty if request fails
+
+
+
