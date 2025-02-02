@@ -8,7 +8,6 @@ from Middleware.auth import Auth
 router = APIRouter()
 chat_controller = ChatController()
 
-
 class RenameRequest(BaseModel):
     new_chat_name: str
 
