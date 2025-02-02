@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import Joyride from "react-joyride";
 import {
   FaMoon,
   FaSun,
-  FaCheckCircle,
+  FaQuestionCircle,
   FaPlus,
   FaSignOutAlt,
   FaEllipsisV,
@@ -11,6 +12,9 @@ import {
   FaEdit,
   FaRegCreditCard,
   FaLock,
+  FaBug,
+  FaToolbox,
+  FaRegFileAlt
 } from "react-icons/fa";
 import { LuSend } from "react-icons/lu";
 import "./Chatbot.css";
@@ -27,9 +31,40 @@ import UserUpdate from "../UserUpdate/UserUpdate";
 import ChangePassword from "../ChangePassword/ChangePassword";
 import DeleteAccount from "../DeleteAccount/DeleteAccount";
 import Avatar from "react-avatar";
+import CveTable from "../CveTable/CveTable";
 
 const Chatbot = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const [runTour, setRunTour] = useState(false);
+
+  const tourSteps = [
+    {
+      target: ".new-chat-btn",
+      content: "Start a new conversation with Astra.",
+      placement: "bottom",
+    },
+    {
+      target: ".chat-history-section",
+      content: "View and manage your chat history here.",
+      placement: "right",
+    },
+    {
+      target: ".theme-toggle",
+      content: "Toggle between dark and light mode.",
+      placement: "left",
+    },
+    {
+      target: ".chat-input-textarea",
+      content: "Type your message here to interact with Astra.",
+      placement: "top",
+    },
+    {
+      target: ".send-button",
+      content: "Send your message to Astra.",
+      placement: "top",
+    },
+  ];
 
   const [messages, setMessages] = useState([
     {
@@ -62,6 +97,8 @@ const Chatbot = ({ onClose }) => {
   const user_fname = localStorage.getItem("fname");
   const user_lname = localStorage.getItem("lname");
   const user_email = localStorage.getItem("email");
+
+  const [activeComponent, setActiveComponent] = useState("chat");
 
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
     useSpeechRecognition();
@@ -188,12 +225,12 @@ const Chatbot = ({ onClose }) => {
       messages[messages.length - 1].sender === "bot" &&
       !messages[messages.length - 1].isLoading
     ) {
-      // Add a small delay to ensure bot response is fully rendered before fetching suggestions
+
       const delayFetch = setTimeout(() => {
         fetchSuggestivePrompts(sessionId);
-      }, 500); // Adjust delay as needed
+      }, 500);
 
-      return () => clearTimeout(delayFetch); // Cleanup in case of rapid updates
+      return () => clearTimeout(delayFetch);
     }
   }, [messages, sessionId]);
 
@@ -216,45 +253,43 @@ const Chatbot = ({ onClose }) => {
 
   const cleanMarkdownText = (text) => {
     return text
-      .replace(/#{1,6}\s?/g, "") // Remove headers
-      .replace(/\*\*/g, "") // Remove bold
-      .replace(/\*/g, "") // Remove italic
-      .replace(/`{3}[\s\S]*?`{3}/g, "") // Remove code blocks
-      .replace(/`/g, "") // Remove inline code
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1") // Replace links with just the text
-      .replace(/^\s*[-*+]\s/gm, "") // Remove list markers
-      .replace(/^\s*\d+\.\s/gm, "") // Remove numbered list markers
-      .replace(/\n{3,}/g, "\n\n") // Replace multiple newlines with double newlines
+      .replace(/#{1,6}\s?/g, "")
+      .replace(/\*\*/g, "")
+      .replace(/\*/g, "")
+      .replace(/`{3}[\s\S]*?`{3}/g, "")
+      .replace(/`/g, "")
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+      .replace(/^\s*[-*+]\s/gm, "")
+      .replace(/^\s*\d+\.\s/gm, "")
+      .replace(/\n{3,}/g, "\n\n")
       .trim();
   };
 
   const extractUrlFromInput = (text) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const matches = text.match(urlRegex);
-    if (!matches) return null; // No URL found
+    if (!matches) return null;
 
-    let url = matches[0]; // Get first matched URL
+    let url = matches[0];
 
-    // ✅ Remove trailing symbols like `/`, `?`, `.`, etc.
     url = url.replace(/[\/?.,]+$/, "");
 
     return url;
   };
 
   const checkUrlAndGeneratePDF = (responseText, extractedUrl) => {
-    if (!extractedUrl) return false; // Exit early if no URL
+    if (!extractedUrl) return false;
 
-    // ✅ Normalize extracted URL (remove protocol and fragment)
+
     const sanitizedUrl = extractedUrl
-      .replace(/https?:\/\//, "") // Remove http/https
-      .replace(/\/$/, "") // Remove trailing slash
-      .split("#")[0] // Remove fragment (#q=trash)
-      .toLowerCase(); // Convert to lowercase for case-insensitive match
+      .replace(/https?:\/\//, "")
+      .replace(/\/$/, "")
+      .split("#")[0]
+      .toLowerCase();
 
-    // ✅ Normalize response text
     const sanitizedResponse = responseText.toLowerCase();
 
-    // ✅ Check if URL exists in response
+
     if (sanitizedResponse.includes(sanitizedUrl)) {
       generateAndDownloadPDF(responseText);
       return true;
@@ -387,18 +422,18 @@ const Chatbot = ({ onClose }) => {
       link.href = pdfBase64;
       link.download = "Security_Analysis_Report.pdf";
       link.click();
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleSuggestedInput = (prompt) => {
-    setInput(prompt); // Auto-fill input box with suggestion
-    handleSend(); // Send as a message
+    setInput(prompt);
+    setSuggestivePrompts([]);
   };
 
   const fetchSuggestivePrompts = async (sessionId) => {
-    if (!sessionId) return; // Prevent API call if session ID is missing
+    if (!sessionId) return;
 
-    setIsLoadingSuggestions(true); // ✅ Show "Suggesting..." loader
+    setIsLoadingSuggestions(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -409,15 +444,15 @@ const Chatbot = ({ onClose }) => {
       );
 
       if (response.data.status === "success") {
-        setSuggestivePrompts(response.data.data); // ✅ Update UI with new suggestions
+        setSuggestivePrompts(response.data.data);
       } else {
-        setSuggestivePrompts([]); // ✅ Clear suggestions if API fails
+        setSuggestivePrompts([]);
       }
     } catch (error) {
       console.error("Error fetching suggestive prompts:", error);
-      setSuggestivePrompts([]); // ✅ Clear suggestions on error
+      setSuggestivePrompts([]);
     } finally {
-      setIsLoadingSuggestions(false); // ✅ Hide "Suggesting..." loader when done
+      setIsLoadingSuggestions(false);
     }
   };
 
@@ -439,7 +474,8 @@ const Chatbot = ({ onClose }) => {
           isLoading: true,
         },
       ]);
-      //setIsLoading(true);
+
+      setSuggestivePrompts([]);
       setInput("");
 
       if (inputRef.current) {
@@ -480,7 +516,7 @@ const Chatbot = ({ onClose }) => {
             checkUrlAndGeneratePDF(botResponse, extractedUrl);
           }
         }, 500);
-        
+
       } catch (error) {
         setMessages((prev) => [
           ...prev.filter((msg) => !msg.isLoading),
@@ -512,7 +548,9 @@ const Chatbot = ({ onClose }) => {
 
   const handleChatHistoryClick = async (sessionId) => {
     try {
-      setSessionId(sessionId); // Enabling chat in the previous session for follow-up questions.
+
+      setActiveComponent("chat");
+      setSessionId(sessionId);
 
       const token = localStorage.getItem("token");
 
@@ -559,7 +597,6 @@ const Chatbot = ({ onClose }) => {
       });
       if (response && response.data && response.data.sessions) {
         const sortedSessions = response.data.sessions
-          .sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)) // Sort by lastUpdated descending
           .map((session) => ({
             id: session.session_id,
             name: session.chat_name || `Chat ${session.session_id}`,
@@ -569,7 +606,7 @@ const Chatbot = ({ onClose }) => {
       } else {
         throw new Error("Invalid response format.");
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleBackCheck = (message) => {
@@ -630,6 +667,7 @@ const Chatbot = ({ onClose }) => {
       );
       if (response.data.status === "success") {
         handleHistory();
+        newchatHandler();
       } else {
         throw new Error(response.data.message || "Failed to delete chat");
       }
@@ -662,7 +700,13 @@ const Chatbot = ({ onClose }) => {
     ]);
     setSessionId(null);
     setInput("");
+    setSuggestivePrompts([]);
+    setActiveComponent("chat");
   };
+
+  const cveHandler = () => {
+    setActiveComponent("cve");
+  }
 
   return (
     <div className="chatbot-wrapper">
@@ -675,9 +719,15 @@ const Chatbot = ({ onClose }) => {
           <button className="action-btn new-chat-btn" onClick={newchatHandler}>
             <FaPlus /> New Chat
           </button>
-          {/*<button className="action-btn marketplace-btn">
-      <FaStore /> Marketplace
-    </button>*/}
+          <button className="action-btn marketplace-btn">
+            <FaRegFileAlt /> Reports
+          </button>
+          <button className="action-btn cve-fetch-btn" onClick={cveHandler}>
+            <FaBug /> Latest CVEs
+          </button>
+          <button className="action-btn feature-btn">
+            <FaToolbox /> Features
+          </button>
         </div>
 
         {/* Chat History */}
@@ -743,6 +793,13 @@ const Chatbot = ({ onClose }) => {
         <div className="header-actions">
           <div className="header-icons">
             <button
+              onClick={() => setRunTour(true)}
+              className="tour-button"
+              aria-label="Take a Tour"
+            >
+              <FaQuestionCircle />
+            </button>
+            <button
               onClick={handleToggleTheme}
               className="theme-toggle"
               aria-label="Toggle Theme"
@@ -767,9 +824,8 @@ const Chatbot = ({ onClose }) => {
               ) : (
                 <Avatar
                   className="actual-user-avatar"
-                  name={`${localStorage.getItem("fname") || "User"} ${
-                    localStorage.getItem("lname") || "Name"
-                  }`}
+                  name={`${localStorage.getItem("fname") || "User"} ${localStorage.getItem("lname") || "Name"
+                    }`}
                   size="50"
                   round={true}
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
@@ -828,118 +884,150 @@ const Chatbot = ({ onClose }) => {
           </div>
         </div>
 
-        <div className="chat-messages">
-          {messages.map((msg, index) => (
-            <React.Fragment key={index}>
-              <div className={`message ${msg.sender}`}>
-                {/* Astra Avatar for Bot Messages */}
-                {msg.sender === "bot" && (
-                  <img
-                    src={astraAvatar}
-                    alt="Bot Avatar"
-                    className="message-avatar"
-                  />
-                )}
-                {/* Bot Message or Analyzing Loader */}
-                <div
-                  className={`message-text ${
-                    msg.isLoading ? "loading-indicator" : ""
-                  }`}
-                >
-                  {msg.isLoading ? (
-                    <div className="loading-text">
-                      <span>Analyzing</span>
-                      <span className="dot-animation">
-                        <span>.</span>
-                        <span>.</span>
-                        <span>.</span>
-                      </span>
-                    </div>
-                  ) : (
-                    <ReactMarkdown
-                      className={msg.sender === "bot" ? "markdown-content" : ""}
-                    >
-                      {typeof msg.text === "string"
-                        ? msg.text
-                        : JSON.stringify(msg.text)}
-                    </ReactMarkdown>
-                  )}
-                </div>
-              </div>
-
-              {/* Loader or Suggestive Prompts for the Latest Bot Message */}
-              {msg.sender === "bot" && index === messages.length - 1 && (
-                <div className="message bot">
-                  {/* Astra Avatar */}
-                  {isLoadingSuggestions && (
-                    <img
-                      src={astraAvatar}
-                      alt="Bot Avatar"
-                      className="message-avatar"
-                    />
-                  )}
-
-                  {/* Loader or Suggestive Inputs */}
-                  <div>
-                    {isLoadingSuggestions ? (
-                      <div className="loading-text">
-                        <span>Suggesting</span>
-                        <span className="dot-animation">
-                          <span>.</span>
-                          <span>.</span>
-                          <span>.</span>
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="suggestive-prompts no-avatar">
-                        {suggestivePrompts.map((prompt, promptIndex) => (
-                          <button
-                            key={promptIndex}
-                            className="suggestion-btn"
-                            onClick={() => handleSuggestedInput(prompt)}
-                          >
-                            {prompt}
-                          </button>
-                        ))}
-                      </div>
+        {activeComponent === "chat" ? (
+          <>
+            <div className="chat-messages">
+              {messages.map((msg, index) => (
+                <React.Fragment key={index}>
+                  <div className={`message ${msg.sender}`}>
+                    {/* Astra Avatar for Bot Messages */}
+                    {msg.sender === "bot" && (
+                      <img
+                        src={astraAvatar}
+                        alt="Bot Avatar"
+                        className="message-avatar"
+                      />
                     )}
+                    {/* Bot Message or Analyzing Loader */}
+                    <div
+                      className={`message-text ${msg.isLoading ? "loading-indicator" : ""
+                        }`}
+                    >
+                      {msg.isLoading ? (
+                        <div className="loading-text-chatbot">
+                          <span>Analyzing</span>
+                          <span className="dot-animation">
+                            <span>.</span>
+                            <span>.</span>
+                            <span>.</span>
+                          </span>
+                        </div>
+                      ) : (
+                        <ReactMarkdown
+                          className={msg.sender === "bot" ? "markdown-content" : ""}
+                        >
+                          {typeof msg.text === "string"
+                            ? msg.text
+                            : JSON.stringify(msg.text)}
+                        </ReactMarkdown>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
 
-        <div className="chat-input">
-          <textarea
-            ref={inputRef}
-            placeholder="Type your message..."
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            className="chat-input-textarea"
-            aria-label="Type your message. Press Enter to send or Shift + Enter for a new line."
-          />
-          {/*<button htmlFor="file-upload">
-            <FaPaperclip  />
-          </button>*/}
-          <input
-            id="file-upload"
-            type="file"
-            onChange={handleFileUpload}
-            style={{ display: "none" }}
-          />
-          <button className="microphone-button" onClick={handleToggleListening}>
-            {listening ? (
-              <i className="fa-solid fa-circle-pause"></i>
-            ) : (
-              <i className="fa-solid fa-microphone"></i>
-            )}
-          </button>
-          <button onClick={handleSend} className="send-button">
-            <LuSend />
-          </button>
-        </div>
+                  {/* Loader or Suggestive Prompts for the Latest Bot Message */}
+                  {msg.sender === "bot" && index === messages.length - 1 && (
+                    <div className="message bot">
+                      {/* Astra Avatar */}
+                      {isLoadingSuggestions && (
+                        <img
+                          src={astraAvatar}
+                          alt="Bot Avatar"
+                          className="message-avatar"
+                        />
+                      )}
+
+                      {/* Loader or Suggestive Inputs */}
+                      <div>
+                        {isLoadingSuggestions ? (
+                          <div className="loading-text-chatbot">
+                            <span>Suggesting</span>
+                            <span className="dot-animation">
+                              <span>.</span>
+                              <span>.</span>
+                              <span>.</span>
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="suggestive-prompts no-avatar">
+                            {suggestivePrompts.map((prompt, promptIndex) => (
+                              <button
+                                key={promptIndex}
+                                className="suggestion-btn"
+                                onClick={() => handleSuggestedInput(cleanMarkdownText(prompt))}
+                              >
+                                {cleanMarkdownText(prompt)}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <div className="chat-input">
+              <textarea
+                ref={inputRef}
+                placeholder="Type your message..."
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className="chat-input-textarea"
+                aria-label="Type your message. Press Enter to send or Shift + Enter for a new line."
+              />
+              <input
+                id="file-upload"
+                type="file"
+                onChange={handleFileUpload}
+                style={{ display: "none" }}
+              />
+              <button className="microphone-button" onClick={handleToggleListening}>
+                {listening ? (
+                  <i className="fa-solid fa-circle-pause"></i>
+                ) : (
+                  <i className="fa-solid fa-microphone"></i>
+                )}
+              </button>
+              <button onClick={handleSend} className="send-button">
+                <LuSend />
+              </button>
+            </div>
+          </>
+        ) : (
+          <CveTable />
+        )}
+
+        <Joyride
+          steps={tourSteps}
+          run={runTour}
+          continuous
+          scrollToFirstStep
+          showProgress
+          showSkipButton
+          styles={{
+            options: {
+              primaryColor: '#9D4EDD',
+              textColor: '#FFFFFF',
+              backgroundColor: '#1E1E1E',
+            },
+            buttonPrimary: {
+              backgroundColor: '#9D4EDD',
+              color: '#FFFFFF',
+              borderRadius: '8px',
+              border: 'none',
+              fontWeight: 'bold',
+            },
+            buttonSkip: {
+              backgroundColor: 'transparent',
+              color: '#9D4EDD',
+              fontWeight: 'bold',
+            },
+          }}
+        />
+
+
       </div>
       {openUserUpdate && <UserUpdate closeModal={setOpenUserUpdate} />}
       {openChangePassword && (
