@@ -18,6 +18,7 @@ from Utility.cve_utils import (
 )
 from Utility.tech_stack_utils import fetch_tech_stack_from_query
 from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
+from Controllers.chat_summarize_controller import generate_chat_summarization
 
 
 class ChatController:
@@ -526,8 +527,7 @@ class ChatController:
         
         return response["output"]
         
-    
-    
+        
     async def get_suggestive_prompt(self, session_id, user_id, request):
         
         # fetch chat history from database
@@ -535,3 +535,12 @@ class ChatController:
         
         # return suggestive promt from past history
         return generate_suggestive_prompt(self.groq_api_key, self.model_name, chat_history_with_session)
+        
+    
+    async def get_chat_summarize(self, session_id, user_id, request):
+        
+        # fetch chat history from database
+        chat_history_with_session = await self.fetch_chat_messages(session_id, user_id, request)
+        
+        # return suggestive promt from past history
+        return generate_chat_summarization(self.groq_api_key, self.model_name, chat_history_with_session)

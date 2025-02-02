@@ -140,3 +140,23 @@ async def get_suggestive_prompt_(
             status_code=500, detail=f"Error fetching suggestive prompt: {str(e)}"
         )
         
+
+@router.get("/chat/summarize/{session_id}", tags=["Chat"])
+async def get_chat_summarize_(
+    request: Request, 
+    user_id: str = Depends(Auth.verify_token),
+    session_id: Optional[str] = None,
+    ):
+    
+    try:
+        prompt = await chat_controller.get_chat_summarize(session_id, user_id, request)
+        return {
+            "status": "success",
+            "data": prompt
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error fetching suggestive prompt: {str(e)}"
+        )
+        
+        
