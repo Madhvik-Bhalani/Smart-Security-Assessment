@@ -320,15 +320,11 @@ class ChatController:
         print(reports)
         return {"Reports": to_serializable(reports)}
     
-    def process_and_store_scan_results(self, url, security_scan_data, detected_tech_stack, cve_results_for_tech_stack):
+    def process_and_store_scan_results(self, url, response, detected_tech_stack, cve_results_for_tech_stack):
         """
         Processes security scan results and stores them in MongoDB.
         """
         try:
-            # Extract scan results
-            virustotal_report = security_scan_data[0]
-            sucuri_report = security_scan_data[1]
-            nikto_report = security_scan_data[2]
 
             # Get user ID and request object from the instance
             userid = self.current_user_id
@@ -341,9 +337,7 @@ class ChatController:
             url_report_entry = {
                 "user_id": userid.get("_id"),
                 "url": url,
-                "virustotal_report": virustotal_report,  
-                "sucuri_report": sucuri_report,  
-                "nikto_report": nikto_report,  
+                "llm_response": response,  
                 "detected_tech_stack": detected_tech_stack,  
                 "cves_for_detected_tech": cve_results_for_tech_stack,  
                 "timestamp": datetime.now(timezone.utc),  
@@ -370,7 +364,6 @@ class ChatController:
             
            
             # Process scan results and store them
-            self.process_and_store_scan_results(url, data, tech_stack, cve_results_on_tech_stack)
            
             formatted_prompt = f"""You are a cybersecurity expert tasked with analyzing the security posture of a website. Your goal is to process the raw data provided from a security scan and generate a **detailed, extensive security report** that highlights all relevant findings and provides actionable recommendations. Focus on delivering insights tailored to the data while avoiding generic or overly simplified responses.
 
@@ -466,6 +459,8 @@ class ChatController:
         """
 
             response = self.llm.invoke(input=formatted_prompt)
+            self.process_and_store_scan_results(url,response.content,tech_stack, cve_results_on_tech_stack)
+            
             return response.content
 
         except RateLimitError as e:
