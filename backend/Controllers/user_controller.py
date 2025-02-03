@@ -3,7 +3,7 @@ from Services.auth_service import hash_password, verify_password, create_access_
 from datetime import datetime, timezone, timedelta
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi import Request, HTTPException  
-from Utility.utils import to_serializable
+from utility.utils import to_serializable
 from bson import ObjectId
 import stripe
 import os

@@ -7,16 +7,16 @@ from vendors.Web_Safe_Guard import web_safe_guard
 from langchain_core.tools import Tool
 import os
 from pydantic import SecretStr
-from Utility.utils import generate_session_id, to_serializable
+from utility.utils import generate_session_id, to_serializable
 from datetime import datetime, timezone
 import time
 from groq import RateLimitError
-from Utility.cve_utils import (
+from utility.cve_utils import (
     extract_technologies_from_query,
     format_cve_response,
     fetch_cves_for_last_120_days,
 )
-from Utility.tech_stack_utils import fetch_tech_stack_from_query
+from utility.tech_stack_utils import fetch_tech_stack_from_query
 from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
 from Controllers.chat_summarize_controller import generate_chat_summarization
 
