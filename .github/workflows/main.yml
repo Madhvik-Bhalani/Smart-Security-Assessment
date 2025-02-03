@@ -18,19 +18,16 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history to ensure full sync
 
-    # Pull latest changes from GitLab before pushing
-    - name: Pull latest changes from GitLab
-      env:
-        GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
-      run: |
-        git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
-        git fetch gitlab
-        git merge gitlab/main || true # Prevent failures due to conflicts
-
     # Push all branches and tags to GitLab
     - name: Push to GitLab
       env:
         GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
       run: |
+        # Add GitLab as a remote
+        git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
+
+        # Push all branches to GitLab
         git push gitlab --all
+          
+        # Push all tags to GitLab
         git push gitlab --tags
