@@ -96,10 +96,6 @@ def call_nikto_command_with_timeout(scan_url, timeout=60):
     except subprocess.CalledProcessError as e:
         output = e.output or f"Error occurred: {e.stderr}"
         
-    
-    print("------nikto-----------------------")
-    print(output)
-    print("-----------nitko------------------")
     return output
     
    

@@ -74,7 +74,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Welcome to the Astra's API"}
+    return {"Welcome to the Astra's API World"}
 
 
 @app.get("/scan/")
