@@ -24,8 +24,7 @@ def api_call_virustotal(scan_url):
     }
 
     response = requests.post(VIRUSTOTAL_SCAN_URL, data=payload, headers=headers)
-    print("response")
-    print(response)
+    
     if response.status_code != 200:
         return {}
     
@@ -74,7 +73,8 @@ def parse_nikto_output(url, raw_output):
   
   
 def call_nikto_command_with_timeout(scan_url, timeout=60):
-    command = ["perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
+    #command = ["perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
+    command = ["vendors/Web_Safe_Guard/perl/perl/bin/perl.exe", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
     #command = ["perl", "nikto/program/nikto.pl", "-h", scan_url]
     output = None
     
@@ -102,12 +102,17 @@ def call_nikto_command_with_timeout(scan_url, timeout=60):
 def get_site_data(url):
     result = []
     
+    #return api_call_virustotal(url)
     result.append(api_call_virustotal(url))
     
     result.append(api_call_sucuri(url))
     
     nikto_data =  call_nikto_command_with_timeout(url)
     
+    print("************Nikto********************")
+    print(nikto_data)
+    print("********************************")
     result.append(parse_nikto_output(url, nikto_data))
     
     return result
+    

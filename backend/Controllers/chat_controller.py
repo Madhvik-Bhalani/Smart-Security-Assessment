@@ -7,16 +7,16 @@ from vendors.Web_Safe_Guard import web_safe_guard
 from langchain_core.tools import Tool
 import os
 from pydantic import SecretStr
-from Utility.utils import generate_session_id, to_serializable
+from utility.utils import generate_session_id, to_serializable
 from datetime import datetime, timezone
 import time
 from groq import RateLimitError
-from Utility.cve_utils import (
+from utility.cve_utils import (
     extract_technologies_from_query,
     format_cve_response,
     fetch_cves_for_last_120_days,
 )
-from Utility.tech_stack_utils import fetch_tech_stack_from_query
+from utility.tech_stack_utils import fetch_tech_stack_from_query
 from Controllers.suggestive_prompt_controller import generate_suggestive_prompt
 from Controllers.chat_summarize_controller import generate_chat_summarization
 
@@ -30,7 +30,7 @@ class ChatController:
             raise Exception("Missing GROQ_API_KEY or MODEL_NAME in .env file.")
 
         # Convert API key to SecretStr
-        self.groq_api_key = SecretStr(self.groq_api_key)
+        #self.groq_api_key = SecretStr(self.groq_api_key)
 
         # Initialize the ChatGroq model
         self.llm = ChatGroq(
@@ -312,7 +312,6 @@ class ChatController:
 
     def assess_url_safety(self, url):
         try:
-            
             data = web_safe_guard.get_site_data(url) # fetch scan web data data 
             tech_stack = fetch_tech_stack_from_query(url) # fetch tech stack
             cve_results_on_tech_stack = self.fetch_CVEs_based_on_tech_stack(tech_stack) #  fetch CVEs based on Tech Stack
@@ -529,7 +528,6 @@ class ChatController:
         
         
     async def get_suggestive_prompt(self, session_id, user_id, request):
-        
         # fetch chat history from database
         chat_history_with_session = await self.fetch_chat_messages(session_id, user_id, request)
         
