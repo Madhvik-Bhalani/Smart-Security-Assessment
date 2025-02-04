@@ -84,8 +84,8 @@ def run_nikto(url: str):
     try:
         result = subprocess.run(command, capture_output=True, text=True, timeout=20)
         return {"Nikto Output": result.stdout, "Nikto Errors": result.stderr}
-    except subprocess.TimeoutExpired:
-        return {"error": "Nikto scan timed out!"}
+    except subprocess.TimeoutExpired  as e:
+        return {"error": "Nikto scan timed out!", "data":  e.stdout}
     except subprocess.CalledProcessError as e:
         return {"error": f"Nikto scan failed: {e}"}
     except FileNotFoundError:
