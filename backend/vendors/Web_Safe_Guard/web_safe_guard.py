@@ -75,7 +75,7 @@ def parse_nikto_output(url, raw_output):
   
 def call_nikto_command_with_timeout(scan_url, timeout=60):
     #command = ["/usr/bin/perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
-    command = ["perl", "nikto/program/nikto.pl", "-h", scan_url]
+    command = ["perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
     #command = ["vendors/Web_Safe_Guard/perl/perl/bin/perl.exe", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", scan_url]
     output = None
     
