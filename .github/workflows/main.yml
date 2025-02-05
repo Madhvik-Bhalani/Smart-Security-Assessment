@@ -31,4 +31,3 @@ jobs:
           
         # Push all tags to GitLab
         git push gitlab --tags
-

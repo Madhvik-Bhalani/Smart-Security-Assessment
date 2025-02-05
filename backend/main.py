@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
 import logging
+import subprocess
 
 # Routes
 from Routes.user_routes import router as user_router
@@ -71,6 +72,26 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+@app.get("/")
+def read_root():
+    return {"Welcome to the Astra's API World"}
+
+
+@app.get("/scan/")
+def run_nikto(url: str):
+    command = ["perl", "vendors/Web_Safe_Guard/nikto/program/nikto.pl", "-h", url]
+
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, timeout=20)
+        return {"Nikto Output": result.stdout, "Nikto Errors": result.stderr}
+    except subprocess.TimeoutExpired  as e:
+        return {"error": "Nikto scan timed out!", "data":  e.stdout}
+    except subprocess.CalledProcessError as e:
+        return {"error": f"Nikto scan failed: {e}"}
+    except FileNotFoundError:
+        return {"error": "Nikto script not found!"}
+    
+    
 # Include user routes
 app.include_router(user_router, prefix="/api/v1/users")
 app.include_router(chat_router, prefix="/api/v1")

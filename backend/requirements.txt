@@ -63,3 +63,4 @@ pyjwt
 email-validator
 stripe
 tldextract
+gunicorn
