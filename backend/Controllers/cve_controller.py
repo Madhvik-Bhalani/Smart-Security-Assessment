@@ -1,53 +1,49 @@
 import requests
 import os
 from datetime import datetime, timedelta, timezone
+import time
 
 # Define the NVD API endpoint and key
 NVD_API_KEY = os.getenv("NVD_API_KEY")  # Replace with your actual API key
 NVD_CVE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 
 def get_cves():
-    """Fetch CVEs from the last 1 year (using 120-day batches)"""
+    """Fetch CVEs from the last 1 year (using 17-day batches)"""
     headers = {"apiKey": NVD_API_KEY, "Content-Type": "application/json"}
 
-    # Calculate the start and end date (last 1 year)
+    # Calculate the start and end date (last 17 days)
     end_date = datetime.now(timezone.utc)  # Current date
-    start_date = end_date - timedelta(days=365)  # 1 year ago
+    start_date = end_date - timedelta(days=17)  # 17 days ago
 
     # Batch size: Max 120 days at a time
-    batch_days = 120
+    batch_days = 17
     all_cves = []
 
-    while start_date < end_date:
+    # while start_date < end_date:
         # Calculate the batch end date (max 120 days at a time)
-        batch_end_date = min(start_date + timedelta(days=batch_days), end_date)
-
-        # Format dates in ISO 8601 format for the NVD API
-        pub_start_date = start_date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-        pub_end_date = batch_end_date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-
-        params = {
-            "resultsPerPage": 2000,  # max limit 2000 records per request
-            "pubStartDate": pub_start_date,
-            "pubEndDate": pub_end_date,
-        }
-
-        try:
-            response = requests.get(NVD_CVE_URL, headers=headers, params=params)
-            response.raise_for_status()
-            cve_data = response.json()
-
-            # Extract and store CVE data
-            if "vulnerabilities" in cve_data:
-                all_cves.extend(cve_data["vulnerabilities"])
-
-            print(f"Fetched data from {pub_start_date} to {pub_end_date} ({len(cve_data.get('vulnerabilities', []))} records)")
-
-        except requests.RequestException as e:
-            print(f"Failed to fetch CVEs for {pub_start_date} - {pub_end_date}: {str(e)}")
-        
-        # Move to the next batch
-        start_date = batch_end_date + timedelta(days=1)
+    batch_end_date = min(start_date + timedelta(days=batch_days), end_date)
+    # Format dates in ISO 8601 format for the NVD API
+    pub_start_date = start_date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    pub_end_date = batch_end_date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+    params = {
+        "resultsPerPage": 2000,  # max limit 2000 records per request
+        "pubStartDate": pub_start_date,
+        "pubEndDate": pub_end_date,
+    }
+    try:
+        response = requests.get(NVD_CVE_URL, headers=headers, params=params)
+        response.raise_for_status()
+        cve_data = response.json()
+        # Extract and store CVE data
+        if "vulnerabilities" in cve_data:
+            all_cves.extend(cve_data["vulnerabilities"])
+        print(f"Fetched data from {pub_start_date} to {pub_end_date} ({len(cve_data.get('vulnerabilities', []))} records)")
+    except requests.RequestException as e:
+        print(f"Failed to fetch CVEs for {pub_start_date} - {pub_end_date}: {str(e)}")
+    
+    # Move to the next batch
+    # start_date = batch_end_date + timedelta(days=1)
+    # time.sleep(3)  # Additional throttle between batch requests
 
     # Process and format data
     formatted_cves = []
