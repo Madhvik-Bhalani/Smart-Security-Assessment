@@ -18,16 +18,13 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history to ensure full sync
 
-    # Push all branches and tags to GitLab
-    - name: Push to GitLab
+    - name: Push to GitLab (codefinity-website) Branch
       env:
         GITLAB_TOKEN: ${{ secrets.TARGET_TOKEN }}
       run: |
         # Add GitLab as a remote
         git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
 
-        # Push all branches to GitLab
-        git push gitlab --all
-          
-        # Push all tags to GitLab
-        git push gitlab --tags
+        # Push to the `astra-website` branch in GitLab
+        git push gitlab HEAD:astra-website
+
