@@ -21,7 +21,7 @@ export default function User() {
         try {
             const token = localStorage.getItem("token");
 
-            await fetch("http://localhost:5000/api/v1/users/delete-account", {
+            await fetch(`${process.env.REACT_APP_API_URL}/users/delete-account`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

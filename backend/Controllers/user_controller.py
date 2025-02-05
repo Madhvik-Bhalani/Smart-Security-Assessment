@@ -331,7 +331,7 @@ async def get_reports(user: UserGetReports, request: Request):
     users_collection = request.app.mongodb["users"]
 
     # Extract email correctly
-    email = user.email  # ✅ Get email string from model
+    email = user.email  # Get email string from model
 
     # Find the user by email
     existing_user = await users_collection.find_one({"email": email})
@@ -356,15 +356,15 @@ async def get_reports(user: UserGetReports, request: Request):
         try:
             # Check if 'file_data' exists and is in binary format
             if "file_data" in report and isinstance(report["file_data"], (bytes, bytearray)):  
-                base64_file_data = base64.b64encode(report["file_data"]).decode("utf-8")  # ✅ Convert binary to Base64
-                formatted_file_data = f"data:application/pdf;base64,{base64_file_data}"  # ✅ Correct format
+                base64_file_data = base64.b64encode(report["file_data"]).decode("utf-8")  # Convert binary to Base64
+                formatted_file_data = f"data:application/pdf;base64,{base64_file_data}"  # Correct format
             else:
                 formatted_file_data = None  # Handle missing or incorrect file data
 
             formatted_reports.append({
                 "file_name": report["file_name"],
-                "uploaded_at": report["uploaded_at"].isoformat(),  # ✅ Convert datetime to string
-                "file_data": formatted_file_data  # ✅ Now properly formatted
+                "uploaded_at": report["uploaded_at"].isoformat(),  # Convert datetime to string
+                "file_data": formatted_file_data  # Now properly formatted
             })
         except Exception as e:
             print(f"Error encoding file {report['file_name']}: {e}")

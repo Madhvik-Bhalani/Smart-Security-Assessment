@@ -169,7 +169,7 @@ const Chatbot = ({ onClose }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        `http://localhost:5000/api/v1/fetch-reports`,
+        `${process.env.REACT_APP_API_URL}/fetch-reports`,
         {
           headers: {
             Authorization: token,
@@ -433,7 +433,7 @@ const Chatbot = ({ onClose }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/v1/users/upload-report",
+        `${process.env.REACT_APP_API_URL}/users/upload-report`,
         payload
       );
 
@@ -669,7 +669,7 @@ const Chatbot = ({ onClose }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "http://localhost:5000/api/v1/users/get-reports",
+        `${process.env.REACT_APP_API_URL}/users/get-reports`,
         { email: userEmail }
 
       );
@@ -731,7 +731,7 @@ const Chatbot = ({ onClose }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/api/v1/chat/suggestive-prompt/${sessionId}`,
+        `${process.env.REACT_APP_API_URL}/chat/suggestive-prompt/${sessionId}`,
         {
           headers: { Authorization: token },
         }
@@ -779,8 +779,8 @@ const Chatbot = ({ onClose }) => {
       try {
         const token = localStorage.getItem("token");
         const endpoint = sessionId
-          ? `http://localhost:5000/api/v1/chat/${sessionId}`
-          : `http://localhost:5000/api/v1/chat/first-message`;
+          ? `${process.env.REACT_APP_API_URL}/chat/${sessionId}`
+          : `${process.env.REACT_APP_API_URL}/chat/first-message`;
 
         const response = await axios.post(
           endpoint,
@@ -849,7 +849,7 @@ const Chatbot = ({ onClose }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        `http://localhost:5000/api/v1/chat/${sessionId}`,
+        `${process.env.REACT_APP_API_URL}/chat/${sessionId}`,
         {
           headers: {
             Authorization: `${token}`,
@@ -884,7 +884,7 @@ const Chatbot = ({ onClose }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get("http://localhost:5000/api/v1/chat", {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/chat`, {
         headers: {
           Authorization: token,
         },
@@ -921,7 +921,7 @@ const Chatbot = ({ onClose }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:5000/api/v1/chat/${sessionId}/rename`,
+        `${process.env.REACT_APP_API_URL}/chat/${sessionId}/rename`,
         { new_chat_name: newName },
         {
           headers: {
@@ -948,7 +948,7 @@ const Chatbot = ({ onClose }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        `http://localhost:5000/api/v1/chat/summarize/${sessionId}`,
+        `${process.env.REACT_APP_API_URL}/chat/summarize/${sessionId}`,
         { headers: { Authorization: token } }
       );
 
@@ -991,7 +991,7 @@ const Chatbot = ({ onClose }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:5000/api/v1/chat/delete`,
+        `${process.env.REACT_APP_API_URL}/chat/delete`,
         { session_id: sessionId },
         {
           headers: {

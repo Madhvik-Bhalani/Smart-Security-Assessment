@@ -20,14 +20,14 @@ export default function ChangePassword({closeModal}) {
 
         try {
             const res = await axios.post(
-                "http://localhost:5000/api/v1/users/change-password",
+                `${process.env.REACT_APP_API_URL}/users/change-password`,
                 {
                     email,
                     old_password,
                     new_password,
                 },
                 {
-                    withCredentials: true, // Ensure cookies are sent with the request
+                    // withCredentials: true, // Ensure cookies are sent with the request
                     headers: {
                         'Content-Type': 'application/json',
                         'token': token, // Include the token in the headers

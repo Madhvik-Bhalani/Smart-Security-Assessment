@@ -44,10 +44,10 @@ export default function UserUpdate({ closeModal }) {
 
         try {
             const res = await axios.post(
-                "http://localhost:5000/api/v1/users/edit-account",
+                `${process.env.REACT_APP_API_URL}/users/edit-account`,
                 { email, fname, lname },
                 {
-                    withCredentials: true,
+                    // withCredentials: true,
                     headers: { 'token': token, 'Content-Type': 'application/json' }
                 }
             );
@@ -57,7 +57,7 @@ export default function UserUpdate({ closeModal }) {
                 localStorage.setItem("email", email);
             }
             window.dispatchEvent(new Event("closeModals"));
-            navigate("/profile");
+            navigate("/chat");
         } catch (err) {
             setError(err.response?.data?.message || "Something went wrong!");
         }
@@ -81,9 +81,10 @@ export default function UserUpdate({ closeModal }) {
             const url = uploadedImage.url;
 
             await axios.post(
-                "http://localhost:5000/api/v1/users/upload-profile-photo",
+                `${process.env.REACT_APP_API_URL}/users/upload-profile-photo`,
                 { email: user_email, profile_photo_url: url },
-                { withCredentials: true, headers: { 'Content-Type': 'application/json', 'token': token } }
+                // { withCredentials: true, headers: { 'Content-Type': 'application/json', 'token': token } }
+                { headers: { 'Content-Type': 'application/json', 'token': token } }
             );
             localStorage.setItem("url", url);
             navigate("/chat");
@@ -97,9 +98,10 @@ export default function UserUpdate({ closeModal }) {
 
         try {
             await axios.post(
-                "http://localhost:5000/api/v1/users/delete-profile-photo",
+                `${process.env.REACT_APP_API_URL}/users/delete-profile-photo`,
                 { email: user_email },
-                { withCredentials: true, headers: { 'Content-Type': 'application/json', 'token': token } }
+                // { withCredentials: true, headers: { 'Content-Type': 'application/json', 'token': token } }
+                {  headers: { 'Content-Type': 'application/json', 'token': token } }
             );
             localStorage.removeItem("url");
             navigate("/chat");

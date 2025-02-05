@@ -15,7 +15,7 @@ const Pricing = ({ refPricing, type, duration }) => {
     }
     const response = await axios({
       method: "POST",
-      url: "http://localhost:5000/api/v1/users/create-subscription",
+      url: `${process.env.REACT_APP_API_URL}/users/create-subscription`,
       data: {
         duration: duration,
         plan_name: pkg,
