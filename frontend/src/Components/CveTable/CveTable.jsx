@@ -23,7 +23,7 @@ const CveTable = () => {
             setError(null);
             const token = localStorage.getItem("token");
 
-            const response = await fetch("http://localhost:5000/api/v1/cves", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/cves`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: token,
