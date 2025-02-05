@@ -632,7 +632,8 @@ const Chatbot = ({ onClose }) => {
           const pdfBlob = doc.output("blob");
           const reader = new FileReader();
           reader.onload = () => {
-            const base64data = reader.result.split(',')[1];
+            const fullDataURL = reader.result;
+            const base64data = fullDataURL.split(',')[1];
             resolve(base64data);
           };
           reader.readAsDataURL(pdfBlob);
@@ -699,7 +700,7 @@ const Chatbot = ({ onClose }) => {
       
       const handleDownload = () => {
         const link = document.createElement("a");
-        link.href = pdfBase64;
+        link.href = `data:application/pdf;base64,${pdfBase64}`;
         link.download = filename.endsWith(".pdf") ? filename : `${filename}.pdf`;
         link.click();
         setShowFilenameModal(false);
@@ -942,46 +943,41 @@ const Chatbot = ({ onClose }) => {
 
   const handleChatSummarize = async (sessionId) => {
     try {
-      setIsLoading(true); 
-      setShowUserMenu(null); 
-
+      setIsLoading(true);
+      setShowUserMenu(null);
+  
       const token = localStorage.getItem("token");
-
+  
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/chat/summarize/${sessionId}`,
         { headers: { Authorization: token } }
       );
-
+  
       if (response.data.status === "success") {
         const summaryText = response.data.data;
-
-        // Generate and download the PDF
         const pdfBase64 = await generatePDFReport(summaryText);
+        
+        // Create valid data URL with prefix
+        const pdfDataURL = `data:application/pdf;base64,${pdfBase64}`;
+        
         const link = document.createElement("a");
-        link.href = pdfBase64;
+        link.href = pdfDataURL;
         link.download = "Chat_Summary.pdf";
         link.click();
-
-       
+  
+        // Upload the raw base64 without prefix
+        uploadReportToDatabase(pdfBase64, "Chat_Summary"); 
+  
         setIsPopupVisible(true);
-
-       
         setTimeout(() => setIsPopupVisible(false), 3000);
-      } else {
-        alert("Failed to summarize chat. Please try again.");
       }
     } catch (error) {
-      console.error("Error fetching chat summary:", error);
+      console.error("Error summarizing chat:", error);
       alert("An error occurred while summarizing the chat.");
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
-
-
-
-
-
 
   const handleClickDelete = () => {
     setOpenDelete(!openDelete);
@@ -1377,7 +1373,7 @@ const Chatbot = ({ onClose }) => {
                         className="download-btn"
                         onClick={() => {
                           const link = document.createElement("a");
-                          link.href = pdfData;
+                          link.href = `data:application/pdf;base64,${pdfData}`;
                           link.download = filename.endsWith(".pdf")
                             ? filename
                             : `${filename}.pdf`;

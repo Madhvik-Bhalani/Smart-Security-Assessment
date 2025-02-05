@@ -301,13 +301,13 @@ async def upload_report(email: str, file_name: str, base64_file: str, request: R
         if base64_file.startswith("data:application/pdf;base64,"):
             base64_file = base64_file.split("base64,")[1]  # Remove the header
 
-        pdf_data = base64.b64decode(base64_file)  # Convert base64 to binary
+        #pdf_data = base64.b64decode(base64_file)  # Convert base64 to binary
 
         # Store the report in MongoDB
         report_data = {
             "file_name": file_name,
             "uploaded_at": datetime.now(timezone.utc),
-            "file_data": Binary(pdf_data)  # Store as BSON Binary
+            "file_data": base64_file  # Store as BSON Binary
         }
 
         await users_collection.update_one(
@@ -364,7 +364,7 @@ async def get_reports(user: UserGetReports, request: Request):
             formatted_reports.append({
                 "file_name": report["file_name"],
                 "uploaded_at": report["uploaded_at"].isoformat(),  # Convert datetime to string
-                "file_data": formatted_file_data  # Now properly formatted
+                "file_data": f"data:application/pdf;base64,{report['file_data']}"  # Now properly formatted
             })
         except Exception as e:
             print(f"Error encoding file {report['file_name']}: {e}")
