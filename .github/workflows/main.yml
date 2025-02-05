@@ -3,11 +3,11 @@ name: GitlabSync
 on:
   push:
     branches:
-      - '*' # Trigger on all branches
+      - 'main' # Trigger on main branch
 
   delete:
     branches:
-      - '*' # Trigger on all branches
+      - 'main' # Trigger on main branch
     
 jobs:
   sync:
@@ -26,5 +26,5 @@ jobs:
         git remote add gitlab https://oauth2:${{ secrets.TARGET_TOKEN }}@gitlab.hrz.tu-chemnitz.de/vsr/edu/planspiel/ws2425/group03-codefinity.git
 
         # Push to the `astra-website` branch in GitLab
-        git push gitlab HEAD:astra-website
+        git push gitlab main:astra-website
 
