@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
-from Controllers.user_controller import signup, signin, fetch_user, change_password, delete_account, edit_account, delete_profile_photo, upload_profile_photo
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserUploadPhoto, UserDeletePhoto, SubscriptionRequest
+from Controllers.user_controller import signup, signin, fetch_user, change_password, delete_account, edit_account, delete_profile_photo, upload_profile_photo, get_reports,upload_report
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserUploadPhoto, UserDeletePhoto, SubscriptionRequest,UserUploadReport,UserGetReports
 from datetime import timedelta, timezone, datetime
 from Middleware.auth import Auth
 import stripe
@@ -114,7 +114,14 @@ async def create_subscription(user: SubscriptionRequest, request: Request):
         raise HTTPException(status_code=500, detail="Failed to create subscription")
 
 
+@router.post("/upload-report", tags=["User Reports"])
+async def upload_report_route(report: UserUploadReport, request: Request):
+    return await upload_report(report.email, report.file_name, report.base64_file, request)
 
+
+@router.post("/get-reports", tags=["User Reports"])
+async def get_reports_route(user: UserGetReports, request: Request):
+    return await get_reports(user, request)
 
 # @router.post("/logout", tags=["User Logout"])
 # async def logout_route(user: UserSignin, request: Request):

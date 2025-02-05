@@ -1,12 +1,17 @@
-from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto, SubscriptionRequest
+from Models.user_model import UserSignup, UserSignin, UserChangePassword, UserEditAccount, UserDeleteAccount, UserDeletePhoto, UserUploadPhoto, SubscriptionRequest, UserGetReports
 from Services.auth_service import hash_password, verify_password, create_access_token
 from datetime import datetime, timezone, timedelta
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi import Request, HTTPException  
+
+from fastapi import Request, HTTPException, UploadFile, File, Form
 from utility.utils import to_serializable
-from bson import ObjectId
+from bson import ObjectId, Binary
+
 import stripe
 import os
+import asyncio
+import base64
+
 
 stripe.api_key = os.getenv("STRIPE_KEY")
 
@@ -277,4 +282,94 @@ async def delete_profile_photo(user: UserDeletePhoto, request: Request):
     return JSONResponse(
         status_code=200,
         content={"status": True, "message": "Profile photo deleted successfully!"},
+    )
+
+
+async def upload_report(email: str, file_name: str, base64_file: str, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Find user by email
+    existing_user = await users_collection.find_one({"email": email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    try:
+        # Extract and decode the base64 content
+        if base64_file.startswith("data:application/pdf;base64,"):
+            base64_file = base64_file.split("base64,")[1]  # Remove the header
+
+        pdf_data = base64.b64decode(base64_file)  # Convert base64 to binary
+
+        # Store the report in MongoDB
+        report_data = {
+            "file_name": file_name,
+            "uploaded_at": datetime.now(timezone.utc),
+            "file_data": Binary(pdf_data)  # Store as BSON Binary
+        }
+
+        await users_collection.update_one(
+            {"email": email},
+            {"$push": {"reports": report_data}, "$set": {"updated_at": datetime.now(timezone.utc)}}
+        )
+
+        return JSONResponse(
+            status_code=200,
+            content={"status": True, "message": "Report uploaded successfully!"}
+        )
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": False, "message": f"Failed to process the file: {str(e)}"}
+        )
+
+
+async def get_reports(user: UserGetReports, request: Request):
+    users_collection = request.app.mongodb["users"]
+
+    # Extract email correctly
+    email = user.email  # ✅ Get email string from model
+
+    # Find the user by email
+    existing_user = await users_collection.find_one({"email": email})
+    if not existing_user or not existing_user.get("active", True):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Account does not exist."},
+        )
+
+    # Retrieve all reports
+    reports = existing_user.get("reports", [])
+
+    if not reports:
+        return JSONResponse(
+            status_code=404,
+            content={"status": False, "message": "No reports found for this user."},
+        )
+
+    # Convert each report's file_data (Binary) to a properly formatted Base64-encoded string
+    formatted_reports = []
+    for report in reports:
+        try:
+            # Check if 'file_data' exists and is in binary format
+            if "file_data" in report and isinstance(report["file_data"], (bytes, bytearray)):  
+                base64_file_data = base64.b64encode(report["file_data"]).decode("utf-8")  # ✅ Convert binary to Base64
+                formatted_file_data = f"data:application/pdf;base64,{base64_file_data}"  # ✅ Correct format
+            else:
+                formatted_file_data = None  # Handle missing or incorrect file data
+
+            formatted_reports.append({
+                "file_name": report["file_name"],
+                "uploaded_at": report["uploaded_at"].isoformat(),  # ✅ Convert datetime to string
+                "file_data": formatted_file_data  # ✅ Now properly formatted
+            })
+        except Exception as e:
+            print(f"Error encoding file {report['file_name']}: {e}")
+
+    return JSONResponse(
+        status_code=200,
+        content={"status": True, "reports": formatted_reports}
     )
