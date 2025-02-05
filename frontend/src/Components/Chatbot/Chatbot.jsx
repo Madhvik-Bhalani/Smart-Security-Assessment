@@ -110,6 +110,36 @@ const Chatbot = ({ onClose }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
 
+  const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false);
+
+  const features = [
+    { name: "Incident Checklist", path: "/incidentChecklist" },
+    { name: "Marketplace", path: "/market" },
+    { name: "Newsletter", path: "/newsletterpage" },
+    { name: "Quiz", path: "/quiz" },
+    { name: "Security Standards", path: "/securityStandards" },
+  ];
+
+  const handleFeatureClick = (path) => {
+    navigate(path); 
+    setShowFeaturesDropdown(false); 
+  };
+
+
+  const handleClickOutsideFeature = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowFeaturesDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideFeature);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideFeature);
+    };
+  }, []);
+
+
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
     useSpeechRecognition();
 
@@ -1048,9 +1078,25 @@ const Chatbot = ({ onClose }) => {
           <button className="action-btn cve-fetch-btn" onClick={cveHandler}>
             <FaBug /> Latest CVEs
           </button>
-          <button className="action-btn feature-btn">
+          <button className={`action-btn feature-btn ${showFeaturesDropdown ? "open" : ""}`}
+            onClick={() => setShowFeaturesDropdown(!showFeaturesDropdown)}>
             <FaToolbox /> Features
           </button>
+
+
+          {showFeaturesDropdown && (
+            <div className="features-dropdown">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="dropdown-item-feature"
+                  onClick={() => handleFeatureClick(feature.path)}
+                >
+                  {feature.name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Chat History */}
