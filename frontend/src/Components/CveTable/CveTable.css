@@ -12,10 +12,10 @@
 }
 
 /* Main Heading Styling */
-.heading {
+.cve-heading {
     font-size: 2rem !important;
-    font-weight: 700 !important;
-    color: #4A4A4A !important;
+    font-weight: bold !important;
+    color: #9D4EDD !important;
     margin-bottom: 10px !important;
     text-align: center !important;
     text-transform: uppercase !important;
@@ -23,10 +23,10 @@
 }
   
 /* Subheading Styling */
-.subheading {
+.cve-subheading {
     font-size: 1.2rem !important;
     font-weight: 400 !important;
-    color: #777 !important;
+    color: black !important;
     margin-bottom: 30px !important;
     text-align: center !important;
     font-style: italic !important;
@@ -42,6 +42,7 @@
 .table-responsive {
     overflow-x: auto !important;
     max-height: 500px !important;
+    overflow-y: scroll !important;
 }
 
 .display {
@@ -53,9 +54,10 @@
 
 .display th,
 .display td {
-    border: 1px solid #ddd !important;
+    border: 1px solid #9D4EDD !important;
     padding: 10px !important;
     text-align: left !important;
+    color: #333
 }
 
 .display th {

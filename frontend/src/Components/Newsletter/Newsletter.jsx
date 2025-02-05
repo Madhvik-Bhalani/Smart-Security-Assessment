@@ -44,11 +44,11 @@ const Newsletter = ({ refNewsletter }) => {
       </motion.h2>
 
       {/* Cards Animation */}
-      <div className="newsletter-cards">
+      <div className="newsletter-landing-cards">
         {cards.map((card, index) => (
           <motion.div
             key={index}
-            className="newsletter-card"
+            className="newsletter-landing-card"
             initial={{ opacity: 0, y: -50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
@@ -61,7 +61,7 @@ const Newsletter = ({ refNewsletter }) => {
             <img
               src={card.image}
               alt={card.title}
-              className="newsletter-image"
+              className="newsletter-landing-image"
             />
             <div className="newsletter-overlay">
               <h3 className="newsletter-title">{card.title}</h3>

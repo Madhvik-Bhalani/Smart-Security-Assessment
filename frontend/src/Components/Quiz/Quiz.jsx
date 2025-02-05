@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import questions from "./Questions";
 import "./Quiz.css";
+import AstraLogo from "../../assets/Astrap_nobg.png";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Quiz = () => {
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
@@ -11,6 +14,7 @@ const Quiz = () => {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
+  const navigate = useNavigate();
 
   // Utility function to shuffle an array
   const shuffleArray = (array) => {
@@ -92,62 +96,70 @@ const Quiz = () => {
 
   return (
     <div className="quiz-wrapper">
-  <div className="quiz-container">
-    <h1 className="quiz-title">Test Your Cybersecurity Knowledge</h1>
+      <div className="quiz-container">
 
-    {/* Conditionally render the current score */}
-    {!isQuizComplete && <div className="current-score">Score: {score}</div>}
+        {/* Astra Logo */}
+        <img src={AstraLogo} alt="Astra Logo" className="astra-logo" />
 
-    {!isQuizComplete ? (
-      <div className="quiz-box">
-        <h2 className="quiz-question">
-          {shuffledQuestions[currentQuestionIndex]?.question}
-        </h2>
-        <div className="quiz-options">
-          {shuffledQuestions[currentQuestionIndex]?.options.map(
-            (option, index) => (
-              <button
-                key={index}
-                className={`quiz-option ${
-                  selectedOptionIndex !== null
-                    ? index === shuffledQuestions[currentQuestionIndex].correct
-                      ? "correct"
-                      : index === selectedOptionIndex
-                      ? "incorrect"
-                      : ""
-                    : ""
-                }`}
-                onClick={() => handleAnswer(index)}
-                disabled={showFeedback}
-              >
-                {option}
-              </button>
-            )
-          )}
-        </div>
-        {showFeedback && (
-          <div className="quiz-feedback">
-            <p>{feedback}</p>
-            <button className="next-button" onClick={handleNext}>
-              Next Question
+        {/* Back Button */}
+        <button className="back-button" onClick={() => navigate("/")}>
+          <FaArrowLeft className="back-icon" /> Back to Astra
+        </button>
+
+        <h1 className="quiz-title">Test Your Cybersecurity Knowledge</h1>
+
+        {/* Conditionally render the current score */}
+        {!isQuizComplete && <div className="current-score">Score: {score}</div>}
+
+        {!isQuizComplete ? (
+          <div className="quiz-box">
+            <h2 className="quiz-question">
+              {shuffledQuestions[currentQuestionIndex]?.question}
+            </h2>
+            <div className="quiz-options">
+              {shuffledQuestions[currentQuestionIndex]?.options.map(
+                (option, index) => (
+                  <button
+                    key={index}
+                    className={`quiz-option ${selectedOptionIndex !== null
+                        ? index === shuffledQuestions[currentQuestionIndex].correct
+                          ? "correct"
+                          : index === selectedOptionIndex
+                            ? "incorrect"
+                            : ""
+                        : ""
+                      }`}
+                    onClick={() => handleAnswer(index)}
+                    disabled={showFeedback}
+                  >
+                    {option}
+                  </button>
+                )
+              )}
+            </div>
+            {showFeedback && (
+              <div className="quiz-feedback">
+                <p>{feedback}</p>
+                <button className="next-button" onClick={handleNext}>
+                  Next Question
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="quiz-box quiz-complete-box">
+            <h2>Quiz Complete!</h2>
+            <p>Your Score: {score} / 10</p>
+            <button className="reset-button" onClick={resetQuiz}>
+              Restart Quiz
             </button>
           </div>
         )}
       </div>
-    ) : (
-      <div className="quiz-box quiz-complete-box">
-        <h2>Quiz Complete!</h2>
-        <p>Your Score: {score} / 10</p>
-        <button className="reset-button" onClick={resetQuiz}>
-          Restart Quiz
-        </button>
-      </div>
-    )}
-  </div>
-</div>
+    </div>
 
   );
-  
+
 };
 
 export default Quiz;

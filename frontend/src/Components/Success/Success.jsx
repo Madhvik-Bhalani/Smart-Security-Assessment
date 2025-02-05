@@ -14,7 +14,7 @@ const PaymentSuccessPage = () => {
         transition={{ duration: 0.5 }} 
         className="success-container"
       >
-        <CheckCircle className="icon" size={64} />
+        <CheckCircle className="success-icon" size={64} />
         <h1 className="title">Payment Successful!</h1>
         <p className="message">
           Thank you for your payment. Your transaction has been successfully processed.

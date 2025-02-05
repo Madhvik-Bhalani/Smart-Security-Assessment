@@ -57,7 +57,7 @@ const USP = ({ refUSPs }) => {
             transition={{ duration: 0.3 }}
           >
             <FaUsers className="usp-icon" />
-            <h3 className="usp-title">Community Engagement</h3>
+            <h3 className="usp-title">Simplicity</h3>
           </motion.div>
         </div>
         <motion.button

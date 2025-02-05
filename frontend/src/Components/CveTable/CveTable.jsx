@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import $ from "jquery"; // Import jQuery
 import "datatables.net"; // Import DataTables
+import "./CveTable.css";
 
 const CveTable = () => {
     const [cveData, setCveData] = useState([]);
@@ -89,8 +90,8 @@ const CveTable = () => {
 
     return (
         <div className="cve-table-container">
-            <h1 className="heading text-center">Latest CVEs</h1>
-            <p className="subheading text-center">
+            <h1 className="cve-heading text-center">Latest CVEs</h1>
+            <p className="cve-subheading text-center">
                 Explore the most recent Common Vulnerabilities and Exposures (CVEs). Stay informed and secure.
             </p>
 
