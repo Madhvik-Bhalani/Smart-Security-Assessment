@@ -55,16 +55,20 @@ def api_call_sucuri(scan_url):
 
 def parse_nikto_output(url, raw_output):
     findings = []
-    
+
+    if isinstance(raw_output, bytes):
+        raw_output = raw_output.decode("utf-8", errors="ignore")
+        
     for line in raw_output.splitlines():
         line = line.strip()
 
         # Extract meaningful findings
-        if line.startswith("+") and not line.startswith("+-"):
-            findings.append(line[2:])  # Remove "+ " prefix
+        if isinstance(line, str):  # Ensure line is a string
+            if line.startswith("+") and not line.startswith("+-"):
+                findings.append(line[2:])  # Remove "+ " prefix
             
-        elif line.startswith("") and not line.startswith("-"):
-            findings.append(line)
+            elif line.startswith("") and not line.startswith("-"):
+                findings.append(line)
             
     formatted_output = {
         "url": url,
@@ -87,14 +91,13 @@ def call_nikto_command_with_timeout(scan_url, timeout=60):
             text=True,
             timeout=timeout
         )
-        output = result.stdout  
+        output = result.stdout or "" 
      
     except subprocess.TimeoutExpired as e:
-        output = e.stdout or "Timeout expired; partial output not available."
+        output = e.stdout.decode("utf-8", errors="ignore") if e.stdout else "Timeout expired; partial output not available."
        
-        
     except subprocess.CalledProcessError as e:
-        output = e.output or f"Error occurred: {e.stderr}"
+        output = e.output.decode("utf-8", errors="ignore") if e.output else f"Error occurred: {e.stderr}"
         
     return output
     
@@ -106,7 +109,7 @@ def get_site_data(url):
     
     result.append(api_call_sucuri(url))
     
-    nikto_data =  call_nikto_command_with_timeout(url)
+    nikto_data = call_nikto_command_with_timeout(url)
     
     result.append(parse_nikto_output(url, nikto_data))
     
