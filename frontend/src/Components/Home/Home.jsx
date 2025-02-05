@@ -271,11 +271,6 @@ const Hero = () => {
         <AboutUs onLeaveSection={handleLeaveAboutUs} />
       </div>
 
-      {/* Report Overview Section */}
-      <div id="report" ref={refReport} >
-        <ReportTurn />
-      </div>
-
       {/* USP Section */}
       <div id="usps" ref={refUSPs}>
         <USP />

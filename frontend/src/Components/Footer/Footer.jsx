@@ -14,11 +14,10 @@ const Footer = () => {
       {/* Navigation Links */}
       <div className="footer-links">
         <a href="#about">About</a>
-        <a href="#usps">USPs</a>
-        <a href="#newsletter">Newsletters</a>
         <a href="#contact">Contact</a>
-        <a href="#privacy">Privacy Policy</a>
-        <a href="#terms">Terms of Service</a>
+        <a href="/Privacy">Privacy Policy</a>
+        <a href="/Terms">Terms of Service</a>
+        <a href="/GDPR">GDPR</a>
       </div>
 
       {/* Contact Information */}

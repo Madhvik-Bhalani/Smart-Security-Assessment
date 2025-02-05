@@ -1,212 +1,211 @@
 /* Page Container */
 .newsletter-page-container {
-    background: url("../../assets/nlpbg.png") no-repeat center center fixed;
-    background-size: cover;
-    padding: 50px 20px;
-    text-align: center;
-    min-height: 100vh;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
+  background: url("../../assets/nlpbg.png") no-repeat center center fixed;
+  background-size: cover;
+  padding: 50px 20px;
+  text-align: center;
+  min-height: 100vh;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.newsletter-page-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #9d4edd;
+  margin-bottom: 40px;
+}
+
+/* Card Grid */
+.newsletter-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 110px;
+  justify-content: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Card Styles */
+.newsletter-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.newsletter-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 30px rgba(157, 78, 221, 0.5);
+}
+
+/* Image Styles */
+.newsletter-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.newsletter-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Content Styles */
+.newsletter-content {
+  text-align: center;
+}
+
+.newsletter-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+/* Button Styles */
+.read-more-button {
+  background-color: transparent;
+  border: 2px solid #9d4edd;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.read-more-button:hover {
+  background-color: #9d4edd;
+  color: #fff;
+}
+
+/* Modal Overlay */
+.newsletter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Close Button */
+.close-modal-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-modal-button:hover {
+  color: #9d4edd;
+}
+
+/* Modal Title */
+.modal-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #9d4edd;
+  margin-bottom: 20px;
+}
+
+/* Modal Content Text */
+.news-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: white !important;
+  text-align: justify;
+}
+
+/* Main Page Cards */
+.newsletter-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.newsletter-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 12px 30px rgba(157, 78, 221, 0.5);
+}
+
+
+
+/* Responsive Design */
+
+/* Large Screens (Desktop) */
+@media (max-width: 1200px) {
+  .newsletter-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Medium Screens (Tablets) */
+@media (max-width: 768px) {
+  .newsletter-card-grid {
+    grid-template-columns: repeat(1, 1fr);
   }
 
-  .newsletter-page-heading {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #9d4edd; 
-    margin-bottom: 40px;
-  }
-  
-  /* Card Grid */
-  .newsletter-card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 110px;
-    justify-content: center; 
-    max-width: 1200px; 
-    width: 100%; 
-  }
-  
-  /* Card Styles */
-  .newsletter-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-  }
-  
-  .newsletter-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 30px rgba(157, 78, 221, 0.5);
-  }
-  
-  /* Image Styles */
-  .newsletter-image-wrapper {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  
-  .newsletter-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 12px;
-  }
-  
-  /* Content Styles */
-  .newsletter-content {
-    text-align: center;
-  }
-  
   .newsletter-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 20px;
+    font-size: 1.2rem;
   }
-  
-  /* Button Styles */
+
   .read-more-button {
-    background-color: transparent;
-    border: 2px solid #9d4edd;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 8px 15px;
+    font-size: 0.9rem;
   }
-  
-  .read-more-button:hover {
-    background-color: #9d4edd;
-    color: #fff;
+}
+
+/* Small Screens (Mobile) */
+@media (max-width: 576px) {
+  .newsletter-card-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-  
- /* Modal Overlay */
-.newsletter-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  /* Modal Content */
-  .modal-content {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Close Button */
-  .close-modal-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .close-modal-button:hover {
-    color: #9d4edd;
-  }
-  
-  /* Modal Title */
-  .modal-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #9d4edd;
-    margin-bottom: 20px;
-  }
-  
-  /* Modal Content Text */
-  .news-text {
-    font-size: 1.2rem ;
-    line-height: 1.8 ;
-    color: white!important;
-    text-align: justify ;
-  }
-  
-  /* Main Page Cards */
+
   .newsletter-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
+    padding: 15px;
   }
-  
-  .newsletter-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0px 12px 30px rgba(157, 78, 221, 0.5);
+
+  .newsletter-title {
+    font-size: 1.1rem;
   }
-  
-  
-  
-  /* Responsive Design */
-  
-  /* Large Screens (Desktop) */
-  @media (max-width: 1200px) {
-    .newsletter-card-grid {
-      grid-template-columns: repeat(2, 1fr); 
-    }
+
+  .read-more-button {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
-  
-  /* Medium Screens (Tablets) */
-  @media (max-width: 768px) {
-    .newsletter-card-grid {
-      grid-template-columns: repeat(1, 1fr);
-    }
-  
-    .newsletter-title {
-      font-size: 1.2rem;
-    }
-  
-    .read-more-button {
-      padding: 8px 15px;
-      font-size: 0.9rem;
-    }
-  }
-  
-  /* Small Screens (Mobile) */
-  @media (max-width: 576px) {
-    .newsletter-card-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-  
-    .newsletter-card {
-      padding: 15px;
-    }
-  
-    .newsletter-title {
-      font-size: 1.1rem;
-    }
-  
-    .read-more-button {
-      font-size: 0.8rem;
-      padding: 6px 12px;
-    }
-  }
-  
+}

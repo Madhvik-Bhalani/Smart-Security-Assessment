@@ -14,7 +14,7 @@ const PaymentFailPage = () => {
         transition={{ duration: 0.5 }} 
         className="fail-container"
       >
-        <XCircle className="icon" size={64} />
+        <XCircle className="fail-icon" size={64} />
         <h1 className="title">Payment Failed</h1>
         <p className="message">
           Unfortunately, your payment could not be processed. Please try again.

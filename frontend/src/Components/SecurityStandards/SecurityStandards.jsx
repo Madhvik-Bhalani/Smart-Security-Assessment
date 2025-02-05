@@ -8,8 +8,11 @@ import {
   FaCertificate,
   FaKey,
   FaServer,
+  FaArrowLeft
 } from "react-icons/fa";
 import "./SecurityStandards.css";
+import AstraLogo from "../../assets/Astrap_nobg.png";
+import { useNavigate } from "react-router-dom";
 
 const standards = [
   {
@@ -70,14 +73,6 @@ const standards = [
   },
   {
     id: 8,
-    info: "Defense Security",
-    icon: <FaShieldAlt />,
-    shortForm: "CMMC",
-    description:
-      "CMMC focuses on safeguarding Controlled Unclassified Information (CUI) for organizations in the U.S. Defense sector by implementing cybersecurity maturity levels.",
-  },
-  {
-    id: 9,
     info: "Identity Management",
     icon: <FaUserShield />,
     shortForm: "IAM",
@@ -90,6 +85,7 @@ const SecurityStandards = () => {
   const [matches, setMatches] = useState([]);
   const [selectedStandard, setSelectedStandard] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrop = (draggedId, droppedId) => {
     const draggedStandard = standards.find((item) => item.id === draggedId);
@@ -138,6 +134,15 @@ const SecurityStandards = () => {
 
   return (
     <div className="infographic-page">
+
+      {/* Astra Logo */}
+      <img src={AstraLogo} alt="Astra Logo" className="astra-logo" />
+
+      {/* Back Button */}
+      <button className="back-button" onClick={() => navigate("/")}>
+        <FaArrowLeft className="back-icon" /> Back to Astra
+      </button>
+
       <header className="infographic-header">
         <h1>Explore Security Standards</h1>
         <p>Drag and drop the icons to the correct short form to learn more about each security standard.</p>

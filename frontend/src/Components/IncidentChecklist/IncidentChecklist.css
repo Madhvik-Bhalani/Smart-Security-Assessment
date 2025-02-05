@@ -11,6 +11,12 @@
   text-align: center;
 }
 
+.incident-header {
+  margin-top: 60px;
+  text-align: center;
+  color: #9D4EDD;
+}
+
 /* Header */
 .incident-header h1 {
   font-size: 4rem;
@@ -25,6 +31,49 @@
   margin: 0 auto 40px;
   color: white;
   line-height: 1.6;
+}
+
+/* Astra Logo */
+.astra-logo {
+  position: absolute;
+  top: -10px;
+  left: 1px;
+  width: 250px;
+  height: auto;
+  z-index: 10;
+}
+
+/* Common Back Button Styles */
+.back-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background-color: #9D4EDD;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: #7A3CB7;
+  transform: scale(1.05);
+}
+
+/* Back Icon */
+.back-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
 }
 
 

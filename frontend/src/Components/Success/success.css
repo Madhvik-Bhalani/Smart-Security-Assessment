@@ -16,8 +16,8 @@ payment-success-page.css
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .icon {
-    color: #10b981; 
+  .success-icon {
+    color: #10b981 !important; 
     margin-bottom: 1rem;
   }
   
