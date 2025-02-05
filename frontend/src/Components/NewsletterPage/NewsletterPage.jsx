@@ -6,6 +6,9 @@ import image3 from "../../assets/NL3.jpg";
 import image4 from "../../assets/NL4.jpg";
 import image5 from "../../assets/NL5.png";
 import image6 from "../../assets/NL6.jpg";
+import AstraLogo from "../../assets/Astrap_nobg.png";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const newsletters = [
     {
@@ -54,6 +57,7 @@ const newsletters = [
 
 const NewsletterPage = () => {
     const [selectedNewsletter, setSelectedNewsletter] = useState(null);
+    const navigate = useNavigate();
 
     const openModal = (newsletter) => {
         setSelectedNewsletter(newsletter);
@@ -65,6 +69,15 @@ const NewsletterPage = () => {
 
     return (
         <div className="newsletter-page-container">
+
+            {/* Astra Logo */}
+            <img src={AstraLogo} alt="Astra Logo" className="astra-logo" />
+
+            {/* Back Button */}
+            <button className="back-button" onClick={() => navigate("/")}>
+                <FaArrowLeft className="back-icon" /> Back to Astra
+            </button>
+
             <h2 className="newsletter-page-heading">Explore Our Newsletters</h2>
             <div className="newsletter-card-grid">
                 {newsletters.map((newsletter) => (

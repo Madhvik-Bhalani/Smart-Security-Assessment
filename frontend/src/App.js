@@ -13,8 +13,15 @@ import ChangePassword from "./Components/ChangePassword/ChangePassword"
 import Pricing from "./Components/Pricing/Pricing";
 import PaymentSuccessPage from "./Components/Success/Success";
 import Fail from "./Components/Fail/Fail"
-
+import Marketplace from "./Components/Marketplace/Marketplace";
+import NewsletterPage from "./Components/NewsletterPage/NewsletterPage";
+import Quiz from "./Components/Quiz/Quiz";
+import IncidentChecklist from "./Components/IncidentChecklist/IncidentChecklist";
+import SecurityStandards from "./Components/SecurityStandards/SecurityStandards";
 import { jwtDecode } from "jwt-decode";
+import Privacy from "./Components/Privacy/Privacy";
+import Terms from "./Components/Terms/Terms";
+import GDPR from "./Components/GDPR/GDPR";
 
 function App() {
 
@@ -48,6 +55,14 @@ function App() {
         <Route path="/fail" element={<ProtectedRoute element={<Fail />}/>} />
         <Route path="/subscription" element={<ProtectedRoute element={<Pricing />} />} />
         <Route path="/chat" element={<ProtectedRoute element={<Chatpage />} />} />
+        <Route path="/market" element={<Marketplace />} />
+        <Route path="/newsletterpage" element={<NewsletterPage />} />
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/incidentChecklist" element={<IncidentChecklist />} />
+        <Route path="/securityStandards" element={<SecurityStandards />} />
+        <Route path="/Privacy" element={<Privacy />} />
+        <Route path="/Terms" element={<Terms />} />
+        <Route path="/GDPR" element={<GDPR />} />
 
         <Route path="*" element={<InvalidRoute />} />
       </Routes>

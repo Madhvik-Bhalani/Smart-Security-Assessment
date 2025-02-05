@@ -16,8 +16,8 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .icon {
-    color: #ef4444; /* Tailwind red-500 */
+  .fail-icon {
+    color: #ef4444 !important;
     margin-bottom: 1rem;
   }
   

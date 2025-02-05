@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./IncidentChecklist.css";
+import AstraLogo from "../../assets/Astrap_nobg.png";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const steps = [
     {
@@ -40,6 +43,8 @@ const IncidentChecklist = () => {
     const [completedSteps, setCompletedSteps] = useState([]);
     const [showDetails, setShowDetails] = useState(null);
 
+    const navigate = useNavigate();
+
     const handleToggle = (id) => {
         setCompletedSteps((prev) =>
             prev.includes(id) ? prev.filter((step) => step !== id) : [...prev, id]
@@ -77,6 +82,14 @@ Thank you for using our Incident Response Checklist!
 
     return (
         <div className="incident-page">
+            {/* Astra Logo */}
+            <img src={AstraLogo} alt="Astra Logo" className="astra-logo" />
+
+            {/* Back Button */}
+            <button className="back-button" onClick={() => navigate("/")}>
+                <FaArrowLeft className="back-icon" /> Back to Astra
+            </button>
+
             <header className="incident-header">
                 <h1>What to Do When Things Go Wrong Online</h1>
                 <p>
