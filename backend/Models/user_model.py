@@ -91,3 +91,13 @@ class SubscriptionRequest(BaseModel):
     plan_name: str
     duration: str
     email: str = Field(..., description="Please provide your registered email address")
+    
+class UserUploadReport(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")
+    file_name: str = Field(..., description="Name of the uploaded report file")
+    base64_file: str = Field(..., description="Base64-encoded PDF file")
+
+
+
+class UserGetReports(BaseModel):
+    email: EmailStr = Field(..., description="Please provide your registered email address")

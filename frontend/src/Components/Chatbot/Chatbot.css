@@ -1,4 +1,3 @@
-/* General Wrapper */
 .chatbot-wrapper {
   display: flex;
   height: 100vh;
@@ -8,7 +7,6 @@
   color: var(--text-color);
 }
 
-/* Sidebar Styling */
 .chatbot-sidebar {
   width: 250px;
   background-color: var(--sidebar-background);
@@ -19,7 +17,6 @@
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Sidebar Header */
 .sidebar-header {
   display: flex;
   justify-content: center;
@@ -33,7 +30,6 @@
   height: auto;
 }
 
-/* Action Buttons */
 .sidebar-actions {
   display: flex;
   flex-direction: column;
@@ -72,7 +68,6 @@
   color: var(--secondary-brand-color);
 }
 
-/*Tour Button*/
 .tour-button {
   font-size: 1.4rem;
   color: var(--primary-brand-color);
@@ -86,8 +81,6 @@
   color: var(--secondary-brand-color);
 }
 
-
-/* Chat History Section */
 .chat-history-section {
   flex: 1;
   overflow-y: auto;
@@ -141,7 +134,6 @@
   z-index: 1000;
 }
 
-/* Dropdown Item */
 .dropdown-item {
   display: flex;
   align-items: center;
@@ -156,7 +148,6 @@
   transition: background-color 0.2s ease;
 }
 
-/* Hover Effect */
 .dropdown-item:hover {
   background-color: rgba(128, 128, 128, 0.1);
 }
@@ -179,7 +170,6 @@
   fill: #e63946 !important;
 }
 
-/* Theme-Specific Background */
 body.light .chat-dropdown {
   background-color: #ffffff;
 }
@@ -196,7 +186,6 @@ body.dark .dropdown-item:hover {
   background-color: #333333;
 }
 
-/* Logout Button */
 .logout-btn {
   padding: 10px;
   background-color: var(--action-btn-background);
@@ -221,7 +210,6 @@ body.dark .dropdown-item:hover {
   margin-right: 8px;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
   display: flex;
@@ -239,7 +227,6 @@ body.dark .dropdown-item:hover {
   color: var(--text-color);
 }
 
-/* Chat Messages */
 .fact-check {
   color: var(--secondary-brand-color);
   margin-left: 10px;
@@ -304,7 +291,6 @@ body.dark .dropdown-item:hover {
   max-width: 70%;
 }
 
-/* Add a tail (optional) */
 .message.bot .message-text::after,
 .message.user .message-text::after {
   content: "";
@@ -322,7 +308,6 @@ body.dark .dropdown-item:hover {
   width: 100%;
 }
 
-/* Chat Input */
 .chat-input {
   display: flex;
   align-items: center;
@@ -366,8 +351,6 @@ body.dark .dropdown-item:hover {
   color: var(--secondary-brand-color);
 }
 
-/*Toggle and User*/
-/* Header Actions */
 .header-actions {
   display: flex;
   justify-content: flex-end;
@@ -397,7 +380,6 @@ body.dark .dropdown-item:hover {
   color: var(--secondary-brand-color);
 }
 
-/* Dropdown Menu */
 .dropdown {
   position: absolute;
   top: 40px;
@@ -423,7 +405,6 @@ body.dark .dropdown-item:hover {
   background: var(--action-btn-hover);
 }
 
-/* Theme Transitions */
 .chatbot-wrapper,
 .chatbot-sidebar,
 .action-btn,
@@ -432,7 +413,6 @@ body.dark .dropdown-item:hover {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/*User Profile*/
 .user-profile-details {
   padding: 10px;
   background-color: var(--action-btn-background);
@@ -462,7 +442,6 @@ body.dark .user-profile-details {
 .user-field-value:hover {
   text-decoration: underline;
 }
-
 
 .user-profile-actions {
   display: flex;
@@ -498,9 +477,6 @@ body.dark .user-profile-details {
   color: #e63946;
 }
 
-/* Theme Variables */
-
-/*Light*/
 body.light {
   --background-color: #ffffff;
   --text-color: #333333;
@@ -519,7 +495,6 @@ body.light {
   --scrollbar-thumb-hover: #9D4EDD;
 }
 
-/*Dark*/
 body.dark {
   --background-color: #1e1e1e;
   --text-color: #dddddd;
@@ -637,16 +612,11 @@ body.dark {
   }
 }
 
-
-
-/* Ensure the loading indicator is visible in both light and dark modes */
 body.light .loading-indicator,
 body.dark .loading-indicator {
   color: var(--text-color);
 }
 
-/*Markdown*/
-/* Base Markdown Styling */
 .markdown-content {
   border-radius: 5px;
   padding: 10px;
@@ -654,18 +624,87 @@ body.dark .loading-indicator {
   line-height: 1.8;
 }
 
-/* Light Theme Markdown */
 body.light .markdown-content {
   background-color: #ffffff;
   color: #333333;
 }
 
-/* Dark Theme Markdown */
+.reports-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.reports-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.reports-list {
+  margin-top: 1rem;
+}
+
+.report-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.report-name {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.report-date {
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.download-report-btn {
+  background-color: #9d4edd;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.download-report-btn:hover {
+  background-color: #7c3aed;
+}
+
+.close-modal-btn {
+  margin-top: 1.5rem;
+  background-color: #e2e8f0;
+  color: #2d3748;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 body.dark .markdown-content {
   color: #dddddd;
 }
 
-/* Headings */
 .markdown-content h1,
 .markdown-content h2,
 .markdown-content h3 {
@@ -690,7 +729,6 @@ body.dark .markdown-content h3 {
   border-color: #444;
 }
 
-/* Paragraphs */
 .markdown-content p {
   margin: 12px 0;
   line-height: 1.6;
@@ -704,7 +742,6 @@ body.dark .markdown-content p {
   color: #cccccc;
 }
 
-/* Lists */
 .markdown-content ul {
   margin: 12px 0;
   padding-left: 20px;
@@ -716,7 +753,6 @@ body.dark .markdown-content p {
   padding-left: 4px;
 }
 
-/* Code Blocks */
 .markdown-content pre {
   border-radius: 8px;
   padding: 16px;
@@ -737,7 +773,6 @@ body.dark .markdown-content pre {
   color: #f8fafc;
 }
 
-/* Inline Code */
 .markdown-content code {
   padding: 2px 6px;
   border-radius: 4px;
@@ -755,7 +790,6 @@ body.dark .markdown-content code {
   color: #facc15;
 }
 
-/* Blockquotes */
 .markdown-content blockquote {
   padding: 12px 16px;
   margin: 16px 0;
@@ -775,7 +809,6 @@ body.dark .markdown-content blockquote {
   color: #bbbbbb;
 }
 
-/* Horizontal Rule */
 .markdown-content hr {
   border: 0;
   height: 1px;
@@ -790,7 +823,6 @@ body.dark .markdown-content hr {
   background: #444;
 }
 
-/* Links */
 .markdown-content a {
   text-decoration: none;
 }
@@ -807,7 +839,6 @@ body.dark .markdown-content a {
   text-decoration: underline;
 }
 
-/* Tables */
 .markdown-content table {
   border-collapse: collapse;
   width: 100%;
@@ -833,7 +864,6 @@ body.dark .markdown-content td {
   background-color: #222;
 }
 
-/* Strong (Bold Text) */
 .markdown-content strong {
   font-weight: bold;
 }
@@ -846,7 +876,6 @@ body.dark .markdown-content strong {
   color: white;
 }
 
-/* Italics (Emphasized Text) */
 body.light .markdown-content em {
   color: #2ecc71;
 }
@@ -855,8 +884,6 @@ body.dark .markdown-content em {
   color: #76c893;
 }
 
-
-/* Wrapper for Suggestive Prompts */
 .suggestive-prompts-wrapper {
   display: flex;
   align-items: flex-start;
@@ -864,14 +891,12 @@ body.dark .markdown-content em {
   margin-top: 10px;
 }
 
-/* Astra Avatar During Suggesting */
 .suggestive-prompts-wrapper img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-/* Loader Phase (Suggesting...) */
 .suggestive-prompts-wrapper.loading {
   display: flex;
   align-items: center;
@@ -900,7 +925,6 @@ body.dark .markdown-content em {
   color: #5A189A;
 }
 
-/* Remove Astra Avatar When Suggestions Are Ready */
 .suggestive-prompts-wrapper:not(.loading) img {
   display: none;
 }
@@ -920,7 +944,6 @@ body.dark .markdown-content em {
   color: black;
 }
 
-/* Suggestive Prompts Styling */
 .suggestive-prompts {
   display: flex;
   flex-wrap: wrap;
@@ -929,7 +952,6 @@ body.dark .markdown-content em {
   margin-top: 0;
 }
 
-/* Suggestion Buttons */
 .suggestion-btn {
   background-color: #4290bd;
   color: white;
@@ -945,6 +967,71 @@ body.dark .markdown-content em {
 
 .suggestion-btn:hover {
   background-color: #57acdc;
+}
+
+.filename-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.filename-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.filename-modal input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.download-btn {
+  background: #9d4edd;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-report-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #9d4edd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.download-report-btn:hover {
+  background: #45a049;
 }
 
 .loading-overlay {
@@ -982,8 +1069,6 @@ body.dark .markdown-content em {
   }
 }
 
-
-/* Responsive Design for Smaller Screens */
 @media (max-width: 600px) {
   .suggestive-prompts {
     flex-direction: column;
@@ -991,7 +1076,6 @@ body.dark .markdown-content em {
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .chatbot-sidebar {
     position: absolute;

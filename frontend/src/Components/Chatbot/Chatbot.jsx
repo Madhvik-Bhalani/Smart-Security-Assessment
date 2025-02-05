@@ -33,10 +33,13 @@ import DeleteAccount from "../DeleteAccount/DeleteAccount";
 import Avatar from "react-avatar";
 import CveTable from "../CveTable/CveTable";
 
+
 const Chatbot = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [runTour, setRunTour] = useState(false);
+
+
 
   const tourSteps = [
     {
@@ -93,10 +96,15 @@ const Chatbot = ({ onClose }) => {
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
+  const [showReportsModal, setShowReportsModal] = useState(false);
+  const [reports, setReports] = useState([]);
+  const [isLoadingReports, setIsLoadingReports] = useState(false);
 
-  const user_fname = localStorage.getItem("fname");
-  const user_lname = localStorage.getItem("lname");
+
   const user_email = localStorage.getItem("email");
+  const [pdfData, setPdfData] = useState(null);
+  const [showFilenameModal, setShowFilenameModal] = useState(false);
+  const [filename, setFilename] = useState("Security_Report");
 
   const [activeComponent, setActiveComponent] = useState("chat");
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -121,9 +129,7 @@ const Chatbot = ({ onClose }) => {
     }
   };
 
-
-
-  // fetch report starts
+  
 
   const [reportsData, setReportsData] = useState(false);
 
@@ -144,7 +150,7 @@ const Chatbot = ({ onClose }) => {
       if (response && response.data) {
         console.log("report response-->");
         console.log(response.data);
-        
+
         setReportsData(response.data)
       } else {
         throw new Error("Invalid response format.");
@@ -159,8 +165,6 @@ const Chatbot = ({ onClose }) => {
     handleFetchReports()
   }, [])
 
-  // fetch report ends
-
 
 
 
@@ -173,21 +177,7 @@ const Chatbot = ({ onClose }) => {
     adjustInputHeight();
   };
 
-  const saveChatHistory = (sessionId, messages, chatName) => {
-    const chatHistory = safelyParseJSON(
-      localStorage.getItem("chatHistory") || "{}"
-    );
-    chatHistory[sessionId] = {
-      messages,
-      chatName,
-      lastUpdated: new Date().toISOString(),
-    };
-    localStorage.setItem("chatHistory", safelyStringifyJSON(chatHistory));
-  };
 
-  const loadChatHistory = () => {
-    return safelyParseJSON(localStorage.getItem("chatHistory") || "{}");
-  };
   const adjustInputHeight = () => {
     const textarea = inputRef.current;
     if (textarea) {
@@ -213,6 +203,54 @@ const Chatbot = ({ onClose }) => {
     document.body.classList.add(theme);
     localStorage.setItem("theme", theme);
   };
+
+  const ReportsModal = () => (
+    <div className="reports-modal-overlay">
+      <div className="reports-modal">
+        <h3>Your Security Reports</h3>
+        {isLoadingReports ? (
+          <div className="loading-text">Loading reports...</div>
+        ) : reports.length === 0 ? (
+          <p>No reports available</p>
+        ) : (
+          <div className="reports-list">
+            {reports.map((report, index) => (
+              <div key={index} className="report-item">
+                <div className="report-header">
+                  <span className="report-name">{report.file_name}</span>
+                  <span className="report-date">
+                    {new Date(report.uploaded_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <button
+                  className="download-report-btn"
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = report.file_data;
+                    link.download = report.file_name.endsWith('.pdf')
+                      ? report.file_name
+                      : `${report.file_name}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                >
+                  Download PDF
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <button
+          className="close-modal-btn"
+          onClick={() => setShowReportsModal(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+
 
   const handleClickOutside = (event) => {
     if (
@@ -279,9 +317,7 @@ const Chatbot = ({ onClose }) => {
     }
   }, [messages, sessionId]);
 
-  const isFirstMessage = (index) => {
-    return messages.findIndex((msg) => msg.sender === "bot") === index;
-  };
+
 
   const handleToggleListening = () => {
     if (listening) {
@@ -351,6 +387,42 @@ const Chatbot = ({ onClose }) => {
     }
   };
 
+
+  const uploadReportToDatabase = async (base64Report, fileName) => {
+    try {
+      const userEmail = localStorage.getItem("email");
+      if (!userEmail) {
+        console.error("User email not found in local storage");
+        return;
+      }
+
+      const payload = {
+        email: userEmail,
+        file_name: fileName,
+        base64_file: base64Report,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/users/upload-report",
+        payload
+      );
+
+      if (response.status === 200 && response.data.status) {
+        console.log("Report uploaded successfully!");
+       
+        alert("Report uploaded successfully!");
+      } else {
+        console.error("Failed to upload report:", response.data.message);
+       
+        alert("Failed to upload report. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error uploading report:", error);
+    
+      alert("An error occurred while uploading the report.");
+    }
+  };
+
   const generatePDFReport = (responseText) => {
     return new Promise((resolve, reject) => {
       try {
@@ -375,22 +447,10 @@ const Chatbot = ({ onClose }) => {
           const logoDataUrl = canvas.toDataURL("image/png");
 
           const addHeader = () => {
-            // doc.setFillColor(0, 0, 0);
-            // doc.rect(0, 0, doc.internal.pageSize.getWidth(), 25, "F");
+        
+            doc.addImage(logoDataUrl, "PNG", -2, -4, 50, 50);
 
-            const logoX = -2;
-            const logoY = -4;
-            const logoWidth = 50;
-            const logoHeight = 50;
-            doc.addImage(
-              logoDataUrl,
-              "PNG",
-              logoX,
-              logoY,
-              logoWidth,
-              logoHeight
-            );
-
+           
             doc.setFont("helvetica", "bold");
             doc.setFontSize(16);
             doc.setTextColor(0, 0, 0);
@@ -401,15 +461,16 @@ const Chatbot = ({ onClose }) => {
             const headingX = (pageWidth - headingWidth) / 2 + margin;
             doc.text(headingText, headingX, 25);
 
+        
             doc.setFontSize(10);
             const timestampText = `Generated on: ${new Date().toLocaleString()}`;
             const timestampWidth =
               (doc.getStringUnitWidth(timestampText) * 10) /
               doc.internal.scaleFactor;
-            // const timestampX = (pageWidth - timestampWidth) / 2 + margin;
             const timestampX = pageWidth + margin - timestampWidth;
             doc.text(timestampText, timestampX, 38);
 
+         
             doc.setDrawColor(0);
             doc.line(margin, 45, pageWidth + margin, 45);
           };
@@ -417,6 +478,12 @@ const Chatbot = ({ onClose }) => {
           const addPageNumber = () => {
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
+
+            doc.setDrawColor(0);
+            doc.line(margin, pageHeight - 20, pageWidth + margin, pageHeight - 20);
+
+            doc.text("Powered by Codefinity", margin, pageHeight - 10);
+
             doc.text(
               `Page ${pageNumber}`,
               doc.internal.pageSize.getWidth() - 25,
@@ -425,21 +492,106 @@ const Chatbot = ({ onClose }) => {
           };
 
           const addContent = (text) => {
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-            const splitText = doc.splitTextToSize(text, pageWidth);
+            const lines = text.split("\n");
+            const boldHeadings = [
+              "Overview",
+              "IP and Network Information",
+              "SSL/TLS Details",
+              "Security Headers and Configuration",
+              "Missing Headers:",
+              "Findings and Vulnerabilities",
+              "JavaScript and External Resources",
+              "Technology Stack",
+              "Related CVEs",
+              "Recommendations",
+              "Advanced Insights and Recommendations",
+            ];
 
-            splitText.forEach((line) => {
+            lines.forEach((line) => {
+              if (line.trim() === "") {
+              
+                return;
+              }
+
+              if (boldHeadings.includes(line.trim())) {
+                
+                doc.setFontSize(14); 
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(157, 78, 221); 
+                cursorY += 5; 
+                const wrappedText = doc.splitTextToSize(line, pageWidth); 
+                doc.text(wrappedText, margin, cursorY);
+                cursorY += 7; 
+              } else if (line.startsWith("# ")) {
+                
+                doc.setFontSize(20);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(59, 89, 152); 
+                cursorY += 5;
+                const wrappedText = doc.splitTextToSize(line.replace("# ", ""), pageWidth); 
+                doc.text(wrappedText, margin, cursorY);
+                cursorY += 10;
+              } else if (line.startsWith("## ")) {
+               
+                doc.setFontSize(18);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(59, 89, 152); 
+                cursorY += 5;
+                const wrappedText = doc.splitTextToSize(line.replace("## ", ""), pageWidth); 
+                doc.text(wrappedText, margin, cursorY);
+                cursorY += 7;
+              } else if (line.startsWith("### ")) {
+              
+                doc.setFontSize(16);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(59, 89, 152); 
+                cursorY += 5;
+                const wrappedText = doc.splitTextToSize(line.replace("### ", ""), pageWidth); 
+                doc.text(wrappedText, margin, cursorY);
+                cursorY += 5;
+              } else if (line.startsWith(">")) {
+             
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "italic");
+                doc.setTextColor(46, 52, 64); 
+                const wrappedText = doc.splitTextToSize(line.replace(">", ""), pageWidth - 10); 
+                doc.text(wrappedText, margin + 10, cursorY);
+                cursorY += wrappedText.length * 8; 
+              } else if (line.startsWith("```")) {
+               
+                doc.setFontSize(12);
+                doc.setFont("courier");
+                doc.setTextColor(44, 62, 80); 
+                cursorY += 5;
+                const wrappedText = doc.splitTextToSize(line.replace("```", ""), pageWidth - 10); 
+                doc.text(wrappedText, margin + 10, cursorY);
+                cursorY += wrappedText.length * 8; 
+              } else if (line.startsWith("- ")) {
+               
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(85, 85, 85); 
+                const wrappedText = doc.splitTextToSize("• " + line.replace("- ", ""), pageWidth - 10); 
+                doc.text(wrappedText, margin + 10, cursorY);
+                cursorY += wrappedText.length * 8; 
+              } else {
+               
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(85, 85, 85);
+                const wrappedText = doc.splitTextToSize(line, pageWidth); 
+                doc.text(wrappedText, margin, cursorY);
+                cursorY += wrappedText.length * 8; 
+              }
+
+              
               if (cursorY > pageHeight - 20) {
                 addPageNumber();
                 doc.addPage();
                 pageNumber++;
                 cursorY = 55;
                 addHeader();
-                doc.setTextColor(0, 0, 0);
               }
-              doc.text(line, margin, cursorY);
-              cursorY += lineHeight;
             });
           };
 
@@ -447,8 +599,13 @@ const Chatbot = ({ onClose }) => {
           addContent(cleanedText);
           addPageNumber();
 
-          const pdfBase64 = doc.output("datauristring");
-          resolve(pdfBase64);
+          const pdfBlob = doc.output("blob");
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64data = reader.result.split(',')[1];
+            resolve(base64data);
+          };
+          reader.readAsDataURL(pdfBlob);
         };
 
         img.onerror = (error) => {
@@ -460,14 +617,76 @@ const Chatbot = ({ onClose }) => {
     });
   };
 
+  const checkUrlMatch = (userInput, botResponse) => {
+    const extractedUrl = extractUrlFromInput(userInput);
+    if (!extractedUrl) return false;
+
+    const sanitizedUrl = extractedUrl
+      .replace(/https?:\/\//, "")
+      .replace(/\/$/, "")
+      .split("#")[0]
+      .toLowerCase();
+
+    const sanitizedResponse = botResponse.toLowerCase();
+
+    return sanitizedResponse.includes(sanitizedUrl);
+  };
+
+  const fetchUserReports = async () => {
+    setIsLoadingReports(true);
+    try {
+      const userEmail = localStorage.getItem("email");
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/users/get-reports",
+        { email: userEmail }
+
+      );
+
+      if (response.data.status && response.data.reports) {
+        setReports(response.data.reports);
+        console.log(response);
+        setShowReportsModal(true);
+      } else {
+        alert("No reports found");
+      }
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+      alert("Failed to fetch reports");
+    } finally {
+      setIsLoadingReports(false);
+    }
+  };
+
+
   const generateAndDownloadPDF = async (responseText) => {
     try {
       const pdfBase64 = await generatePDFReport(responseText);
-      const link = document.createElement("a");
-      link.href = pdfBase64;
-      link.download = "Security_Analysis_Report.pdf";
-      link.click();
-    } catch (error) { }
+      setPdfData(pdfBase64);
+      setShowFilenameModal(true); 
+
+      
+      const handleDownload = () => {
+        const link = document.createElement("a");
+        link.href = pdfBase64;
+        link.download = filename.endsWith(".pdf") ? filename : `${filename}.pdf`;
+        link.click();
+        setShowFilenameModal(false);
+
+     
+        uploadReportToDatabase(pdfBase64, filename);
+      };
+
+     
+      const downloadButton = document.querySelector(".download-btn");
+      if (downloadButton) {
+        downloadButton.onclick = handleDownload;
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("An error occurred while generating the PDF.");
+    }
   };
 
   const handleSuggestedInput = (prompt) => {
@@ -654,9 +873,6 @@ const Chatbot = ({ onClose }) => {
     } catch (error) { }
   };
 
-  const handleBackCheck = (message) => {
-    alert(`Back-checking: ${message}`);
-  };
 
   const handleLogout = () => {
     localStorage.clear();
@@ -696,8 +912,8 @@ const Chatbot = ({ onClose }) => {
 
   const handleChatSummarize = async (sessionId) => {
     try {
-      setIsLoading(true); // Start loading indicator
-      setShowUserMenu(null); // Close dropdown when summarize starts
+      setIsLoading(true); 
+      setShowUserMenu(null); 
 
       const token = localStorage.getItem("token");
 
@@ -716,10 +932,10 @@ const Chatbot = ({ onClose }) => {
         link.download = "Chat_Summary.pdf";
         link.click();
 
-        // Show popup notification
+       
         setIsPopupVisible(true);
 
-        // Hide popup after 3 seconds
+       
         setTimeout(() => setIsPopupVisible(false), 3000);
       } else {
         alert("Failed to summarize chat. Please try again.");
@@ -728,7 +944,7 @@ const Chatbot = ({ onClose }) => {
       console.error("Error fetching chat summary:", error);
       alert("An error occurred while summarizing the chat.");
     } finally {
-      setIsLoading(false); // End loading indicator
+      setIsLoading(false); 
     }
   };
 
@@ -826,7 +1042,7 @@ const Chatbot = ({ onClose }) => {
           <button className="action-btn new-chat-btn" onClick={newchatHandler}>
             <FaPlus /> New Chat
           </button>
-          <button className="action-btn marketplace-btn" >
+          <button className="action-btn marketplace-btn" onClick={fetchUserReports}>
             <FaRegFileAlt /> Reports
           </button>
           <button className="action-btn cve-fetch-btn" onClick={cveHandler}>
@@ -1044,6 +1260,20 @@ const Chatbot = ({ onClose }) => {
                     </div>
                   </div>
 
+                  {msg.sender === "bot" &&
+                    index === messages.length - 1 &&
+                    !msg.isLoading &&
+                    checkUrlMatch(input, msg.text) && (
+                      <button
+                        className="download-report-btn"
+                        onClick={() => generateAndDownloadPDF(msg.text)}
+                      >
+                        Download Report
+                      </button>
+                    )}
+
+
+
                   {/* Loader or Suggestive Prompts for the Latest Bot Message */}
                   {msg.sender === "bot" && index === messages.length - 1 && (
                     <div className="message bot">
@@ -1085,6 +1315,44 @@ const Chatbot = ({ onClose }) => {
                   )}
                 </React.Fragment>
               ))}
+
+              {showFilenameModal && (
+                <div className="filename-modal-overlay">
+                  <div className="filename-modal">
+                    <h3>Save Report</h3>
+                    <input
+                      type="text"
+                      value={filename}
+                      onChange={(e) => setFilename(e.target.value)}
+                      placeholder="Enter filename"
+                    />
+                    <div className="modal-buttons">
+                      <button
+                        className="download-btn"
+                        onClick={() => {
+                          const link = document.createElement("a");
+                          link.href = pdfData;
+                          link.download = filename.endsWith(".pdf")
+                            ? filename
+                            : `${filename}.pdf`;
+                          link.click();
+                          setShowFilenameModal(false);
+                          uploadReportToDatabase(pdfData, filename);
+                        }}
+                      >
+                        Download
+                      </button>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => setShowFilenameModal(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
             </div>
 
             <div className="chat-input">
@@ -1154,6 +1422,8 @@ const Chatbot = ({ onClose }) => {
         <ChangePassword closeModal={setOpenChangePassword} />
       )}
       {openDelete && <DeleteAccount onCancel={setOpenDelete} />}
+
+      {showReportsModal && <ReportsModal />}
     </div>
   );
 };
