@@ -178,15 +178,14 @@ const Chatbot = ({ onClose }) => {
       );
 
       if (response && response.data) {
-        console.log("report response-->");
-        console.log(response.data);
+       
 
         setReportsData(response.data)
       } else {
         throw new Error("Invalid response format.");
       }
     } catch (error) {
-      alert("Failed to fetch reports. Please try again.");
+      // alert("Failed to fetch reports. Please try again.");
     }
   };
 
@@ -440,16 +439,16 @@ const Chatbot = ({ onClose }) => {
       if (response.status === 200 && response.data.status) {
         console.log("Report uploaded successfully!");
        
-        alert("Report uploaded successfully!");
+        // alert("Report uploaded successfully!");
       } else {
         console.error("Failed to upload report:", response.data.message);
        
-        alert("Failed to upload report. Please try again.");
+        // alert("Failed to upload report. Please try again.");
       }
     } catch (error) {
       console.error("Error uploading report:", error);
     
-      alert("An error occurred while uploading the report.");
+      // alert("An error occurred while uploading the report.");
     }
   };
 
@@ -684,7 +683,7 @@ const Chatbot = ({ onClose }) => {
       }
     } catch (error) {
       console.error("Error fetching reports:", error);
-      alert("Failed to fetch reports");
+      // alert("Failed to fetch reports");
     } finally {
       setIsLoadingReports(false);
     }
